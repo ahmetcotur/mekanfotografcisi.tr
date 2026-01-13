@@ -5,13 +5,11 @@
 require_once __DIR__ . '/../includes/database.php';
 $db = new DatabaseClient();
 
-// Simple session check (placeholder - we'll integrate better auth later)
-/*
-if (!isset($_SESSION['user_id'])) {
+session_start();
+if (!isset($_SESSION['admin_user_id'])) {
     header('Location: /login');
     exit;
 }
-*/
 
 // Get the current page from query string or URL rewrite
 $page = $_GET['page'] ?? 'dashboard';

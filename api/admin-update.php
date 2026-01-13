@@ -9,7 +9,7 @@ require_once __DIR__ . '/../includes/database.php';
 try {
     // Basic Auth Check (Session)
     session_start();
-    if (!isset($_SESSION['user_id']) && !isset($_SESSION['admin_user_id'])) {
+    if (!isset($_SESSION['admin_user_id']) && !isset($_SESSION['user_id'])) {
         throw new Exception('Unauthorized');
     }
 
@@ -45,14 +45,15 @@ try {
 
         $db = new DatabaseClient();
 
-        // If updating 'is_active', make sure it's 'true'/'false' string for database enum/string column
+        // If updating 'is_active', handle boolean correctly for Postgres
         if (isset($updateData['is_active'])) {
-            $updateData['is_active'] = $updateData['is_active'] ? 'true' : 'false';
+            $isActive = filter_var($updateData['is_active'], FILTER_VALIDATE_BOOLEAN);
+            $updateData['is_active'] = $isActive;
 
             // Cascading Update for Province
-            if ($table === 'locations_province' && $updateData['is_active'] === 'false') {
+            if ($table === 'locations_province' && $isActive === false) {
                 // Deactivate all districts
-                $db->update('locations_district', ['is_active' => 'false'], ['province_id' => $id]);
+                $db->update('locations_district', ['is_active' => false], ['province_id' => $id]);
             }
         }
 
@@ -75,7 +76,7 @@ try {
         }
 
         if (isset($updateData['is_active'])) {
-            $updateData['is_active'] = $updateData['is_active'] ? 'true' : 'false';
+            $updateData['is_active'] = filter_var($updateData['is_active'], FILTER_VALIDATE_BOOLEAN);
         }
 
         $db = new DatabaseClient();
@@ -83,8 +84,8 @@ try {
 
         foreach ($ids as $id) {
             // Cascading Logic
-            if ($table === 'locations_province' && isset($updateData['is_active']) && $updateData['is_active'] === 'false') {
-                $db->update('locations_district', ['is_active' => 'false'], ['province_id' => $id]);
+            if ($table === 'locations_province' && isset($updateData['is_active']) && $updateData['is_active'] === false) {
+                $db->update('locations_district', ['is_active' => false], ['province_id' => $id]);
             }
 
             if ($db->update($table, $updateData, ['id' => $id])) {

@@ -29,6 +29,12 @@ $requestUri = $_SERVER['REQUEST_URI'];
 $requestPath = parse_url($requestUri, PHP_URL_PATH);
 $requestPath = trim($requestPath, '/');
 
+// Login Route
+if ($requestPath === 'login') {
+    require_once __DIR__ . '/login.php';
+    exit;
+}
+
 // Static files - serve directly
 if (preg_match('/\.(css|js|jpg|jpeg|png|gif|svg|webp|ico|woff|woff2|ttf|eot|pdf|xml|txt)$/i', $requestPath)) {
     return false;
