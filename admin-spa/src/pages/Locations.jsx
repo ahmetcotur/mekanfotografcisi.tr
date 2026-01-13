@@ -13,9 +13,28 @@ export default function Locations() {
 
     const [loading, setLoading] = useState(true);
 
+    // Filters
+    const [provinceSearch, setProvinceSearch] = useState('');
+    const [provinceFilter, setProvinceFilter] = useState('all'); // all, active, passive
+    const [districtSearch, setDistrictSearch] = useState('');
+    const [districtFilter, setDistrictFilter] = useState('all');
+    const [townSearch, setTownSearch] = useState('');
+    const [townFilter, setTownFilter] = useState('all');
+
     useEffect(() => {
         loadProvinces();
     }, []);
+
+    // Filter Logic
+    const filterItems = (items, search, filter) => {
+        return items.filter(item => {
+            const matchesSearch = item.name.toLowerCase().includes(search.toLowerCase());
+            const matchesFilter = filter === 'all'
+                ? true
+                : filter === 'active' ? item.is_active : !item.is_active;
+            return matchesSearch && matchesFilter;
+        });
+    };
 
     const loadProvinces = async () => {
         setLoading(true);
@@ -74,7 +93,7 @@ export default function Locations() {
                 data: { is_active: !isActive }
             });
 
-            // Refresh logic
+            // Refresh logic - optimistic update could be better but this is safer
             if (table === 'locations_province') loadProvinces();
             else if (table === 'locations_district') loadDistricts(selectedProvince.id);
             else if (table === 'locations_town') loadTowns(selectedDistrict.id);
@@ -252,6 +271,27 @@ export default function Locations() {
         }
     };
 
+    const FilterBar = ({ search, setSearch, filter, setFilter }) => (
+        <div className="flex gap-2 mb-4 px-1">
+            <input
+                type="text"
+                placeholder="Ara..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full px-3 py-1.5 text-xs border border-gray-200 rounded-lg focus:outline-none focus:border-blue-400"
+            />
+            <select
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
+                className="px-2 py-1.5 text-xs border border-gray-200 rounded-lg focus:outline-none focus:border-blue-400 bg-white"
+            >
+                <option value="all">Tümü</option>
+                <option value="active">Aktif</option>
+                <option value="passive">Pasif</option>
+            </select>
+        </div>
+    );
+
     if (loading) return <div className="text-center py-12">Yükleniyor...</div>;
 
     return (
@@ -268,8 +308,16 @@ export default function Locations() {
                         + Ekle
                     </button>
                 </div>
-                <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden h-[calc(100vh-200px)] overflow-y-auto custom-scrollbar">
-                    {provinces.map((province) => (
+
+                <FilterBar
+                    search={provinceSearch}
+                    setSearch={setProvinceSearch}
+                    filter={provinceFilter}
+                    setFilter={setProvinceFilter}
+                />
+
+                <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden h-[calc(100vh-240px)] overflow-y-auto custom-scrollbar">
+                    {filterItems(provinces, provinceSearch, provinceFilter).map((province) => (
                         <div
                             key={province.id}
                             className={`p-4 border-b border-gray-50 cursor-pointer transition-all ${selectedProvince?.id === province.id ? 'bg-blue-50 border-l-4 border-l-blue-500' : 'hover:bg-gray-50'}`}
@@ -306,7 +354,17 @@ export default function Locations() {
                         </button>
                     )}
                 </div>
-                <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden h-[calc(100vh-200px)] overflow-y-auto custom-scrollbar">
+
+                {selectedProvince && (
+                    <FilterBar
+                        search={districtSearch}
+                        setSearch={setDistrictSearch}
+                        filter={districtFilter}
+                        setFilter={setDistrictFilter}
+                    />
+                )}
+
+                <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden h-[calc(100vh-240px)] overflow-y-auto custom-scrollbar">
                     {!selectedProvince ? (
                         <div className="h-full flex flex-col items-center justify-center text-gray-300 p-8">
                             <span className="text-3xl mb-2">👈</span>
@@ -318,7 +376,7 @@ export default function Locations() {
                             <span className="text-xs uppercase font-bold tracking-widest">İlçe Yok</span>
                         </div>
                     ) : (
-                        districts.map((district) => (
+                        filterItems(districts, districtSearch, districtFilter).map((district) => (
                             <div
                                 key={district.id}
                                 className={`p-4 border-b border-gray-50 cursor-pointer transition-all ${selectedDistrict?.id === district.id ? 'bg-blue-50 border-l-4 border-l-blue-500' : 'hover:bg-gray-50'}`}
@@ -359,7 +417,17 @@ export default function Locations() {
                         </div>
                     )}
                 </div>
-                <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden h-[calc(100vh-200px)] overflow-y-auto custom-scrollbar">
+
+                {selectedDistrict && (
+                    <FilterBar
+                        search={townSearch}
+                        setSearch={setTownSearch}
+                        filter={townFilter}
+                        setFilter={setTownFilter}
+                    />
+                )}
+
+                <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden h-[calc(100vh-240px)] overflow-y-auto custom-scrollbar">
                     {!selectedDistrict ? (
                         <div className="h-full flex flex-col items-center justify-center text-gray-300 p-8">
                             <span className="text-3xl mb-2">👈</span>
@@ -371,7 +439,7 @@ export default function Locations() {
                             <span className="text-xs uppercase font-bold tracking-widest">Mahalle Yok</span>
                         </div>
                     ) : (
-                        towns.map((town) => (
+                        filterItems(towns, townSearch, townFilter).map((town) => (
                             <div
                                 key={town.id}
                                 className="p-4 border-b border-gray-50 hover:bg-gray-50 transition-all group"
