@@ -3,8 +3,10 @@
  * Pexels Images Management API
  */
 // Session is now started globally in router.php
+require_once __DIR__ . '/middleware.php';
 require_once __DIR__ . '/../includes/database.php';
 
+addCorsHeaders();
 header('Content-Type: application/json');
 
 // Check if user is authenticated
