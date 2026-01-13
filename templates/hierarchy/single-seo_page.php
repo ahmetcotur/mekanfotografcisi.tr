@@ -59,11 +59,76 @@ $locationName = $post->getMeta('location_name') ?: $post->title;
                 <!-- Intro -->
                 <div class="bg-white rounded-3xl p-8 md:p-12 shadow-sm border border-slate-100">
                     <h2 class="font-heading font-bold text-3xl text-slate-900 mb-6 relative inline-block">
-                        <?= htmlspecialchars($locationName) ?> Bölgesinde Fotoğrafçılık
+                        Projenizi Birlikte Hayata Geçirelim
                         <span class="absolute -bottom-2 left-0 w-1/3 h-1 bg-brand-500 rounded-full"></span>
                     </h2>
                     <div class="prose prose-lg prose-slate max-w-none text-slate-600 leading-relaxed">
                         <?= do_shortcode($post->content) ?>
+                    </div>
+                </div>
+
+                <!-- Process Workflow Section -->
+                <div class="space-y-8">
+                    <div class="text-center mb-8">
+                        <span class="text-brand-600 font-bold tracking-wider uppercase text-sm">Nasıl
+                            Çalışıyoruz?</span>
+                        <h3 class="text-3xl font-heading font-bold text-slate-900">Çekim Süreci</h3>
+                    </div>
+
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <!-- Step 1 -->
+                        <div
+                            class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-lg transition-all relative group overflow-hidden">
+                            <div
+                                class="absolute top-0 right-0 w-24 h-24 bg-blue-50 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110">
+                            </div>
+                            <div class="relative z-10">
+                                <div
+                                    class="w-14 h-14 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-2xl mb-4 font-bold shadow-sm">
+                                    1</div>
+                                <h4 class="font-bold text-xl text-slate-800 mb-2">Planlama</h4>
+                                <p class="text-slate-500 text-sm leading-relaxed">
+                                    Mekanınızı inceliyor, ışık ve açı planlaması yaparak en doğru zamanı belirliyoruz.
+                                    İsteklerinize özel shot-list oluşturuyoruz.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Step 2 -->
+                        <div
+                            class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-lg transition-all relative group overflow-hidden">
+                            <div
+                                class="absolute top-0 right-0 w-24 h-24 bg-indigo-50 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110">
+                            </div>
+                            <div class="relative z-10">
+                                <div
+                                    class="w-14 h-14 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center text-2xl mb-4 font-bold shadow-sm">
+                                    2</div>
+                                <h4 class="font-bold text-xl text-slate-800 mb-2">Çekim ve Prodüksiyon</h4>
+                                <p class="text-slate-500 text-sm leading-relaxed">
+                                    Belirlenen gün ve saatte, profesyonel ekipmanlarımızla (Drone, 360, Gimbal) mekanı
+                                    en estetik haliyle kayıt altına alıyoruz.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Step 3 -->
+                        <div
+                            class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-lg transition-all relative group overflow-hidden">
+                            <div
+                                class="absolute top-0 right-0 w-24 h-24 bg-green-50 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110">
+                            </div>
+                            <div class="relative z-10">
+                                <div
+                                    class="w-14 h-14 bg-green-100 text-green-600 rounded-2xl flex items-center justify-center text-2xl mb-4 font-bold shadow-sm">
+                                    3</div>
+                                <h4 class="font-bold text-xl text-slate-800 mb-2">Teslimat</h4>
+                                <p class="text-slate-500 text-sm leading-relaxed">
+                                    Çekilen görselleri retouch işleminden geçiriyor, videolara kurgu ve renk düzenlemesi
+                                    yaparak dijital ortamda teslim ediyoruz.
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
