@@ -2,9 +2,7 @@
 /**
  * Admin Login Page
  */
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+// Session is now started globally in router.php
 require_once __DIR__ . '/includes/database.php';
 require_once __DIR__ . '/includes/helpers.php';
 

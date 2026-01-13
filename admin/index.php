@@ -2,12 +2,10 @@
 // Admin Panel Entry Point
 
 // Ensure user is authenticated (using existing logic or improved one)
+// Session is now started globally in router.php
 require_once __DIR__ . '/../includes/database.php';
 $db = new DatabaseClient();
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
 if (!isset($_SESSION['admin_user_id'])) {
     header('Location: /login');
     exit;

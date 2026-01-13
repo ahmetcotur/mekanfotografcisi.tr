@@ -32,6 +32,31 @@ $requestPath = parse_url($requestUri, PHP_URL_PATH) ?: '/';
 $requestPath = str_replace('/index.php', '', $requestPath);
 $requestPath = trim($requestPath, '/');
 
+// CRITICAL: Static files MUST be checked BEFORE session starts
+if (preg_match('/\.(css|js|jpg|jpeg|png|gif|svg|webp|ico|woff|woff2|ttf|eot|pdf|xml|txt)$/i', $requestPath)) {
+    return false;
+}
+
+// Global Session (Ensures consistency across /login, /admin, and site)
+if (session_status() === PHP_SESSION_NONE) {
+    // Production-safe session configuration
+    ini_set('session.cookie_httponly', '1');
+    ini_set('session.cookie_samesite', 'Lax');
+    ini_set('session.use_strict_mode', '1');
+    ini_set('session.cookie_lifetime', '86400'); // 24 hours
+
+    session_name('MF_SESSION');
+    session_start();
+
+    // Regenerate session ID periodically for security
+    if (!isset($_SESSION['created'])) {
+        $_SESSION['created'] = time();
+    } else if (time() - $_SESSION['created'] > 1800) { // 30 minutes
+        session_regenerate_id(true);
+        $_SESSION['created'] = time();
+    }
+}
+
 // Login Route
 if ($requestPath === 'login') {
     if (isset($_SESSION['admin_user_id'])) {
@@ -40,16 +65,6 @@ if ($requestPath === 'login') {
     }
     require_once __DIR__ . '/login.php';
     exit;
-}
-
-// Static files - serve directly
-if (preg_match('/\.(css|js|jpg|jpeg|png|gif|svg|webp|ico|woff|woff2|ttf|eot|pdf|xml|txt)$/i', $requestPath)) {
-    return false;
-}
-
-// Global Session (Ensures consistency across /login, /admin, and site)
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
 }
 
 // 1. Admin Panel Route
