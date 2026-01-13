@@ -73,6 +73,8 @@ function requireAuth()
 
     if (!$user) {
         // Fallback to session-based auth for backward compatibility
+        if (session_status() === PHP_SESSION_NONE)
+            session_start();
         if (isset($_SESSION['admin_user_id'])) {
             return [
                 'user_id' => $_SESSION['admin_user_id'],

@@ -3,17 +3,12 @@
  * Settings API
  * Handles saving and retrieving system settings
  */
-// Session is now started globally in router.php
-header('Content-Type: application/json; charset=utf-8');
-
-// Check authentication - similar to other admin APIs
-if (!isset($_SESSION['admin_user_id'])) {
-    // http_response_code(401);
-    // echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-    // exit;
-}
-
+require_once __DIR__ . '/middleware.php';
 require_once __DIR__ . '/../includes/database.php';
+
+addCorsHeaders();
+$user = requireAuth();
+
 $db = new DatabaseClient();
 
 $method = $_SERVER['REQUEST_METHOD'];

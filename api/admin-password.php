@@ -7,14 +7,7 @@ require_once __DIR__ . '/middleware.php';
 require_once __DIR__ . '/../includes/database.php';
 
 addCorsHeaders();
-header('Content-Type: application/json');
-
-// Check if user is authenticated
-if (!isset($_SESSION['admin_user_id'])) {
-    http_response_code(401);
-    echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-    exit;
-}
+$user = requireAuth();
 
 $db = new DatabaseClient();
 
