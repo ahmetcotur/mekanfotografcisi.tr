@@ -19,7 +19,7 @@ try {
     $action = $_GET['action'] ?? $_POST['action'] ?? 'list';
 
     if ($action === 'list') {
-        $folderId = $_GET['folder_id'] ?? null;
+        $folderId = !empty($_GET['folder_id']) ? $_GET['folder_id'] : null;
 
         $folders = $db->select('media_folders', ['parent_id' => $folderId]);
         $files = $db->select('media', ['folder_id' => $folderId]);
@@ -58,7 +58,7 @@ try {
         if (!isset($_FILES['file']))
             throw new Exception('No file uploaded');
 
-        $folderId = $_POST['folder_id'] ?? null;
+        $folderId = !empty($_POST['folder_id']) ? $_POST['folder_id'] : null;
         $file = $_FILES['file'];
         $fileName = time() . '_' . preg_replace('/[^a-z0-9\._-]/i', '', $file['name']);
         $targetPath = $uploadDir . $fileName;
