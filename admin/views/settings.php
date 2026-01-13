@@ -33,6 +33,12 @@
         'Design': [
             { key: 'primary_color', label: 'Primary Brand Color (Start)', type: 'color', default: '#0ea5e9' },
             { key: 'secondary_color', label: 'Secondary Brand Color (End)', type: 'color', default: '#0284c7' }
+        ],
+        'Account': [
+            { key: 'admin_email', label: 'Admin Email', type: 'email', readonly: true },
+            { key: 'admin_name', label: 'Admin Name', type: 'text', readonly: true },
+            { key: 'new_password', label: 'New Password (leave blank to keep current)', type: 'password' },
+            { key: 'confirm_password', label: 'Confirm New Password', type: 'password' }
         ]
     };
 
@@ -56,6 +62,11 @@
                             });
                         });
                     }
+                    
+                    // Add admin user info from session
+                    flat['admin_email'] = '<?= $_SESSION["admin_user_email"] ?? "" ?>';
+                    flat['admin_name'] = '<?= $_SESSION["admin_user_name"] ?? "Admin" ?>';
+                    
                     currentSettings = flat;
                     renderSettingsForm();
                 }
@@ -93,7 +104,8 @@
                         <span style="font-family: monospace; color: #666;">${value || field.default}</span>
                     </div>`;
                 } else {
-                    html += `<input type="${field.type}" class="form-control" id="setting-${field.key}" value="${value}" placeholder="${field.placeholder || ''}">`;
+                    const readonlyAttr = field.readonly ? 'readonly' : '';
+                    html += `<input type="${field.type}" class="form-control" id="setting-${field.key}" value="${value}" placeholder="${field.placeholder || ''}" ${readonlyAttr}>`;
                 }
 
                 html += `</div>`;
@@ -107,8 +119,26 @@
 
     function saveSettings() {
         const data = {};
+        const newPassword = document.getElementById('setting-new_password')?.value;
+        const confirmPassword = document.getElementById('setting-confirm_password')?.value;
+        
+        // Validate password if provided
+        if (newPassword || confirmPassword) {
+            if (newPassword !== confirmPassword) {
+                Swal.fire('Error', 'Passwords do not match', 'error');
+                return;
+            }
+            if (newPassword.length < 6) {
+                Swal.fire('Error', 'Password must be at least 6 characters', 'error');
+                return;
+            }
+        }
+        
         for (const [groupName, fields] of Object.entries(settingGroups)) {
             fields.forEach(field => {
+                // Skip password fields and readonly fields for settings save
+                if (field.type === 'password' || field.readonly) return;
+                
                 const el = document.getElementById(`setting-${field.key}`);
                 if (el) {
                     data[field.key] = el.value;
@@ -116,6 +146,7 @@
             });
         }
 
+        // Save settings first
         fetch('/api/settings.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -124,10 +155,35 @@
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    Swal.fire('Success', 'Settings saved successfully', 'success');
+                    // If password change requested, do that separately
+                    if (newPassword) {
+                        return fetch('/api/admin-password.php', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ new_password: newPassword })
+                        }).then(res => res.json());
+                    }
+                    return { success: true, password_changed: false };
                 } else {
-                    Swal.fire('Error', data.error, 'error');
+                    throw new Error(data.error);
                 }
+            })
+            .then(result => {
+                if (result.success) {
+                    let message = 'Settings saved successfully';
+                    if (result.password_changed) {
+                        message += ' and password updated';
+                        // Clear password fields
+                        document.getElementById('setting-new_password').value = '';
+                        document.getElementById('setting-confirm_password').value = '';
+                    }
+                    Swal.fire('Success', message, 'success');
+                } else {
+                    Swal.fire('Error', result.error || 'Failed to update password', 'error');
+                }
+            })
+            .catch(error => {
+                Swal.fire('Error', error.message || 'An error occurred', 'error');
             });
     }
 </script>
@@ -221,7 +277,7 @@
         if (input) {
             input.value = url;
             closeMediaSelector();
-            
+
             // Show preview if possible or just visual feedback
             Swal.fire({
                 icon: 'success',
@@ -260,7 +316,7 @@
         display: flex;
         flex-direction: column;
         overflow: hidden;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
     }
 
     .modal-header {
@@ -271,8 +327,19 @@
         align-items: center;
     }
 
-    .modal-header h3 { margin: 0; font-size: 1.2rem; color: #334155; }
-    .close-btn { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #94a3b8; }
+    .modal-header h3 {
+        margin: 0;
+        font-size: 1.2rem;
+        color: #334155;
+    }
+
+    .close-btn {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: #94a3b8;
+    }
 
     .modal-body {
         padding: 20px;
@@ -285,7 +352,11 @@
         font-size: 0.9rem;
         color: #64748b;
     }
-    .ms-breadcrumbs a { color: var(--brand-600); text-decoration: none; }
+
+    .ms-breadcrumbs a {
+        color: var(--brand-600);
+        text-decoration: none;
+    }
 
     .ms-grid {
         display: grid;
@@ -306,12 +377,17 @@
     .ms-item:hover {
         background: white;
         border-color: var(--brand-500);
-        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
         transform: translateY(-2px);
     }
 
-    .ms-folder i { font-size: 2rem; color: #f59e0b; margin-bottom: 8px; display: block; }
-    
+    .ms-folder i {
+        font-size: 2rem;
+        color: #f59e0b;
+        margin-bottom: 8px;
+        display: block;
+    }
+
     .ms-thumb {
         width: 100%;
         height: 100px;
@@ -330,24 +406,31 @@
         white-space: nowrap;
     }
 
-    .ms-loading, .ms-empty {
+    .ms-loading,
+    .ms-empty {
         grid-column: 1 / -1;
         text-align: center;
         padding: 40px;
         color: #94a3b8;
     }
-    
+
     .animate-slide-up {
         animation: slideUp 0.3s ease-out;
     }
 
     @keyframes slideUp {
-        from { transform: translateY(20px); opacity: 0; }
-        to { transform: translateY(0); opacity: 1; }
+        from {
+            transform: translateY(20px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
     }
 
-<style>
-    .settings-group {
+    <style>.settings-group {
         margin-bottom: 20px;
         border: 1px solid #e9ecef;
         border-radius: 8px;
