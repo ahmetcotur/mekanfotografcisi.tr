@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
 import api from '../api/client';
+import Swal from 'sweetalert2';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Quotes() {
     const [quotes, setQuotes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('all');
+    const [selectedQuote, setSelectedQuote] = useState(null);
 
     useEffect(() => {
         loadQuotes();
@@ -14,12 +17,55 @@ export default function Quotes() {
         try {
             const response = await api.get('/admin-update.php?table=quotes&action=list');
             if (response.data.success) {
-                setQuotes(response.data.data || []);
+                // Sort by date descending
+                const sorted = (response.data.data || []).sort((a, b) =>
+                    new Date(b.created_at) - new Date(a.created_at)
+                );
+                setQuotes(sorted);
             }
         } catch (error) {
             console.error('Failed to load quotes:', error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleToggleRead = async (quote) => {
+        try {
+            await api.post('/admin-update.php', {
+                action: 'update',
+                table: 'quotes',
+                id: quote.id,
+                data: { is_read: !quote.is_read }
+            });
+            loadQuotes();
+            if (selectedQuote?.id === quote.id) {
+                setSelectedQuote({ ...quote, is_read: !quote.is_read });
+            }
+        } catch (error) {
+            Swal.fire('Hata', 'Durum güncellenemedi', 'error');
+        }
+    };
+
+    const handleDelete = async (id) => {
+        const result = await Swal.fire({
+            title: 'Emin misiniz?',
+            text: 'Bu talep kalıcı olarak silinecektir!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Evet, sil!',
+            cancelButtonText: 'İptal'
+        });
+
+        if (result.isConfirmed) {
+            try {
+                await api.post('/admin-update.php', { action: 'delete', table: 'quotes', id });
+                loadQuotes();
+                setSelectedQuote(null);
+                Swal.fire('Silindi!', 'Talep başarıyla silindi.', 'success');
+            } catch (error) {
+                Swal.fire('Hata', 'Silme işlemi başarısız', 'error');
+            }
         }
     };
 
@@ -32,67 +78,154 @@ export default function Quotes() {
     if (loading) return <div className="text-center py-12">Yükleniyor...</div>;
 
     return (
-        <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <h1 className="text-3xl font-bold text-gray-800">Teklif Talepleri</h1>
-                <div className="flex gap-2">
-                    <button
-                        onClick={() => setFilter('all')}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium ${filter === 'all' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700'
-                            }`}
-                    >
-                        Tümü ({quotes.length})
-                    </button>
-                    <button
-                        onClick={() => setFilter('new')}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium ${filter === 'new' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700'
-                            }`}
-                    >
-                        Yeni ({quotes.filter(q => !q.is_read).length})
-                    </button>
-                    <button
-                        onClick={() => setFilter('read')}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium ${filter === 'read' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700'
-                            }`}
-                    >
-                        Okundu ({quotes.filter(q => q.is_read).length})
-                    </button>
+        <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-6"
+        >
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h1 className="text-3xl font-bold text-gray-800 tracking-tight">Teklif Talepleri</h1>
+                    <p className="text-gray-500 text-sm">Gelen iş talepleri ve müşteri mesajları</p>
+                </div>
+                <div className="flex bg-gray-100 p-1 rounded-xl">
+                    {[
+                        { id: 'all', label: 'Tümü', count: quotes.length },
+                        { id: 'new', label: 'Yeni', count: quotes.filter(q => !q.is_read).length },
+                        { id: 'read', label: 'Okundu', count: quotes.filter(q => q.is_read).length }
+                    ].map(btn => (
+                        <button
+                            key={btn.id}
+                            onClick={() => setFilter(btn.id)}
+                            className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${filter === btn.id ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                        >
+                            {btn.label} ({btn.count})
+                        </button>
+                    ))}
                 </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow overflow-hidden">
-                <table className="w-full">
-                    <thead className="bg-gray-50">
-                        <tr>
-                            <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">Müşteri</th>
-                            <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">Email</th>
-                            <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">Telefon</th>
-                            <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">Hizmet</th>
-                            <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">Durum</th>
-                            <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">Tarih</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {filteredQuotes.map((quote) => (
-                            <tr key={quote.id} className={`border-t hover:bg-gray-50 ${!quote.is_read ? 'bg-blue-50' : ''}`}>
-                                <td className="px-6 py-4 text-sm font-medium text-gray-800">{quote.name}</td>
-                                <td className="px-6 py-4 text-sm text-gray-600">{quote.email}</td>
-                                <td className="px-6 py-4 text-sm text-gray-600">{quote.phone}</td>
-                                <td className="px-6 py-4 text-sm text-gray-600">{quote.service}</td>
-                                <td className="px-6 py-4">
-                                    <span className={`px-2 py-1 rounded text-xs font-medium ${quote.is_read ? 'bg-gray-100 text-gray-700' : 'bg-green-100 text-green-700'
-                                        }`}>
-                                        {quote.is_read ? 'Okundu' : 'Yeni'}
-                                    </span>
-                                </td>
-                                <td className="px-6 py-4 text-sm text-gray-500">
+            <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                {/* List Portion */}
+                <div className={`xl:col-span-1 space-y-3 max-h-[700px] overflow-y-auto pr-2 custom-scrollbar ${selectedQuote ? 'hidden xl:block' : 'block'}`}>
+                    {filteredQuotes.map((quote) => (
+                        <motion.div
+                            layout
+                            key={quote.id}
+                            onClick={() => setSelectedQuote(quote)}
+                            className={`p-4 rounded-2xl border cursor-pointer transition-all ${selectedQuote?.id === quote.id
+                                ? 'bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-200'
+                                : `bg-white hover:bg-gray-50 border-gray-100 ${!quote.is_read ? 'border-l-4 border-l-blue-500' : ''}`}`}
+                        >
+                            <div className="flex justify-between items-start mb-1">
+                                <span className="text-xs font-black uppercase opacity-60 tracking-widest">{quote.service || 'Genel'}</span>
+                                <span className={`text-[10px] opacity-60`}>
                                     {new Date(quote.created_at).toLocaleDateString('tr-TR')}
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                                </span>
+                            </div>
+                            <div className={`font-bold ${selectedQuote?.id === quote.id ? 'text-white' : 'text-gray-800'}`}>{quote.name}</div>
+                            <div className={`text-xs truncate opacity-70`}>{quote.email}</div>
+                        </motion.div>
+                    ))}
+                    {filteredQuotes.length === 0 && (
+                        <div className="text-center py-12 text-gray-400 italic bg-white rounded-3xl border border-dashed border-gray-200">
+                            Talep bulunamadı.
+                        </div>
+                    )}
+                </div>
+
+                {/* Detail Portion */}
+                <div className={`xl:col-span-2 ${!selectedQuote ? 'hidden xl:flex' : 'block'}`}>
+                    <AnimatePresence mode="wait">
+                        {selectedQuote ? (
+                            <motion.div
+                                key={selectedQuote.id}
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -20 }}
+                                className="bg-white rounded-3xl border border-gray-100 shadow-sm p-8 h-full flex flex-col"
+                            >
+                                <div className="flex justify-between items-start mb-8">
+                                    <button
+                                        onClick={() => setSelectedQuote(null)}
+                                        className="xl:hidden p-2 hover:bg-gray-100 rounded-lg text-gray-400"
+                                    >
+                                        ← Geri
+                                    </button>
+                                    <div className="flex gap-2">
+                                        <button
+                                            onClick={() => handleToggleRead(selectedQuote)}
+                                            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${selectedQuote.is_read ? 'bg-gray-100 text-gray-600' : 'bg-green-100 text-green-700'}`}
+                                        >
+                                            {selectedQuote.is_read ? 'Okunmadı Olarak İşaretle' : 'Okundu Olarak İşaretle'}
+                                        </button>
+                                        <button
+                                            onClick={() => handleDelete(selectedQuote.id)}
+                                            className="p-2 text-red-400 hover:bg-red-50 rounded-xl transition-colors"
+                                        >
+                                            🗑️
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-6 flex-1">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                        <div>
+                                            <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2">Müşteri Bilgileri</h3>
+                                            <div className="space-y-3">
+                                                <div className="flex items-center gap-3">
+                                                    <span className="w-8 h-8 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center text-xs">👤</span>
+                                                    <div className="text-lg font-bold text-gray-800">{selectedQuote.name}</div>
+                                                </div>
+                                                <div className="flex items-center gap-3">
+                                                    <span className="w-8 h-8 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center text-xs">📧</span>
+                                                    <div className="text-sm text-gray-600 font-medium">{selectedQuote.email}</div>
+                                                </div>
+                                                <div className="flex items-center gap-3">
+                                                    <span className="w-8 h-8 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center text-xs">📞</span>
+                                                    <div className="text-sm text-gray-600 font-medium">{selectedQuote.phone}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2">Talep Detayları</h3>
+                                            <div className="space-y-3">
+                                                <div className="flex items-center gap-3">
+                                                    <span className="w-8 h-8 rounded-full bg-amber-50 text-amber-500 flex items-center justify-center text-xs">📸</span>
+                                                    <div>
+                                                        <div className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Hizmet</div>
+                                                        <div className="text-sm font-bold text-gray-800">{selectedQuote.service || 'Genel'}</div>
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center gap-3">
+                                                    <span className="w-8 h-8 rounded-full bg-amber-50 text-amber-500 flex items-center justify-center text-xs">📅</span>
+                                                    <div>
+                                                        <div className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Tarih</div>
+                                                        <div className="text-sm font-bold text-gray-800">{new Date(selectedQuote.created_at).toLocaleString('tr-TR')}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="mt-8 pt-8 border-t border-gray-50">
+                                        <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4">Mesaj / Ek Bilgiler</h3>
+                                        <div className="bg-gray-50 p-6 rounded-2xl text-gray-700 leading-relaxed whitespace-pre-wrap italic">
+                                            {selectedQuote.message || 'Ek bilgi belirtilmemiş.'}
+                                        </div>
+                                    </div>
+                                </div>
+                                <p className="text-[9px] text-gray-300 mt-8 text-center uppercase tracking-widest font-bold">ID: {selectedQuote.id}</p>
+                            </motion.div>
+                        ) : (
+                            <div className="w-full h-full flex flex-col items-center justify-center text-gray-300 border-2 border-dashed border-gray-100 rounded-3xl bg-gray-50/30">
+                                <span className="text-6xl mb-4">📬</span>
+                                <p className="font-bold tracking-tight uppercase text-xs opacity-50">Detayları görmek için bir talep seçin</p>
+                            </div>
+                        )}
+                    </AnimatePresence>
+                </div>
             </div>
-        </div>
+        </motion.div>
     );
 }

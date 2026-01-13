@@ -175,31 +175,7 @@ $homeContent = <<<HTML
     </div>
 </section>
 
-<!-- Scripts for Slider -->
-<script>
-    (function() {
-        const images = {$sliderJson};
-        const container = document.getElementById('hero-slides');
-        let current = 0;
-
-        // Initialize slides
-        images.forEach((img, index) => {
-            const div = document.createElement('div');
-            div.className = 'absolute inset-0 w-full h-full bg-cover bg-center transition-opacity duration-1000 ease-in-out';
-            div.style.backgroundImage = `url('\${img}')`;
-            div.style.opacity = index === 0 ? '1' : '0';
-            container.appendChild(div);
-        });
-
-        // Loop
-        setInterval(() => {
-            const slides = container.children;
-            slides[current].style.opacity = '0';
-            current = (current + 1) % slides.length;
-            slides[current].style.opacity = '1';
-        }, 5000);
-    })();
-</script>
+</section>
 HTML;
 
 $db->update('posts', ['content' => $homeContent], ['slug' => 'homepage']);

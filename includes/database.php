@@ -6,32 +6,35 @@
 
 require_once __DIR__ . '/config.php';
 
-class DatabaseClient {
+class DatabaseClient
+{
     private $connection;
     private $host;
     private $port;
     private $database;
     private $username;
     private $password;
-    
-    public function __construct() {
+
+    public function __construct()
+    {
         $this->host = env('DB_HOST', 'localhost');
         $this->port = env('DB_PORT', '5432');
         $this->database = env('DB_NAME', 'mekanfotografcisi');
         $this->username = env('DB_USER', 'postgres');
         $this->password = env('DB_PASSWORD', '');
-        
+
         $this->connect();
     }
-    
-    private function connect() {
+
+    private function connect()
+    {
         $dsn = sprintf(
             "pgsql:host=%s;port=%s;dbname=%s",
             $this->host,
             $this->port,
             $this->database
         );
-        
+
         try {
             $this->connection = new PDO($dsn, $this->username, $this->password, [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
@@ -43,29 +46,30 @@ class DatabaseClient {
             throw new Exception("Database connection failed. Please check your configuration.");
         }
     }
-    
+
     /**
      * Select data from a table
      * Supports Supabase-style parameters for compatibility
      */
-    public function select($table, $params = []) {
+    public function select($table, $params = [])
+    {
         // Build SELECT clause
         $selectFields = '*';
         if (isset($params['select'])) {
             $selectFields = $params['select'];
             unset($params['select']);
         }
-        
+
         $sql = "SELECT " . $selectFields . " FROM " . $this->quoteIdentifier($table);
         $conditions = [];
         $values = [];
-        
+
         // Build WHERE clause from params
         foreach ($params as $key => $value) {
             if (strpos($key, '.') !== false) {
                 // Handle operators like 'eq.', 'like.', etc.
                 list($operator, $column) = explode('.', $key, 2);
-                
+
                 switch ($operator) {
                     case 'eq':
                         // Handle boolean values
@@ -120,24 +124,24 @@ class DatabaseClient {
                 $values[] = $value;
             }
         }
-        
+
         if (!empty($conditions)) {
             $sql .= " WHERE " . implode(" AND ", $conditions);
         }
-        
+
         // Add ORDER BY
         if (isset($params['order'])) {
             $sql .= " ORDER BY " . $params['order'];
         }
-        
+
         // Add LIMIT and OFFSET
         if (isset($params['limit'])) {
-            $sql .= " LIMIT " . (int)$params['limit'];
+            $sql .= " LIMIT " . (int) $params['limit'];
         }
         if (isset($params['offset'])) {
-            $sql .= " OFFSET " . (int)$params['offset'];
+            $sql .= " OFFSET " . (int) $params['offset'];
         }
-        
+
         try {
             $stmt = $this->connection->prepare($sql);
             $stmt->execute($values);
@@ -147,22 +151,30 @@ class DatabaseClient {
             throw $e; // Re-throw to allow fallback to mock data
         }
     }
-    
+
     /**
      * Insert data into a table
      */
-    public function insert($table, $data) {
+    public function insert($table, $data)
+    {
         $columns = array_keys($data);
         $placeholders = array_fill(0, count($columns), '?');
-        $values = array_values($data);
-        
+        $values = [];
+        foreach ($data as $value) {
+            if (is_bool($value)) {
+                $values[] = $value ? 'true' : 'false';
+            } else {
+                $values[] = $value;
+            }
+        }
+
         $sql = sprintf(
             "INSERT INTO %s (%s) VALUES (%s) RETURNING *",
             $this->quoteIdentifier($table),
             implode(', ', array_map([$this, 'quoteIdentifier'], $columns)),
             implode(', ', $placeholders)
         );
-        
+
         try {
             $stmt = $this->connection->prepare($sql);
             $stmt->execute($values);
@@ -172,17 +184,25 @@ class DatabaseClient {
             throw new Exception("Failed to insert data: " . $e->getMessage());
         }
     }
-    
+
     /**
      * Update data in a table
      */
-    public function update($table, $data, $where) {
+    public function update($table, $data, $where)
+    {
         $setClause = [];
         $values = [];
-        
+
         foreach ($data as $column => $value) {
+            // Handle boolean values for PostgreSQL
+            if (is_bool($value)) {
+                $setClause[] = $this->quoteIdentifier($column) . " = ?";
+                $values[] = $value ? 'true' : 'false';
+                continue;
+            }
+
             // Handle JSONB fields - if value is a JSON string, cast it to JSONB
-            if (is_string($value) && (strpos($value, '[') === 0 || strpos($value, '{') === 0)) {
+            if (is_string($value) && (strlen($value) > 1) && (strpos($value, '[') === 0 || strpos($value, '{') === 0)) {
                 // Try to decode to check if it's valid JSON
                 $decoded = json_decode($value, true);
                 if (json_last_error() === JSON_ERROR_NONE) {
@@ -199,20 +219,20 @@ class DatabaseClient {
                 $values[] = $value;
             }
         }
-        
+
         $whereClause = [];
         foreach ($where as $column => $value) {
             $whereClause[] = $this->quoteIdentifier($column) . " = ?";
             $values[] = $value;
         }
-        
+
         $sql = sprintf(
             "UPDATE %s SET %s WHERE %s RETURNING *",
             $this->quoteIdentifier($table),
             implode(', ', $setClause),
             implode(' AND ', $whereClause)
         );
-        
+
         try {
             $stmt = $this->connection->prepare($sql);
             $stmt->execute($values);
@@ -222,25 +242,26 @@ class DatabaseClient {
             throw new Exception("Failed to update data: " . $e->getMessage());
         }
     }
-    
+
     /**
      * Delete data from a table
      */
-    public function delete($table, $where) {
+    public function delete($table, $where)
+    {
         $whereClause = [];
         $values = [];
-        
+
         foreach ($where as $column => $value) {
             $whereClause[] = $this->quoteIdentifier($column) . " = ?";
             $values[] = $value;
         }
-        
+
         $sql = sprintf(
             "DELETE FROM %s WHERE %s RETURNING *",
             $this->quoteIdentifier($table),
             implode(' AND ', $whereClause)
         );
-        
+
         try {
             $stmt = $this->connection->prepare($sql);
             $stmt->execute($values);
@@ -250,11 +271,12 @@ class DatabaseClient {
             throw new Exception("Failed to delete data: " . $e->getMessage());
         }
     }
-    
+
     /**
      * Execute raw SQL query
      */
-    public function query($sql, $params = []) {
+    public function query($sql, $params = [])
+    {
         try {
             $stmt = $this->connection->prepare($sql);
             $stmt->execute($params);
@@ -264,18 +286,20 @@ class DatabaseClient {
             throw new Exception("Query failed: " . $e->getMessage());
         }
     }
-    
+
     /**
      * Quote identifier (table/column name)
      */
-    private function quoteIdentifier($identifier) {
+    private function quoteIdentifier($identifier)
+    {
         return '"' . str_replace('"', '""', $identifier) . '"';
     }
-    
+
     /**
      * Get connection for advanced operations
      */
-    public function getConnection() {
+    public function getConnection()
+    {
         return $this->connection;
     }
 }

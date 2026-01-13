@@ -29,10 +29,10 @@ try {
 
     if ($action === 'list') {
         $table = $data['table'] ?? '';
-        $allowed_tables = ['locations_province', 'locations_district', 'locations_town', 'services', 'posts', 'quotes', 'media', 'media_folders'];
+        $allowed_tables = ['locations_province', 'locations_district', 'locations_town', 'services', 'posts', 'quotes', 'media', 'media_folders', 'seo_pages'];
 
         if (!in_array($table, $allowed_tables)) {
-            throw new Exception('Invalid table specified for list');
+            throw new Exception("Invalid table specified for list: $table");
         }
 
         $where = [];
@@ -57,9 +57,9 @@ try {
         $table = $data['table'] ?? '';
         $id = $data['id'] ?? '';
 
-        $allowed_tables = ['locations_province', 'locations_district', 'locations_town', 'services', 'posts', 'quotes', 'media', 'media_folders'];
+        $allowed_tables = ['locations_province', 'locations_district', 'locations_town', 'services', 'posts', 'quotes', 'media', 'media_folders', 'seo_pages'];
         if (!in_array($table, $allowed_tables)) {
-            throw new Exception('Invalid table specified for get');
+            throw new Exception("Invalid table specified for get: $table");
         }
 
         $item = $db->select($table, ['id' => $id]);
@@ -80,9 +80,9 @@ try {
         }
 
         // Allowed tables check
-        $allowed_tables = ['locations_province', 'locations_district', 'locations_town', 'services', 'posts', 'quotes', 'settings'];
+        $allowed_tables = ['locations_province', 'locations_district', 'locations_town', 'services', 'posts', 'quotes', 'settings', 'seo_pages'];
         if (!in_array($table, $allowed_tables)) {
-            throw new Exception('Invalid table specified');
+            throw new Exception("Invalid table specified for update: $table");
         }
 
         // If updating 'is_active', handle boolean correctly for Postgres
@@ -167,9 +167,9 @@ try {
             throw new Exception('Missing required parameters for delete');
         }
 
-        $allowed_tables = ['locations_province', 'locations_district', 'locations_town', 'services', 'posts', 'quotes', 'media', 'media_folders'];
+        $allowed_tables = ['locations_province', 'locations_district', 'locations_town', 'services', 'posts', 'quotes', 'media', 'media_folders', 'seo_pages'];
         if (!in_array($table, $allowed_tables)) {
-            throw new Exception('Invalid table specified for delete');
+            throw new Exception("Invalid table specified for delete: $table");
         }
 
         // Cascading Delete

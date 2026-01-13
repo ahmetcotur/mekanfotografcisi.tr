@@ -14,7 +14,7 @@ export default function SeoPages() {
 
     const loadSeoPages = async () => {
         try {
-            const response = await api.get('/admin-update.php?table=seo_pages&action=list');
+            const response = await api.get('/admin-update.php?table=posts&action=list&post_type=seo_page');
             if (response.data.success) {
                 setPages(response.data.data || []);
             }
@@ -26,12 +26,13 @@ export default function SeoPages() {
     };
 
     const togglePublished = async (id, currentStatus) => {
+        const newStatus = currentStatus === 'publish' ? 'draft' : 'publish';
         try {
             await api.post('/admin-update.php', {
                 action: 'update',
-                table: 'seo_pages',
+                table: 'posts',
                 id,
-                data: { published: !currentStatus }
+                data: { post_status: newStatus }
             });
             loadSeoPages();
         } catch (error) {
@@ -85,24 +86,24 @@ export default function SeoPages() {
                             <tr key={page.id} className="hover:bg-gray-50/50 transition-colors">
                                 <td className="px-6 py-4">
                                     <div className="text-sm font-bold text-gray-800 line-clamp-1">{page.title}</div>
-                                    <div className="text-[10px] text-gray-400 mt-0.5 line-clamp-1">{page.meta_description}</div>
+                                    <div className="text-[10px] text-gray-400 mt-0.5 line-clamp-1">{page.excerpt}</div>
                                 </td>
                                 <td className="px-6 py-4">
                                     <div className="text-xs font-mono text-blue-500">/{page.slug}</div>
                                 </td>
                                 <td className="px-6 py-4">
                                     <span className="px-2 py-0.5 rounded bg-gray-100 text-[10px] font-black uppercase text-gray-500 tracking-tighter">
-                                        {page.type}
+                                        {page.post_type}
                                     </span>
                                 </td>
                                 <td className="px-6 py-4">
                                     <button
-                                        onClick={() => togglePublished(page.id, page.published)}
-                                        className={`px-3 py-1 rounded-full text-[10px] font-black tracking-widest transition-all ${page.published
+                                        onClick={() => togglePublished(page.id, page.post_status)}
+                                        className={`px-3 py-1 rounded-full text-[10px] font-black tracking-widest transition-all ${page.post_status === 'publish'
                                             ? 'bg-green-100 text-green-700 hover:bg-green-200'
                                             : 'bg-amber-100 text-amber-700 hover:bg-amber-200'}`}
                                     >
-                                        {page.published ? 'YAYINDA' : 'PASİF'}
+                                        {page.post_status === 'publish' ? 'YAYINDA' : 'PASİF'}
                                     </button>
                                 </td>
                             </tr>
