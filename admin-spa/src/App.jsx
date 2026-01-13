@@ -8,6 +8,7 @@ import Pages from './pages/Pages';
 import SeoPages from './pages/SeoPages';
 import Quotes from './pages/Quotes';
 import Media from './pages/Media';
+import Pexels from './pages/Pexels';
 import PostEditor from './pages/PostEditor';
 import Settings from './pages/Settings';
 import Layout from './components/Layout';
@@ -40,6 +41,7 @@ function App() {
             <Route path="/seo-pages" element={<SeoPages />} />
             <Route path="/quotes" element={<Quotes />} />
             <Route path="/media" element={<Media />} />
+            <Route path="/pexels" element={<Pexels />} />
             <Route path="/settings" element={<Settings />} />
           </Route>
         </Route>

@@ -12,6 +12,7 @@ export default function Sidebar() {
         { path: '/seo-pages', icon: '🔍', label: 'SEO Sayfaları' },
         { path: '/quotes', icon: '✉️', label: 'Teklif Talepleri' },
         { path: '/media', icon: '🖼️', label: 'Medya' },
+        { path: '/pexels', icon: '🌄', label: 'Pexels Koleksiyon' },
         { path: '/settings', icon: '⚙️', label: 'Ayarlar' }
     ];
 
