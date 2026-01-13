@@ -47,13 +47,22 @@ try {
 
         // If updating 'is_active', handle boolean correctly for Postgres
         if (isset($updateData['is_active'])) {
-            $isActive = filter_var($updateData['is_active'], FILTER_VALIDATE_BOOLEAN);
-            $updateData['is_active'] = $isActive;
+            // Skip if empty string (invalid boolean)
+            if ($updateData['is_active'] === '' || $updateData['is_active'] === null) {
+                unset($updateData['is_active']);
+            } else {
+                $isActive = filter_var($updateData['is_active'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+                if ($isActive === null) {
+                    unset($updateData['is_active']); // Invalid boolean value
+                } else {
+                    $updateData['is_active'] = $isActive;
 
-            // Cascading Update for Province
-            if ($table === 'locations_province' && $isActive === false) {
-                // Deactivate all districts
-                $db->update('locations_district', ['is_active' => false], ['province_id' => $id]);
+                    // Cascading Update for Province
+                    if ($table === 'locations_province' && $isActive === false) {
+                        // Deactivate all districts
+                        $db->update('locations_district', ['is_active' => false], ['province_id' => $id]);
+                    }
+                }
             }
         }
 
