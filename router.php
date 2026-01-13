@@ -40,18 +40,8 @@ if (preg_match('/\.(css|js|jpg|jpeg|png|gif|svg|webp|ico|woff|woff2|ttf|eot|pdf|
     return false;
 }
 
-// Admin panel - for now keep separate, we'll refactor later
 // 1. Admin Panel Route
-// Note: The original code used $requestPath. The provided snippet uses $uri.
-// Assuming $uri should be derived from $requestUri for consistency with the snippet.
-$uri = $_SERVER['REQUEST_URI'];
-if (strpos($uri, '/admin') === 0) {
-    // If accessing directly /admin without trailing slash, redirect
-    if ($uri === '/admin') {
-        header('Location: /admin/');
-        exit;
-    }
-
+if ($requestPath === 'admin' || strpos($requestPath, 'admin/') === 0) {
     // Serve the admin controller
     require_once __DIR__ . '/admin/index.php';
     exit;

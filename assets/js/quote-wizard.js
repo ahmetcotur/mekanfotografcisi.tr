@@ -44,15 +44,15 @@ function closeQuoteWizard() {
     }, 300);
 }
 
-// Initialize currentStep if not already declared
-if (typeof window.currentStep === 'undefined') {
-    window.currentStep = 1;
+// Initialize mfQuoteWizardStep if not already declared
+if (typeof window.mfQuoteWizardStep === 'undefined') {
+    window.mfQuoteWizardStep = 1;
 }
 
 
 
 function resetWizard() {
-    window.currentStep = 1;
+    window.mfQuoteWizardStep = 1;
     updateStepUI();
     document.getElementById('quote-form').reset();
 }
@@ -63,7 +63,7 @@ function updateStepUI() {
     document.querySelectorAll('.step-content').forEach(el => el.classList.remove('block'));
 
     // Show current step
-    const currentEl = document.getElementById(`step-${window.currentStep}`);
+    const currentEl = document.getElementById(`step-${window.mfQuoteWizardStep}`);
     if (currentEl) {
         currentEl.classList.remove('hidden');
         currentEl.classList.add('block'); // Important for animation/display
@@ -74,15 +74,15 @@ function updateStepUI() {
     const btnNext = document.getElementById('btn-next');
     const btnSubmit = document.getElementById('btn-submit');
 
-    if (window.currentStep === 1) {
+    if (window.mfQuoteWizardStep === 1) {
         btnPrev.classList.add('hidden');
         btnNext.classList.remove('hidden');
         btnSubmit.classList.add('hidden');
-    } else if (window.currentStep === 2 || window.currentStep === 3) {
+    } else if (window.mfQuoteWizardStep === 2 || window.mfQuoteWizardStep === 3) {
         btnPrev.classList.remove('hidden');
         btnNext.classList.remove('hidden');
         btnSubmit.classList.add('hidden');
-    } else if (window.currentStep === 4) {
+    } else if (window.mfQuoteWizardStep === 4) {
         btnPrev.classList.remove('hidden');
         btnNext.classList.add('hidden');
         btnSubmit.classList.remove('hidden');
@@ -94,14 +94,14 @@ function updateStepUI() {
         const circle = el.querySelector('div');
         const text = el.querySelector('span');
 
-        if (step === window.currentStep) {
+        if (step === window.mfQuoteWizardStep) {
             // Active
             el.classList.add('active');
             circle.classList.remove('bg-slate-200', 'text-slate-500', 'bg-green-500', 'text-white');
             circle.classList.add('bg-brand-600', 'text-white', 'ring-4', 'ring-brand-100');
             text.classList.remove('text-slate-500');
             text.classList.add('text-slate-900', 'font-bold');
-        } else if (step < window.currentStep) {
+        } else if (step < window.mfQuoteWizardStep) {
             // Completed
             el.classList.add('completed');
             circle.classList.remove('bg-slate-200', 'text-slate-500', 'ring-4', 'ring-brand-100', 'bg-brand-600');
@@ -130,7 +130,7 @@ function updateStepUI() {
     for (let i = 1; i < 4; i++) {
         const line = document.getElementById(`line-${i}`);
         if (line) {
-            if (window.currentStep > i) {
+            if (window.mfQuoteWizardStep > i) {
                 line.classList.remove('bg-slate-200');
                 line.classList.add('bg-green-500');
             } else {
@@ -176,18 +176,18 @@ function validateStep(step) {
 // Navigation Events
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btn-next').addEventListener('click', () => {
-        if (!validateStep(window.currentStep)) return;
+        if (!validateStep(window.mfQuoteWizardStep)) return;
 
-        if (window.currentStep === 1) {
+        if (window.mfQuoteWizardStep === 1) {
             setupStep2();
         }
 
-        window.currentStep++;
+        window.mfQuoteWizardStep++;
         updateStepUI();
     });
 
     document.getElementById('btn-prev').addEventListener('click', () => {
-        window.currentStep--;
+        window.mfQuoteWizardStep--;
         updateStepUI();
     });
 
