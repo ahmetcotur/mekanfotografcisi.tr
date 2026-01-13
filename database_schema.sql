@@ -1,307 +1,42 @@
--- =============================================
--- Supabase Database Schema for SEO Extension
--- mekanfotografcisi.tr
--- =============================================
+--
+-- PostgreSQL database dump
+--
 
--- Enable necessary extensions
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+-- Dumped from database version 14.17 (Homebrew)
+-- Dumped by pg_dump version 14.17 (Homebrew)
 
--- =============================================
--- 1. LOCATIONS TABLES
--- =============================================
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
 
--- Provinces table (81 provinces in Turkey)
-CREATE TABLE locations_province (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    name VARCHAR(100) NOT NULL,
-    slug VARCHAR(100) NOT NULL UNIQUE,
-    region_name VARCHAR(50), -- 7 geographical regions
-    plate_code INTEGER UNIQUE, -- Turkish license plate codes (1-81)
-    is_active BOOLEAN DEFAULT false,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
+--
+-- Name: uuid-ossp; Type: EXTENSION; Schema: -; Owner: -
+--
 
--- Districts table (973 districts in Turkey)
-CREATE TABLE locations_district (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    province_id UUID NOT NULL REFERENCES locations_province(id) ON DELETE CASCADE,
-    name VARCHAR(100) NOT NULL,
-    slug VARCHAR(100) NOT NULL,
-    is_active BOOLEAN DEFAULT false,
-    local_notes TEXT, -- Human-written local differentiators
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    UNIQUE(province_id, slug)
-);
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA public;
 
--- =============================================
--- 2. SERVICES TABLE
--- =============================================
 
-CREATE TABLE services (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    name VARCHAR(200) NOT NULL,
-    slug VARCHAR(200) NOT NULL UNIQUE,
-    short_intro TEXT,
-    is_active BOOLEAN DEFAULT false,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
+--
+-- Name: EXTENSION "uuid-ossp"; Type: COMMENT; Schema: -; Owner: -
+--
 
--- =============================================
--- 3. MEDIA TABLE
--- =============================================
+COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UUIDs)';
 
-CREATE TABLE media (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    storage_path VARCHAR(500) NOT NULL, -- Supabase Storage path
-    public_url VARCHAR(500) NOT NULL, -- Public accessible URL
-    alt VARCHAR(200),
-    width INTEGER,
-    height INTEGER,
-    file_size INTEGER, -- in bytes
-    mime_type VARCHAR(100),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
 
--- =============================================
--- 4. PORTFOLIO PROJECTS TABLE
--- =============================================
+--
+-- Name: generate_seo_slug(text, text, text, text, text); Type: FUNCTION; Schema: public; Owner: -
+--
 
-CREATE TABLE portfolio_projects (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    title VARCHAR(200) NOT NULL,
-    slug VARCHAR(200) NOT NULL UNIQUE,
-    province_id UUID REFERENCES locations_province(id),
-    district_id UUID REFERENCES locations_district(id),
-    cover_media_id UUID REFERENCES media(id),
-    gallery_media_ids UUID[] DEFAULT '{}', -- Array of media IDs
-    description TEXT,
-    year INTEGER,
-    is_published BOOLEAN DEFAULT false,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
--- =============================================
--- 5. SEO PAGES TABLE
--- =============================================
-
-CREATE TABLE seo_pages (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    type VARCHAR(20) NOT NULL CHECK (type IN ('province', 'district', 'service', 'portfolio')),
-    province_id UUID REFERENCES locations_province(id),
-    district_id UUID REFERENCES locations_district(id),
-    service_id UUID REFERENCES services(id),
-    portfolio_id UUID REFERENCES portfolio_projects(id),
-    slug VARCHAR(300) NOT NULL UNIQUE,
-    title VARCHAR(200) NOT NULL,
-    meta_description VARCHAR(320) NOT NULL,
-    h1 VARCHAR(200) NOT NULL,
-    content_md TEXT NOT NULL, -- Markdown content
-    faq_json JSONB, -- FAQ section as JSON
-    published BOOLEAN DEFAULT false,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
--- =============================================
--- 6. SEO TEMPLATES TABLE
--- =============================================
-
-CREATE TABLE seo_templates (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    type VARCHAR(20) NOT NULL CHECK (type IN ('province', 'district', 'service', 'portfolio')),
-    base_template_md TEXT NOT NULL, -- Base markdown template with placeholders
-    rules_json JSONB, -- Template rules and variable definitions
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
--- =============================================
--- 7. SEO VARIATION BLOCKS TABLE
--- =============================================
-
-CREATE TABLE seo_variation_blocks (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    block_type VARCHAR(20) NOT NULL CHECK (block_type IN ('intro', 'process', 'benefits', 'faq', 'cta')),
-    variant_md TEXT NOT NULL, -- Markdown content for this variation
-    weight INTEGER DEFAULT 1, -- For weighted random selection
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
--- =============================================
--- INDEXES FOR PERFORMANCE
--- =============================================
-
--- Location indexes
-CREATE INDEX idx_locations_province_slug ON locations_province(slug);
-CREATE INDEX idx_locations_province_active ON locations_province(is_active);
-CREATE INDEX idx_locations_district_slug ON locations_district(slug);
-CREATE INDEX idx_locations_district_active ON locations_district(is_active);
-CREATE INDEX idx_locations_district_province ON locations_district(province_id);
-
--- SEO pages indexes
-CREATE INDEX idx_seo_pages_type ON seo_pages(type);
-CREATE INDEX idx_seo_pages_published ON seo_pages(published);
-CREATE INDEX idx_seo_pages_slug ON seo_pages(slug);
-CREATE INDEX idx_seo_pages_province ON seo_pages(province_id);
-CREATE INDEX idx_seo_pages_district ON seo_pages(district_id);
-
--- Services indexes
-CREATE INDEX idx_services_slug ON services(slug);
-CREATE INDEX idx_services_active ON services(is_active);
-
--- Portfolio indexes
-CREATE INDEX idx_portfolio_slug ON portfolio_projects(slug);
-CREATE INDEX idx_portfolio_published ON portfolio_projects(is_published);
-
--- Variation blocks indexes
-CREATE INDEX idx_variation_blocks_type ON seo_variation_blocks(block_type);
-
--- =============================================
--- TRIGGERS FOR UPDATED_AT
--- =============================================
-
--- Function to update updated_at timestamp
-CREATE OR REPLACE FUNCTION update_updated_at_column()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.updated_at = NOW();
-    RETURN NEW;
-END;
-$$ language 'plpgsql';
-
--- Apply triggers to all tables with updated_at
-CREATE TRIGGER update_locations_province_updated_at BEFORE UPDATE ON locations_province FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER update_locations_district_updated_at BEFORE UPDATE ON locations_district FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER update_services_updated_at BEFORE UPDATE ON services FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER update_media_updated_at BEFORE UPDATE ON media FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER update_portfolio_projects_updated_at BEFORE UPDATE ON portfolio_projects FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER update_seo_pages_updated_at BEFORE UPDATE ON seo_pages FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER update_seo_templates_updated_at BEFORE UPDATE ON seo_templates FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER update_seo_variation_blocks_updated_at BEFORE UPDATE ON seo_variation_blocks FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();-- =============================================
--- Row Level Security (RLS) Policies
--- mekanfotografcisi.tr
--- =============================================
-
--- Enable RLS on all tables
-ALTER TABLE locations_province ENABLE ROW LEVEL SECURITY;
-ALTER TABLE locations_district ENABLE ROW LEVEL SECURITY;
-ALTER TABLE services ENABLE ROW LEVEL SECURITY;
-ALTER TABLE media ENABLE ROW LEVEL SECURITY;
-ALTER TABLE portfolio_projects ENABLE ROW LEVEL SECURITY;
-ALTER TABLE seo_pages ENABLE ROW LEVEL SECURITY;
-ALTER TABLE seo_templates ENABLE ROW LEVEL SECURITY;
-ALTER TABLE seo_variation_blocks ENABLE ROW LEVEL SECURITY;
-
--- =============================================
--- PUBLIC (ANONYMOUS) POLICIES - READ ONLY
--- =============================================
-
--- Locations Province - Public can read active provinces
-CREATE POLICY "Public can read active provinces" ON locations_province
-    FOR SELECT USING (is_active = true);
-
--- Locations District - Public can read active districts
-CREATE POLICY "Public can read active districts" ON locations_district
-    FOR SELECT USING (is_active = true);
-
--- Services - Public can read active services
-CREATE POLICY "Public can read active services" ON services
-    FOR SELECT USING (is_active = true);
-
--- Media - Public can read all media (for published content)
-CREATE POLICY "Public can read media" ON media
-    FOR SELECT USING (true);
-
--- Portfolio Projects - Public can read published projects
-CREATE POLICY "Public can read published portfolio" ON portfolio_projects
-    FOR SELECT USING (is_published = true);
-
--- SEO Pages - Public can read published pages
-CREATE POLICY "Public can read published seo pages" ON seo_pages
-    FOR SELECT USING (published = true);
-
--- SEO Templates - Public can read templates (for dynamic generation)
-CREATE POLICY "Public can read seo templates" ON seo_templates
-    FOR SELECT USING (true);
-
--- SEO Variation Blocks - Public can read variation blocks (for dynamic generation)
-CREATE POLICY "Public can read variation blocks" ON seo_variation_blocks
-    FOR SELECT USING (true);
-
--- =============================================
--- ADMIN POLICIES - FULL CRUD ACCESS
--- =============================================
-
--- Helper function to check if user is admin
-CREATE OR REPLACE FUNCTION is_admin()
-RETURNS BOOLEAN AS $$
-BEGIN
-    RETURN (
-        auth.role() = 'authenticated' AND 
-        auth.jwt() ->> 'role' = 'admin'
-    );
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-
--- Locations Province - Admin full access
-CREATE POLICY "Admin full access to provinces" ON locations_province
-    FOR ALL USING (is_admin());
-
--- Locations District - Admin full access
-CREATE POLICY "Admin full access to districts" ON locations_district
-    FOR ALL USING (is_admin());
-
--- Services - Admin full access
-CREATE POLICY "Admin full access to services" ON services
-    FOR ALL USING (is_admin());
-
--- Media - Admin full access
-CREATE POLICY "Admin full access to media" ON media
-    FOR ALL USING (is_admin());
-
--- Portfolio Projects - Admin full access
-CREATE POLICY "Admin full access to portfolio" ON portfolio_projects
-    FOR ALL USING (is_admin());
-
--- SEO Pages - Admin full access
-CREATE POLICY "Admin full access to seo pages" ON seo_pages
-    FOR ALL USING (is_admin());
-
--- SEO Templates - Admin full access
-CREATE POLICY "Admin full access to seo templates" ON seo_templates
-    FOR ALL USING (is_admin());
-
--- SEO Variation Blocks - Admin full access
-CREATE POLICY "Admin full access to variation blocks" ON seo_variation_blocks
-    FOR ALL USING (is_admin());
-
--- =============================================
--- STORAGE POLICIES
--- =============================================
-
--- Note: Storage policies are for Supabase Storage
--- For PostgreSQL-only setup, media files are stored in filesystem or S3
--- Storage bucket creation is skipped for direct PostgreSQL setup
-
--- =============================================
--- FUNCTIONS FOR SEO PAGE GENERATION
--- =============================================
-
--- Function to generate SEO page slug
-CREATE OR REPLACE FUNCTION generate_seo_slug(
-    page_type TEXT,
-    province_slug TEXT DEFAULT NULL,
-    district_slug TEXT DEFAULT NULL,
-    service_slug TEXT DEFAULT NULL,
-    portfolio_slug TEXT DEFAULT NULL
-)
-RETURNS TEXT AS $$
+CREATE FUNCTION public.generate_seo_slug(page_type text, province_slug text DEFAULT NULL::text, district_slug text DEFAULT NULL::text, service_slug text DEFAULT NULL::text, portfolio_slug text DEFAULT NULL::text) RETURNS text
+    LANGUAGE plpgsql
+    AS $$
 BEGIN
     CASE page_type
         WHEN 'province' THEN
@@ -316,14 +51,16 @@ BEGIN
             RAISE EXCEPTION 'Invalid page type: %', page_type;
     END CASE;
 END;
-$$ LANGUAGE plpgsql;
+$$;
 
--- Function to get variation block by hash (deterministic selection)
-CREATE OR REPLACE FUNCTION get_variation_block_by_hash(
-    block_type_param TEXT,
-    hash_input TEXT
-)
-RETURNS TEXT AS $$
+
+--
+-- Name: get_variation_block_by_hash(text, text); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.get_variation_block_by_hash(block_type_param text, hash_input text) RETURNS text
+    LANGUAGE plpgsql
+    AS $$
 DECLARE
     block_count INTEGER;
     selected_index INTEGER;
@@ -350,17 +87,46 @@ BEGIN
     
     RETURN COALESCE(result_text, '');
 END;
-$$ LANGUAGE plpgsql;
+$$;
 
--- Function to upsert SEO page
-CREATE OR REPLACE FUNCTION upsert_seo_page(
-    page_type TEXT,
-    province_id_param UUID DEFAULT NULL,
-    district_id_param UUID DEFAULT NULL,
-    service_id_param UUID DEFAULT NULL,
-    portfolio_id_param UUID DEFAULT NULL
-)
-RETURNS UUID AS $$
+
+--
+-- Name: is_admin(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.is_admin() RETURNS boolean
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $$
+BEGIN
+    RETURN (
+        auth.role() = 'authenticated' AND 
+        auth.jwt() ->> 'role' = 'admin'
+    );
+END;
+$$;
+
+
+--
+-- Name: update_updated_at_column(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.update_updated_at_column() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$;
+
+
+--
+-- Name: upsert_seo_page(text, uuid, uuid, uuid, uuid); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.upsert_seo_page(page_type text, province_id_param uuid DEFAULT NULL::uuid, district_id_param uuid DEFAULT NULL::uuid, service_id_param uuid DEFAULT NULL::uuid, portfolio_id_param uuid DEFAULT NULL::uuid) RETURNS uuid
+    LANGUAGE plpgsql
+    AS $$
 DECLARE
     page_id UUID;
     page_slug TEXT;
@@ -470,195 +236,1211 @@ BEGIN
     
     RETURN page_id;
 END;
-$$ LANGUAGE plpgsql;-- Migration: Add content fields to services table
--- Adds description, content, and image fields for service detail pages
-
-ALTER TABLE services
-ADD COLUMN IF NOT EXISTS description TEXT,
-ADD COLUMN IF NOT EXISTS content TEXT,
-ADD COLUMN IF NOT EXISTS image VARCHAR(500);
-
--- Add comment for documentation
-COMMENT ON COLUMN services.description IS 'Detailed description for service detail pages';
-COMMENT ON COLUMN services.content IS 'Markdown content for service detail pages';
-COMMENT ON COLUMN services.image IS 'Main image URL for service detail pages';
+$$;
 
 
--- Migration: Add content fields to location tables
--- Adds description, content, and image fields for province and district detail pages
+SET default_tablespace = '';
 
--- Add content fields to locations_province
-ALTER TABLE locations_province
-ADD COLUMN IF NOT EXISTS description TEXT,
-ADD COLUMN IF NOT EXISTS content TEXT,
-ADD COLUMN IF NOT EXISTS image VARCHAR(500);
+SET default_table_access_method = heap;
 
--- Add content fields to locations_district
-ALTER TABLE locations_district
-ADD COLUMN IF NOT EXISTS description TEXT,
-ADD COLUMN IF NOT EXISTS content TEXT,
-ADD COLUMN IF NOT EXISTS image VARCHAR(500);
+--
+-- Name: admin_users; Type: TABLE; Schema: public; Owner: -
+--
 
--- Add comments for documentation
-COMMENT ON COLUMN locations_province.description IS 'Detailed description for province detail pages';
-COMMENT ON COLUMN locations_province.content IS 'Markdown content for province detail pages';
-COMMENT ON COLUMN locations_province.image IS 'Main image URL for province detail pages';
-
-COMMENT ON COLUMN locations_district.description IS 'Detailed description for district detail pages';
-COMMENT ON COLUMN locations_district.content IS 'Markdown content for district detail pages';
-COMMENT ON COLUMN locations_district.image IS 'Main image URL for district detail pages';
-
-
--- Migration: Create admin users table
--- Simple authentication system for admin panel
-
-CREATE TABLE IF NOT EXISTS admin_users (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    email VARCHAR(255) NOT NULL UNIQUE,
-    password_hash VARCHAR(255) NOT NULL,
-    name VARCHAR(100),
-    is_active BOOLEAN DEFAULT true,
-    last_login_at TIMESTAMP WITH TIME ZONE,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+CREATE TABLE public.admin_users (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    email character varying(255) NOT NULL,
+    password_hash character varying(255) NOT NULL,
+    name character varying(100),
+    is_active boolean DEFAULT true,
+    last_login_at timestamp with time zone,
+    created_at timestamp with time zone DEFAULT now(),
+    updated_at timestamp with time zone DEFAULT now()
 );
 
--- Create index for email lookups
-CREATE INDEX IF NOT EXISTS idx_admin_users_email ON admin_users(email);
 
--- Create trigger for updated_at
-CREATE TRIGGER update_admin_users_updated_at BEFORE UPDATE ON admin_users FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+--
+-- Name: locations_district; Type: TABLE; Schema: public; Owner: -
+--
 
--- Insert default admin user (password: admin123)
--- Password hash for 'admin123' using PHP password_hash()
-INSERT INTO admin_users (email, password_hash, name, is_active)
-VALUES (
-    'admin@mekanfotografcisi.tr',
-    '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
-    'Admin User',
-    true
-)
-ON CONFLICT (email) DO NOTHING;
-
-
--- Migration: Add gallery images field to services table
--- Stores Pexels URLs as JSON array for gallery display
-
-ALTER TABLE services
-ADD COLUMN IF NOT EXISTS gallery_images JSONB DEFAULT '[]'::jsonb;
-
--- Add comment for documentation
-COMMENT ON COLUMN services.gallery_images IS 'Array of image URLs (e.g., Pexels links) for gallery display on service detail pages';
-
-
--- =============================================
--- WordPress-like Architecture for mekanfotografcisi.tr
--- =============================================
-
--- 1. Posts Table
--- This will store all primary content: services, locations, portfolio projects, and regular pages.
-CREATE TABLE IF NOT EXISTS posts (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    title VARCHAR(255) NOT NULL,
-    slug VARCHAR(255) NOT NULL UNIQUE,
-    content TEXT, -- Primary markdown or HTML content
-    excerpt TEXT, -- Brief summary
-    post_type VARCHAR(50) NOT NULL DEFAULT 'page', -- 'page', 'service', 'location', 'portfolio', 'seo_page'
-    post_status VARCHAR(20) NOT NULL DEFAULT 'draft', -- 'publish', 'draft', 'trash'
-    parent_id UUID REFERENCES posts(id) ON DELETE SET NULL,
-    menu_order INTEGER DEFAULT 0,
-    author_id UUID, -- For future multi-user support
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+CREATE TABLE public.locations_district (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    province_id uuid NOT NULL,
+    name character varying(100) NOT NULL,
+    slug character varying(100) NOT NULL,
+    is_active boolean DEFAULT false,
+    local_notes text,
+    created_at timestamp with time zone DEFAULT now(),
+    updated_at timestamp with time zone DEFAULT now(),
+    description text,
+    content text,
+    image character varying(500)
 );
 
--- 2. Post Meta Table
--- Stores arbitrary key-value pairs for posts (e.g., SEO metadata, gallery IDs, custom fields).
-CREATE TABLE IF NOT EXISTS post_meta (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    post_id UUID NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
-    meta_key VARCHAR(255) NOT NULL,
-    meta_value JSONB,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    UNIQUE(post_id, meta_key)
+
+--
+-- Name: COLUMN locations_district.description; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public.locations_district.description IS 'Detailed description for district detail pages';
+
+
+--
+-- Name: COLUMN locations_district.content; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public.locations_district.content IS 'Markdown content for district detail pages';
+
+
+--
+-- Name: COLUMN locations_district.image; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public.locations_district.image IS 'Main image URL for district detail pages';
+
+
+--
+-- Name: locations_province; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.locations_province (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    name character varying(100) NOT NULL,
+    slug character varying(100) NOT NULL,
+    region_name character varying(50),
+    plate_code integer,
+    is_active boolean DEFAULT false,
+    created_at timestamp with time zone DEFAULT now(),
+    updated_at timestamp with time zone DEFAULT now(),
+    description text,
+    content text,
+    image character varying(500)
 );
 
--- 3. Taxonomies Table
--- For categories, tags, etc.
-CREATE TABLE IF NOT EXISTS taxonomies (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    name VARCHAR(100) NOT NULL,
-    slug VARCHAR(100) NOT NULL UNIQUE,
-    description TEXT,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+
+--
+-- Name: COLUMN locations_province.description; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public.locations_province.description IS 'Detailed description for province detail pages';
+
+
+--
+-- Name: COLUMN locations_province.content; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public.locations_province.content IS 'Markdown content for province detail pages';
+
+
+--
+-- Name: COLUMN locations_province.image; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public.locations_province.image IS 'Main image URL for province detail pages';
+
+
+--
+-- Name: locations_town; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.locations_town (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    district_id uuid NOT NULL,
+    name character varying(255) NOT NULL,
+    slug character varying(255) NOT NULL,
+    is_active boolean DEFAULT true,
+    created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
+    updated_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- 4. Terms Table
--- Individual items within a taxonomy (e.g., "Architecture" category)
-CREATE TABLE IF NOT EXISTS terms (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    taxonomy_id UUID NOT NULL REFERENCES taxonomies(id) ON DELETE CASCADE,
-    name VARCHAR(255) NOT NULL,
-    slug VARCHAR(255) NOT NULL,
-    parent_id UUID REFERENCES terms(id) ON DELETE SET NULL,
-    description TEXT,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    UNIQUE(taxonomy_id, slug)
+
+--
+-- Name: media; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.media (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    storage_path character varying(500) NOT NULL,
+    public_url character varying(500) NOT NULL,
+    alt character varying(200),
+    width integer,
+    height integer,
+    file_size integer,
+    mime_type character varying(100),
+    created_at timestamp with time zone DEFAULT now(),
+    updated_at timestamp with time zone DEFAULT now(),
+    folder_id uuid
 );
 
--- 5. Term Relationships Table
--- Links posts to terms
-CREATE TABLE IF NOT EXISTS term_relationships (
-    post_id UUID NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
-    term_id UUID NOT NULL REFERENCES terms(id) ON DELETE CASCADE,
-    PRIMARY KEY (post_id, term_id)
+
+--
+-- Name: media_folders; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.media_folders (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    name character varying(255) NOT NULL,
+    parent_id uuid,
+    created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP
 );
 
--- Indexes for performance
-CREATE INDEX idx_posts_slug ON posts(slug);
-CREATE INDEX idx_posts_type_status ON posts(post_type, post_status);
-CREATE INDEX idx_post_meta_key ON post_meta(meta_key);
-CREATE INDEX idx_post_meta_lookup ON post_meta(post_id, meta_key);
 
--- Triggers for updated_at
-CREATE TRIGGER update_posts_updated_at BEFORE UPDATE ON posts FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER update_post_meta_updated_at BEFORE UPDATE ON post_meta FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TABLE IF NOT EXISTS locations_town (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    district_id UUID NOT NULL REFERENCES locations_district(id) ON DELETE CASCADE,
-    name VARCHAR(255) NOT NULL,
-    slug VARCHAR(255) NOT NULL,
-    is_active BOOLEAN DEFAULT true,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
-    UNIQUE(district_id, slug)
+--
+-- Name: portfolio_projects; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.portfolio_projects (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    title character varying(200) NOT NULL,
+    slug character varying(200) NOT NULL,
+    province_id uuid,
+    district_id uuid,
+    cover_media_id uuid,
+    gallery_media_ids uuid[] DEFAULT '{}'::uuid[],
+    description text,
+    year integer,
+    is_published boolean DEFAULT false,
+    created_at timestamp with time zone DEFAULT now(),
+    updated_at timestamp with time zone DEFAULT now()
 );
 
-CREATE INDEX IF NOT EXISTS idx_locations_town_district_id ON locations_town(district_id);
-CREATE INDEX IF NOT EXISTS idx_locations_town_slug ON locations_town(slug);
 
--- =============================================
--- 8. SETTINGS TABLE
--- =============================================
+--
+-- Name: post_meta; Type: TABLE; Schema: public; Owner: -
+--
 
-CREATE TABLE IF NOT EXISTS settings (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    key VARCHAR(255) NOT NULL UNIQUE,
-    value TEXT,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+CREATE TABLE public.post_meta (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    post_id uuid NOT NULL,
+    meta_key character varying(255) NOT NULL,
+    meta_value jsonb,
+    created_at timestamp with time zone DEFAULT now(),
+    updated_at timestamp with time zone DEFAULT now()
 );
 
-CREATE TRIGGER update_settings_updated_at BEFORE UPDATE ON settings FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
--- Seed Default Settings
-INSERT INTO settings (key, value) VALUES
-('site_title', 'Mekan Fotoğrafçısı'),
-('seo_default_desc', 'Antalya ve Muğla bölgesinde profesyonel mimari, iç mekan ve otel fotoğrafçılığı hizmetleri.'),
-('phone', '+905074677502'),
-('email', 'info@mekanfotografcisi.tr'),
-('primary_color', '#0ea5e9'),
-('secondary_color', '#0284c7')
-ON CONFLICT (key) DO NOTHING;
+--
+-- Name: posts; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.posts (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    title character varying(255) NOT NULL,
+    slug character varying(255) NOT NULL,
+    content text,
+    excerpt text,
+    post_type character varying(50) DEFAULT 'page'::character varying NOT NULL,
+    post_status character varying(20) DEFAULT 'draft'::character varying NOT NULL,
+    parent_id uuid,
+    menu_order integer DEFAULT 0,
+    author_id uuid,
+    created_at timestamp with time zone DEFAULT now(),
+    updated_at timestamp with time zone DEFAULT now(),
+    gallery_folder_id uuid
+);
+
+
+--
+-- Name: quotes; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.quotes (
+    id integer NOT NULL,
+    name character varying(255) NOT NULL,
+    email character varying(255) NOT NULL,
+    phone character varying(50),
+    location character varying(255),
+    service character varying(255),
+    message text,
+    wizard_details jsonb,
+    ip_address character varying(50),
+    is_read boolean DEFAULT false,
+    created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+    status character varying(50) DEFAULT 'beklemede'::character varying,
+    admin_note text
+);
+
+
+--
+-- Name: quotes_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.quotes_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: quotes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.quotes_id_seq OWNED BY public.quotes.id;
+
+
+--
+-- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.schema_migrations (
+    version character varying(255) NOT NULL,
+    applied_at timestamp with time zone DEFAULT now()
+);
+
+
+--
+-- Name: seo_pages; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.seo_pages (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    type character varying(20) NOT NULL,
+    province_id uuid,
+    district_id uuid,
+    service_id uuid,
+    portfolio_id uuid,
+    slug character varying(300) NOT NULL,
+    title character varying(200) NOT NULL,
+    meta_description character varying(320) NOT NULL,
+    h1 character varying(200) NOT NULL,
+    content_md text NOT NULL,
+    faq_json jsonb,
+    published boolean DEFAULT false,
+    created_at timestamp with time zone DEFAULT now(),
+    updated_at timestamp with time zone DEFAULT now(),
+    CONSTRAINT seo_pages_type_check CHECK (((type)::text = ANY ((ARRAY['province'::character varying, 'district'::character varying, 'service'::character varying, 'portfolio'::character varying])::text[])))
+);
+
+
+--
+-- Name: seo_templates; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.seo_templates (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    type character varying(20) NOT NULL,
+    base_template_md text NOT NULL,
+    rules_json jsonb,
+    created_at timestamp with time zone DEFAULT now(),
+    updated_at timestamp with time zone DEFAULT now(),
+    CONSTRAINT seo_templates_type_check CHECK (((type)::text = ANY ((ARRAY['province'::character varying, 'district'::character varying, 'service'::character varying, 'portfolio'::character varying])::text[])))
+);
+
+
+--
+-- Name: seo_variation_blocks; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.seo_variation_blocks (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    block_type character varying(20) NOT NULL,
+    variant_md text NOT NULL,
+    weight integer DEFAULT 1,
+    created_at timestamp with time zone DEFAULT now(),
+    updated_at timestamp with time zone DEFAULT now(),
+    CONSTRAINT seo_variation_blocks_block_type_check CHECK (((block_type)::text = ANY ((ARRAY['intro'::character varying, 'process'::character varying, 'benefits'::character varying, 'faq'::character varying, 'cta'::character varying])::text[])))
+);
+
+
+--
+-- Name: services; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.services (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    name character varying(200) NOT NULL,
+    slug character varying(200) NOT NULL,
+    short_intro text,
+    is_active boolean DEFAULT false,
+    created_at timestamp with time zone DEFAULT now(),
+    updated_at timestamp with time zone DEFAULT now(),
+    description text,
+    content text,
+    image character varying(500),
+    gallery_images jsonb DEFAULT '[]'::jsonb
+);
+
+
+--
+-- Name: COLUMN services.description; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public.services.description IS 'Detailed description for service detail pages';
+
+
+--
+-- Name: COLUMN services.content; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public.services.content IS 'Markdown content for service detail pages';
+
+
+--
+-- Name: COLUMN services.image; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public.services.image IS 'Main image URL for service detail pages';
+
+
+--
+-- Name: COLUMN services.gallery_images; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public.services.gallery_images IS 'Array of image URLs (e.g., Pexels links) for gallery display on service detail pages';
+
+
+--
+-- Name: settings; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.settings (
+    key character varying(255) NOT NULL,
+    value text,
+    "group" character varying(50) DEFAULT 'general'::character varying NOT NULL,
+    type character varying(50) DEFAULT 'text'::character varying NOT NULL,
+    created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+--
+-- Name: taxonomies; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.taxonomies (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    name character varying(100) NOT NULL,
+    slug character varying(100) NOT NULL,
+    description text,
+    created_at timestamp with time zone DEFAULT now()
+);
+
+
+--
+-- Name: term_relationships; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.term_relationships (
+    post_id uuid NOT NULL,
+    term_id uuid NOT NULL
+);
+
+
+--
+-- Name: terms; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.terms (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    taxonomy_id uuid NOT NULL,
+    name character varying(255) NOT NULL,
+    slug character varying(255) NOT NULL,
+    parent_id uuid,
+    description text,
+    created_at timestamp with time zone DEFAULT now()
+);
+
+
+--
+-- Name: quotes id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.quotes ALTER COLUMN id SET DEFAULT nextval('public.quotes_id_seq'::regclass);
+
+
+--
+-- Name: admin_users admin_users_email_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.admin_users
+    ADD CONSTRAINT admin_users_email_key UNIQUE (email);
+
+
+--
+-- Name: admin_users admin_users_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.admin_users
+    ADD CONSTRAINT admin_users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: locations_district locations_district_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.locations_district
+    ADD CONSTRAINT locations_district_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: locations_district locations_district_province_id_slug_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.locations_district
+    ADD CONSTRAINT locations_district_province_id_slug_key UNIQUE (province_id, slug);
+
+
+--
+-- Name: locations_province locations_province_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.locations_province
+    ADD CONSTRAINT locations_province_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: locations_province locations_province_plate_code_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.locations_province
+    ADD CONSTRAINT locations_province_plate_code_key UNIQUE (plate_code);
+
+
+--
+-- Name: locations_province locations_province_slug_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.locations_province
+    ADD CONSTRAINT locations_province_slug_key UNIQUE (slug);
+
+
+--
+-- Name: locations_town locations_town_district_id_slug_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.locations_town
+    ADD CONSTRAINT locations_town_district_id_slug_key UNIQUE (district_id, slug);
+
+
+--
+-- Name: locations_town locations_town_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.locations_town
+    ADD CONSTRAINT locations_town_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: media_folders media_folders_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.media_folders
+    ADD CONSTRAINT media_folders_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: media media_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.media
+    ADD CONSTRAINT media_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: portfolio_projects portfolio_projects_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.portfolio_projects
+    ADD CONSTRAINT portfolio_projects_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: portfolio_projects portfolio_projects_slug_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.portfolio_projects
+    ADD CONSTRAINT portfolio_projects_slug_key UNIQUE (slug);
+
+
+--
+-- Name: post_meta post_meta_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.post_meta
+    ADD CONSTRAINT post_meta_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: post_meta post_meta_post_id_meta_key_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.post_meta
+    ADD CONSTRAINT post_meta_post_id_meta_key_key UNIQUE (post_id, meta_key);
+
+
+--
+-- Name: posts posts_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.posts
+    ADD CONSTRAINT posts_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: posts posts_slug_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.posts
+    ADD CONSTRAINT posts_slug_key UNIQUE (slug);
+
+
+--
+-- Name: quotes quotes_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.quotes
+    ADD CONSTRAINT quotes_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: schema_migrations schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.schema_migrations
+    ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
+
+
+--
+-- Name: seo_pages seo_pages_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.seo_pages
+    ADD CONSTRAINT seo_pages_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: seo_pages seo_pages_slug_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.seo_pages
+    ADD CONSTRAINT seo_pages_slug_key UNIQUE (slug);
+
+
+--
+-- Name: seo_templates seo_templates_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.seo_templates
+    ADD CONSTRAINT seo_templates_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: seo_variation_blocks seo_variation_blocks_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.seo_variation_blocks
+    ADD CONSTRAINT seo_variation_blocks_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: services services_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.services
+    ADD CONSTRAINT services_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: services services_slug_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.services
+    ADD CONSTRAINT services_slug_key UNIQUE (slug);
+
+
+--
+-- Name: settings settings_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.settings
+    ADD CONSTRAINT settings_pkey PRIMARY KEY (key);
+
+
+--
+-- Name: taxonomies taxonomies_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.taxonomies
+    ADD CONSTRAINT taxonomies_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: taxonomies taxonomies_slug_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.taxonomies
+    ADD CONSTRAINT taxonomies_slug_key UNIQUE (slug);
+
+
+--
+-- Name: term_relationships term_relationships_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.term_relationships
+    ADD CONSTRAINT term_relationships_pkey PRIMARY KEY (post_id, term_id);
+
+
+--
+-- Name: terms terms_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.terms
+    ADD CONSTRAINT terms_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: terms terms_taxonomy_id_slug_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.terms
+    ADD CONSTRAINT terms_taxonomy_id_slug_key UNIQUE (taxonomy_id, slug);
+
+
+--
+-- Name: idx_admin_users_email; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_admin_users_email ON public.admin_users USING btree (email);
+
+
+--
+-- Name: idx_locations_district_active; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_locations_district_active ON public.locations_district USING btree (is_active);
+
+
+--
+-- Name: idx_locations_district_province; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_locations_district_province ON public.locations_district USING btree (province_id);
+
+
+--
+-- Name: idx_locations_district_slug; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_locations_district_slug ON public.locations_district USING btree (slug);
+
+
+--
+-- Name: idx_locations_province_active; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_locations_province_active ON public.locations_province USING btree (is_active);
+
+
+--
+-- Name: idx_locations_province_slug; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_locations_province_slug ON public.locations_province USING btree (slug);
+
+
+--
+-- Name: idx_locations_town_district_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_locations_town_district_id ON public.locations_town USING btree (district_id);
+
+
+--
+-- Name: idx_locations_town_slug; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_locations_town_slug ON public.locations_town USING btree (slug);
+
+
+--
+-- Name: idx_media_folder_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_media_folder_id ON public.media USING btree (folder_id);
+
+
+--
+-- Name: idx_media_folders_parent_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_media_folders_parent_id ON public.media_folders USING btree (parent_id);
+
+
+--
+-- Name: idx_portfolio_published; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_portfolio_published ON public.portfolio_projects USING btree (is_published);
+
+
+--
+-- Name: idx_portfolio_slug; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_portfolio_slug ON public.portfolio_projects USING btree (slug);
+
+
+--
+-- Name: idx_post_meta_key; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_post_meta_key ON public.post_meta USING btree (meta_key);
+
+
+--
+-- Name: idx_post_meta_lookup; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_post_meta_lookup ON public.post_meta USING btree (post_id, meta_key);
+
+
+--
+-- Name: idx_posts_slug; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_posts_slug ON public.posts USING btree (slug);
+
+
+--
+-- Name: idx_posts_type_status; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_posts_type_status ON public.posts USING btree (post_type, post_status);
+
+
+--
+-- Name: idx_seo_pages_district; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_seo_pages_district ON public.seo_pages USING btree (district_id);
+
+
+--
+-- Name: idx_seo_pages_province; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_seo_pages_province ON public.seo_pages USING btree (province_id);
+
+
+--
+-- Name: idx_seo_pages_published; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_seo_pages_published ON public.seo_pages USING btree (published);
+
+
+--
+-- Name: idx_seo_pages_slug; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_seo_pages_slug ON public.seo_pages USING btree (slug);
+
+
+--
+-- Name: idx_seo_pages_type; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_seo_pages_type ON public.seo_pages USING btree (type);
+
+
+--
+-- Name: idx_services_active; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_services_active ON public.services USING btree (is_active);
+
+
+--
+-- Name: idx_services_slug; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_services_slug ON public.services USING btree (slug);
+
+
+--
+-- Name: idx_variation_blocks_type; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_variation_blocks_type ON public.seo_variation_blocks USING btree (block_type);
+
+
+--
+-- Name: admin_users update_admin_users_updated_at; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER update_admin_users_updated_at BEFORE UPDATE ON public.admin_users FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+
+
+--
+-- Name: locations_district update_locations_district_updated_at; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER update_locations_district_updated_at BEFORE UPDATE ON public.locations_district FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+
+
+--
+-- Name: locations_province update_locations_province_updated_at; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER update_locations_province_updated_at BEFORE UPDATE ON public.locations_province FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+
+
+--
+-- Name: media update_media_updated_at; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER update_media_updated_at BEFORE UPDATE ON public.media FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+
+
+--
+-- Name: portfolio_projects update_portfolio_projects_updated_at; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER update_portfolio_projects_updated_at BEFORE UPDATE ON public.portfolio_projects FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+
+
+--
+-- Name: post_meta update_post_meta_updated_at; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER update_post_meta_updated_at BEFORE UPDATE ON public.post_meta FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+
+
+--
+-- Name: posts update_posts_updated_at; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER update_posts_updated_at BEFORE UPDATE ON public.posts FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+
+
+--
+-- Name: seo_pages update_seo_pages_updated_at; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER update_seo_pages_updated_at BEFORE UPDATE ON public.seo_pages FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+
+
+--
+-- Name: seo_templates update_seo_templates_updated_at; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER update_seo_templates_updated_at BEFORE UPDATE ON public.seo_templates FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+
+
+--
+-- Name: seo_variation_blocks update_seo_variation_blocks_updated_at; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER update_seo_variation_blocks_updated_at BEFORE UPDATE ON public.seo_variation_blocks FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+
+
+--
+-- Name: services update_services_updated_at; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER update_services_updated_at BEFORE UPDATE ON public.services FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+
+
+--
+-- Name: media_folders fk_parent; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.media_folders
+    ADD CONSTRAINT fk_parent FOREIGN KEY (parent_id) REFERENCES public.media_folders(id) ON DELETE CASCADE;
+
+
+--
+-- Name: locations_district locations_district_province_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.locations_district
+    ADD CONSTRAINT locations_district_province_id_fkey FOREIGN KEY (province_id) REFERENCES public.locations_province(id) ON DELETE CASCADE;
+
+
+--
+-- Name: locations_town locations_town_district_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.locations_town
+    ADD CONSTRAINT locations_town_district_id_fkey FOREIGN KEY (district_id) REFERENCES public.locations_district(id) ON DELETE CASCADE;
+
+
+--
+-- Name: portfolio_projects portfolio_projects_cover_media_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.portfolio_projects
+    ADD CONSTRAINT portfolio_projects_cover_media_id_fkey FOREIGN KEY (cover_media_id) REFERENCES public.media(id);
+
+
+--
+-- Name: portfolio_projects portfolio_projects_district_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.portfolio_projects
+    ADD CONSTRAINT portfolio_projects_district_id_fkey FOREIGN KEY (district_id) REFERENCES public.locations_district(id);
+
+
+--
+-- Name: portfolio_projects portfolio_projects_province_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.portfolio_projects
+    ADD CONSTRAINT portfolio_projects_province_id_fkey FOREIGN KEY (province_id) REFERENCES public.locations_province(id);
+
+
+--
+-- Name: post_meta post_meta_post_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.post_meta
+    ADD CONSTRAINT post_meta_post_id_fkey FOREIGN KEY (post_id) REFERENCES public.posts(id) ON DELETE CASCADE;
+
+
+--
+-- Name: posts posts_gallery_folder_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.posts
+    ADD CONSTRAINT posts_gallery_folder_id_fkey FOREIGN KEY (gallery_folder_id) REFERENCES public.media_folders(id) ON DELETE SET NULL;
+
+
+--
+-- Name: posts posts_parent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.posts
+    ADD CONSTRAINT posts_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES public.posts(id) ON DELETE SET NULL;
+
+
+--
+-- Name: seo_pages seo_pages_district_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.seo_pages
+    ADD CONSTRAINT seo_pages_district_id_fkey FOREIGN KEY (district_id) REFERENCES public.locations_district(id);
+
+
+--
+-- Name: seo_pages seo_pages_portfolio_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.seo_pages
+    ADD CONSTRAINT seo_pages_portfolio_id_fkey FOREIGN KEY (portfolio_id) REFERENCES public.portfolio_projects(id);
+
+
+--
+-- Name: seo_pages seo_pages_province_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.seo_pages
+    ADD CONSTRAINT seo_pages_province_id_fkey FOREIGN KEY (province_id) REFERENCES public.locations_province(id);
+
+
+--
+-- Name: seo_pages seo_pages_service_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.seo_pages
+    ADD CONSTRAINT seo_pages_service_id_fkey FOREIGN KEY (service_id) REFERENCES public.services(id);
+
+
+--
+-- Name: term_relationships term_relationships_post_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.term_relationships
+    ADD CONSTRAINT term_relationships_post_id_fkey FOREIGN KEY (post_id) REFERENCES public.posts(id) ON DELETE CASCADE;
+
+
+--
+-- Name: term_relationships term_relationships_term_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.term_relationships
+    ADD CONSTRAINT term_relationships_term_id_fkey FOREIGN KEY (term_id) REFERENCES public.terms(id) ON DELETE CASCADE;
+
+
+--
+-- Name: terms terms_parent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.terms
+    ADD CONSTRAINT terms_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES public.terms(id) ON DELETE SET NULL;
+
+
+--
+-- Name: terms terms_taxonomy_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.terms
+    ADD CONSTRAINT terms_taxonomy_id_fkey FOREIGN KEY (taxonomy_id) REFERENCES public.taxonomies(id) ON DELETE CASCADE;
+
+
+--
+-- Name: locations_district Admin full access to districts; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Admin full access to districts" ON public.locations_district USING (public.is_admin());
+
+
+--
+-- Name: media Admin full access to media; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Admin full access to media" ON public.media USING (public.is_admin());
+
+
+--
+-- Name: portfolio_projects Admin full access to portfolio; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Admin full access to portfolio" ON public.portfolio_projects USING (public.is_admin());
+
+
+--
+-- Name: locations_province Admin full access to provinces; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Admin full access to provinces" ON public.locations_province USING (public.is_admin());
+
+
+--
+-- Name: seo_pages Admin full access to seo pages; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Admin full access to seo pages" ON public.seo_pages USING (public.is_admin());
+
+
+--
+-- Name: seo_templates Admin full access to seo templates; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Admin full access to seo templates" ON public.seo_templates USING (public.is_admin());
+
+
+--
+-- Name: services Admin full access to services; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Admin full access to services" ON public.services USING (public.is_admin());
+
+
+--
+-- Name: seo_variation_blocks Admin full access to variation blocks; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Admin full access to variation blocks" ON public.seo_variation_blocks USING (public.is_admin());
+
+
+--
+-- Name: locations_district Public can read active districts; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Public can read active districts" ON public.locations_district FOR SELECT USING ((is_active = true));
+
+
+--
+-- Name: locations_province Public can read active provinces; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Public can read active provinces" ON public.locations_province FOR SELECT USING ((is_active = true));
+
+
+--
+-- Name: services Public can read active services; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Public can read active services" ON public.services FOR SELECT USING ((is_active = true));
+
+
+--
+-- Name: media Public can read media; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Public can read media" ON public.media FOR SELECT USING (true);
+
+
+--
+-- Name: portfolio_projects Public can read published portfolio; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Public can read published portfolio" ON public.portfolio_projects FOR SELECT USING ((is_published = true));
+
+
+--
+-- Name: seo_pages Public can read published seo pages; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Public can read published seo pages" ON public.seo_pages FOR SELECT USING ((published = true));
+
+
+--
+-- Name: seo_templates Public can read seo templates; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Public can read seo templates" ON public.seo_templates FOR SELECT USING (true);
+
+
+--
+-- Name: seo_variation_blocks Public can read variation blocks; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Public can read variation blocks" ON public.seo_variation_blocks FOR SELECT USING (true);
+
+
+--
+-- Name: locations_district; Type: ROW SECURITY; Schema: public; Owner: -
+--
+
+ALTER TABLE public.locations_district ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: locations_province; Type: ROW SECURITY; Schema: public; Owner: -
+--
+
+ALTER TABLE public.locations_province ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: media; Type: ROW SECURITY; Schema: public; Owner: -
+--
+
+ALTER TABLE public.media ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: portfolio_projects; Type: ROW SECURITY; Schema: public; Owner: -
+--
+
+ALTER TABLE public.portfolio_projects ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: seo_pages; Type: ROW SECURITY; Schema: public; Owner: -
+--
+
+ALTER TABLE public.seo_pages ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: seo_templates; Type: ROW SECURITY; Schema: public; Owner: -
+--
+
+ALTER TABLE public.seo_templates ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: seo_variation_blocks; Type: ROW SECURITY; Schema: public; Owner: -
+--
+
+ALTER TABLE public.seo_variation_blocks ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: services; Type: ROW SECURITY; Schema: public; Owner: -
+--
+
+ALTER TABLE public.services ENABLE ROW LEVEL SECURITY;
+
+--
+-- PostgreSQL database dump complete
+--
 
