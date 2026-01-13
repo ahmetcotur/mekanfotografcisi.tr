@@ -40,8 +40,8 @@ Supabase Dashboard > Storage:
 1. Coolify Dashboard'a giriş yapın
 2. **New Resource** > **Application** seçin
 3. **Source**: Git repository'nizi seçin
-4. **Build Pack**: PHP seçin
-5. **Port**: 8000 (veya PHP built-in server portu)
+4. **Build Pack**: **Dockerfile** seçin (Zorunlu)
+5. **Port**: **80** (Dockerfile içindeki internal port)
 
 ### 4. Environment Variables Ayarlama
 
@@ -213,6 +213,7 @@ Admin panel'e giriş yaptıktan sonra:
 | `SUPABASE_ANON_KEY` | Supabase anonymous key | ✅ |
 | `SUPABASE_SERVICE_KEY` | Supabase service role key | ✅ (Backend) |
 | `NODE_ENV` | Environment (production) | ✅ |
+| `DESTINATION_PORT` | Uygulama Portu (80) | ✅ |
 | `GA4_MEASUREMENT_ID` | Google Analytics ID | ❌ |
 
 ## 🎯 Sonraki Adımlar
