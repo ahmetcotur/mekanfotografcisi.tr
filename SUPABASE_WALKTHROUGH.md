@@ -18,9 +18,9 @@ Bu kılavuz, mekanfotografcisi.tr projesini Supabase ile nasıl çalıştıraca�
 2. Supabase panelinde **Project Settings > API** sekmesine gidin.
 3. Buradaki bilgileri `.env` dosyanıza işleyin (Kullanıcı tarafından sağlanan güncel bilgiler):
    - `NEXT_PUBLIC_SUPABASE_URL`: `https://qmqbxmbfvdslgbbllfaf.supabase.co`
-   - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY`: `sb_publishable_54jL2LVYyF5CWBEEu1BUIw_3_SV4dK5`
+   - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY`: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtcWJ4bWJmdmRzbGdiYmxsZmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc5Nzc3MTMsImV4cCI6MjA4MzU1MzcxM30.HUzthWzo1DfAWWPGgJ34uz7wEhng0dHhrm5XoH74F_c`
    - `SUPABASE_URL`: `https://qmqbxmbfvdslgbbllfaf.supabase.co`
-   - `SUPABASE_ANON_KEY`: `sb_publishable_54jL2LVYyF5CWBEEu1BUIw_3_SV4dK5`
+   - `SUPABASE_ANON_KEY`: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtcWJ4bWJmdmRzbGdiYmxsZmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc5Nzc3MTMsImV4cCI6MjA4MzU1MzcxM30.HUzthWzo1DfAWWPGgJ34uz7wEhng0dHhrm5XoH74F_c`
    - `SUPABASE_SERVICE_KEY`: service_role key (sadece admin/seed işlemleri için)
 4. Veritabanı bağlantısı için **Project Settings > Database** sekmesine gidin ve PostgreSQL bilgilerini alın:
    - `DB_HOST`: `db.qmqbxmbfvdslgbbllfaf.supabase.co`
