@@ -44,10 +44,15 @@ function closeQuoteWizard() {
     }, 300);
 }
 
-let currentStep = 1;
+// Initialize currentStep if not already declared
+if (typeof window.currentStep === 'undefined') {
+    window.currentStep = 1;
+}
+
+
 
 function resetWizard() {
-    currentStep = 1;
+    window.currentStep = 1;
     updateStepUI();
     document.getElementById('quote-form').reset();
 }
@@ -69,15 +74,15 @@ function updateStepUI() {
     const btnNext = document.getElementById('btn-next');
     const btnSubmit = document.getElementById('btn-submit');
 
-    if (currentStep === 1) {
+    if (window.currentStep === 1) {
         btnPrev.classList.add('hidden');
         btnNext.classList.remove('hidden');
         btnSubmit.classList.add('hidden');
-    } else if (currentStep === 2 || currentStep === 3) {
+    } else if (window.currentStep === 2 || window.currentStep === 3) {
         btnPrev.classList.remove('hidden');
         btnNext.classList.remove('hidden');
         btnSubmit.classList.add('hidden');
-    } else if (currentStep === 4) {
+    } else if (window.currentStep === 4) {
         btnPrev.classList.remove('hidden');
         btnNext.classList.add('hidden');
         btnSubmit.classList.remove('hidden');
@@ -89,14 +94,14 @@ function updateStepUI() {
         const circle = el.querySelector('div');
         const text = el.querySelector('span');
 
-        if (step === currentStep) {
+        if (step === window.currentStep) {
             // Active
             el.classList.add('active');
             circle.classList.remove('bg-slate-200', 'text-slate-500', 'bg-green-500', 'text-white');
             circle.classList.add('bg-brand-600', 'text-white', 'ring-4', 'ring-brand-100');
             text.classList.remove('text-slate-500');
             text.classList.add('text-slate-900', 'font-bold');
-        } else if (step < currentStep) {
+        } else if (step < window.currentStep) {
             // Completed
             el.classList.add('completed');
             circle.classList.remove('bg-slate-200', 'text-slate-500', 'ring-4', 'ring-brand-100', 'bg-brand-600');
@@ -125,7 +130,7 @@ function updateStepUI() {
     for (let i = 1; i < 4; i++) {
         const line = document.getElementById(`line-${i}`);
         if (line) {
-            if (currentStep > i) {
+            if (window.currentStep > i) {
                 line.classList.remove('bg-slate-200');
                 line.classList.add('bg-green-500');
             } else {
@@ -171,18 +176,18 @@ function validateStep(step) {
 // Navigation Events
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btn-next').addEventListener('click', () => {
-        if (!validateStep(currentStep)) return;
+        if (!validateStep(window.currentStep)) return;
 
-        if (currentStep === 1) {
+        if (window.currentStep === 1) {
             setupStep2();
         }
 
-        currentStep++;
+        window.currentStep++;
         updateStepUI();
     });
 
     document.getElementById('btn-prev').addEventListener('click', () => {
-        currentStep--;
+        window.currentStep--;
         updateStepUI();
     });
 

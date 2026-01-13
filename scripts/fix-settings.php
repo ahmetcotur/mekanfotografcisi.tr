@@ -49,11 +49,28 @@ try {
                 'key' => $s['key'],
                 'value' => $s['value']
             ]);
-            log_msg("   + Seeded: {$s['key']}");
+            log_msg("   + Seeded setting: {$s['key']}");
         } else {
-            log_msg("   . Skipped (exists): {$s['key']}");
+            log_msg("   . Skipped setting (exists): {$s['key']}");
         }
     }
+
+    log_msg("🏠 Checking homepage...");
+    $homeExists = $db->select('posts', ['slug' => 'homepage']);
+    if (empty($homeExists)) {
+        $db->insert('posts', [
+            'id' => sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x', mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0x0fff) | 0x4000, mt_rand(0, 0x3fff) | 0x8000, mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)),
+            'title' => 'Profesyonel Mekan Fotoğrafçılığı | Antalya & Muğla',
+            'slug' => 'homepage',
+            'content' => '<h1>Profesyonel Mekan Fotoğrafçılığı Hizmetleri</h1><p>Mimari, iç mekan ve emlak fotoğrafçılığı alanında uzman ekibimizle mekanlarınızı en etkileyici açılardan fotoğraflıyoruz. Antalya ve Muğla bölgelerinde kaliteli görsel içerik üretiminde çözüm ortağınız olmaya hazırız.</p>',
+            'post_type' => 'page',
+            'post_status' => 'publish',
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s')
+        ]);
+        log_msg("   + Seeded homepage.");
+    }
+
 
     log_msg("✨ Fix operation completed successfully!");
 
