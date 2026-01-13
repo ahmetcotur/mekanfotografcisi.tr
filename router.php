@@ -77,12 +77,34 @@ if ($requestPath === 'login') {
     exit; // CRITICAL: Must exit to prevent template loader
 }
 
-// Admin Panel Route - MUST exit before template loader
+// Admin SPA Route - Serve React app
 if ($requestPath === 'admin' || strpos($requestPath, 'admin/') === 0) {
-    ob_start(); // Prevent any output before admin
-    require_once __DIR__ . '/admin/index.php';
+    // If requesting a file in admin directory, serve it directly
+    $filePath = __DIR__ . '/' . $requestPath;
+    if (file_exists($filePath) && is_file($filePath)) {
+        return false; // Let PHP serve the file
+    }
+
+    // Otherwise serve index.html for SPA routing
+    $indexPath = __DIR__ . '/admin/index.html';
+    if (file_exists($indexPath)) {
+        readfile($indexPath);
+        exit;
+    }
+
+    // Fallback to old admin if SPA not built yet
+    ob_start();
+    require_once __DIR__ . '/admin-legacy/index.php';
     ob_end_flush();
-    exit; // CRITICAL: Must exit to prevent template loader
+    exit;
+}
+
+// Old Admin Panel Route (legacy - will be removed)
+if ($requestPath === 'admin-legacy' || strpos($requestPath, 'admin-legacy/') === 0) {
+    ob_start();
+    require_once __DIR__ . '/admin-legacy/index.php';
+    ob_end_flush();
+    exit;
 }
 
 // API endpoints
