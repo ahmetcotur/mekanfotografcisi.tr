@@ -39,6 +39,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $id = $input['id'] ?? 0;
             $db->delete('pexels_images', ['id' => $id]);
             echo json_encode(['success' => true]);
+        } elseif ($action === 'sync') {
+            require_once __DIR__ . '/../includes/Core/PexelsService.php';
+            $service = new \Core\PexelsService();
+            $photos = $service->getPhotos();
+            $count = 0;
+
+            foreach ($photos as $photo) {
+                // Check exist
+                $exists = $db->query("SELECT id FROM pexels_images WHERE image_url = ?", [$photo['src']]);
+                if (!$exists) {
+                    $db->insert('pexels_images', [
+                        'image_url' => $photo['src'],
+                        'photographer' => $photo['photographer'],
+                        'is_visible' => true,
+                        'display_order' => 1000 + $count // Append to end
+                    ]);
+                    $count++;
+                }
+            }
+
+            echo json_encode(['success' => true, 'synced_count' => $count]);
+
         } elseif ($action === 'add') {
             $imageUrl = $input['image_url'] ?? '';
             $photographer = $input['photographer'] ?? '';

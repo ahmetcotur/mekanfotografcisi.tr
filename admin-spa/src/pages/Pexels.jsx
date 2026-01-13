@@ -65,6 +65,21 @@ export default function Pexels() {
         }
     };
 
+    const handleSync = async () => {
+        setLoading(true);
+        try {
+            const response = await api.post('/pexels-images.php', { action: 'sync' });
+            if (response.data.success) {
+                Swal.fire('Eşitlendi', `${response.data.synced_count} yeni görsel eklendi.`, 'success');
+                loadImages();
+            }
+        } catch (error) {
+            Swal.fire('Hata', 'Senkronizasyon başarısız oldu.', 'error');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const handleAdd = async () => {
         const { value: url } = await Swal.fire({
             title: 'Yeni Pexels Görseli',
@@ -104,12 +119,21 @@ export default function Pexels() {
                     <h1 className="text-3xl font-bold text-gray-800 tracking-tight">Pexels Koleksiyonu</h1>
                     <p className="text-gray-500 text-sm">Sitede rastgele gösterilen arka plan görsellerini yönetin.</p>
                 </div>
-                <button
-                    onClick={handleAdd}
-                    className="px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-bold shadow-lg shadow-indigo-500/30 hover:bg-indigo-700 hover:scale-105 transition-all"
-                >
-                    + Yeni Ekle
-                </button>
+                <div className="flex gap-2">
+                    <button
+                        onClick={handleSync}
+                        disabled={loading}
+                        className="px-6 py-2.5 bg-gray-600 text-white rounded-xl font-bold hover:bg-gray-700 transition-all shadow-sm"
+                    >
+                        🔄 Senkronize Et
+                    </button>
+                    <button
+                        onClick={handleAdd}
+                        className="px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-bold shadow-lg shadow-indigo-500/30 hover:bg-indigo-700 hover:scale-105 transition-all"
+                    >
+                        + Yeni Ekle
+                    </button>
+                </div>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
