@@ -783,6 +783,7 @@ ALTER TABLE ONLY public.quotes ALTER COLUMN id SET DEFAULT nextval('public.quote
 
 COPY public.admin_users (id, email, password_hash, name, is_active, last_login_at, created_at, updated_at) FROM stdin;
 3c59830a-35d0-49f6-a39f-ee52053b5d06	admin@mekanfotografcisi.tr	$2y$12$34vAh9DWMXisjocXmbaLceclrlcsxYOxIB7SjjXskZf5K5QaRnclK	Admin User	t	2025-12-29 19:37:53+03	2025-12-29 22:22:48.98761+03	2025-12-29 22:37:53.217639+03
+df6fd7d0-3995-48b4-82ff-e5fc803a2505	info@mekanfotografsici.tr	$2y$6p1AWtCVteC/rePHo6yI3e9ad2TcyaZT5pAYh3Sqrxb.U7XGmw/cm	Site Yöneticisi	t	\N	2026-01-13 21:02:00.009063+03	2026-01-13 21:02:00.009063+03
 \.
 
 

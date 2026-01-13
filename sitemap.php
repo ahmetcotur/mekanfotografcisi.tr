@@ -24,43 +24,11 @@ echo "    <changefreq>weekly</changefreq>\n";
 echo "    <priority>1.0</priority>\n";
 echo "  </url>\n";
 
-// Add main category pages
-$mainPages = [
-    ['url' => '/services', 'priority' => '0.9'],
-    ['url' => '/services/mimari-fotografcilik', 'priority' => '0.8'],
-    ['url' => '/services/ic-mekan-fotografciligi', 'priority' => '0.8'],
-    ['url' => '/services/emlak-fotografciligi', 'priority' => '0.8'],
-    ['url' => '/services/otel-restoran-fotografciligi', 'priority' => '0.8'],
-    ['url' => '/locations', 'priority' => '0.9'],
-    ['url' => '/locations/antalya', 'priority' => '0.8'],
-    ['url' => '/locations/antalya/kas', 'priority' => '0.7'],
-    ['url' => '/locations/antalya/kalkan', 'priority' => '0.7'],
-    ['url' => '/locations/mugla', 'priority' => '0.8'],
-    ['url' => '/locations/mugla/bodrum', 'priority' => '0.7'],
-    ['url' => '/locations/mugla/fethiye', 'priority' => '0.7'],
-    ['url' => '/portfolio', 'priority' => '0.8'],
-    ['url' => '/portfolio/modern-villa-kas', 'priority' => '0.6'],
-    ['url' => '/portfolio/luks-otel-kalkan', 'priority' => '0.6'],
-    ['url' => '/portfolio/butik-otel-fethiye', 'priority' => '0.6'],
-    ['url' => '/portfolio/villa-kompleksi-bodrum', 'priority' => '0.6'],
-    ['url' => '/portfolio/modern-ofis-istanbul', 'priority' => '0.6'],
-    ['url' => '/portfolio/restoran-ic-mekan-antalya', 'priority' => '0.6']
-];
-
-foreach ($mainPages as $page) {
-    echo "  <url>\n";
-    echo "    <loc>https://mekanfotografcisi.tr{$page['url']}</loc>\n";
-    echo "    <lastmod>" . date('Y-m-d') . "</lastmod>\n";
-    echo "    <changefreq>weekly</changefreq>\n";
-    echo "    <priority>{$page['priority']}</priority>\n";
-    echo "  </url>\n";
-}
-
+// Add dynamic content
 try {
-    // Initialize database client
     $db = new DatabaseClient();
 
-    // Get all published SEO pages
+    // 1. Published SEO Pages (Slug-based)
     $seoPages = $db->select('seo_pages', [
         'published' => true,
         'select' => 'slug, type, updated_at'
@@ -68,8 +36,6 @@ try {
 
     foreach ($seoPages as $page) {
         $lastmod = date('Y-m-d', strtotime($page['updated_at']));
-
-        // Set priority based on page type
         $priority = '0.7';
         $changefreq = 'monthly';
 
@@ -101,10 +67,43 @@ try {
         echo "  </url>\n";
     }
 
+    // 2. Active Services
+    $activeServices = $db->query("SELECT slug, updated_at FROM services WHERE is_active = true");
+    foreach ($activeServices as $s) {
+        echo "  <url>\n";
+        echo "    <loc>https://mekanfotografcisi.tr/services/" . e($s['slug']) . "</loc>\n";
+        echo "    <lastmod>" . date('Y-m-d', strtotime($s['updated_at'])) . "</lastmod>\n";
+        echo "    <changefreq>weekly</changefreq>\n";
+        echo "    <priority>0.8</priority>\n";
+        echo "  </url>\n";
+    }
+
+    // 3. Active Provinces & Districts
+    $activeProvinces = $db->query("SELECT id, slug, updated_at FROM locations_province WHERE is_active = true");
+    foreach ($activeProvinces as $p) {
+        echo "  <url>\n";
+        echo "    <loc>https://mekanfotografcisi.tr/locations/" . e($p['slug']) . "</loc>\n";
+        echo "    <lastmod>" . date('Y-m-d', strtotime($p['updated_at'])) . "</lastmod>\n";
+        echo "    <changefreq>weekly</changefreq>\n";
+        echo "    <priority>0.8</priority>\n";
+        echo "  </url>\n";
+
+        // Active Districts for this Province
+        $activeDistricts = $db->query("SELECT slug, updated_at FROM locations_district WHERE province_id = ? AND is_active = true", [$p['id']]);
+        foreach ($activeDistricts as $d) {
+            echo "  <url>\n";
+            echo "    <loc>https://mekanfotografcisi.tr/locations/" . e($p['slug']) . "/" . e($d['slug']) . "</loc>\n";
+            echo "    <lastmod>" . date('Y-m-d', strtotime($d['updated_at'])) . "</lastmod>\n";
+            echo "    <changefreq>monthly</changefreq>\n";
+            echo "    <priority>0.7</priority>\n";
+            echo "  </url>\n";
+        }
+    }
+
 } catch (Exception $e) {
-    // Log error but continue with basic sitemap
-    error_log('Sitemap generation error: ' . $e->getMessage());
+    error_log('Sitemap error: ' . $e->getMessage());
 }
+
 
 echo "</urlset>\n";
 ?>
