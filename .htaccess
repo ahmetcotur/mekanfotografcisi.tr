@@ -35,29 +35,14 @@ RewriteEngine On
     Deny from all
 </FilesMatch>
 
-# Ana sayfa - mevcut index.html'i koru
-RewriteRule ^$ index.html [L]
+# Ana sayfa ve alt sayfalar için unified front controller
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php [L,QSA]
 
-# Admin panel
-RewriteRule ^admin/?$ admin/index.html [L]
-RewriteRule ^admin/(.*)$ admin/$1 [L]
+# Ana sayfa (slash) için doğrudan index.php
+RewriteRule ^$ index.php [L]
 
-# API endpoints
-RewriteRule ^api/(.*)$ api/$1 [L]
-
-# Sitemap
-RewriteRule ^sitemap\.xml$ sitemap.php [L]
-
-# SEO sayfaları için route handler
-RewriteRule ^services/?$ routes/services.php [L]
-RewriteRule ^services/([a-z0-9-]+)/?$ routes/service-detail.php?slug=$1 [L]
-
-RewriteRule ^locations/?$ routes/locations.php [L]
-RewriteRule ^locations/([a-z0-9-]+)/?$ routes/province.php?province=$1 [L]
-RewriteRule ^locations/([a-z0-9-]+)/([a-z0-9-]+)/?$ routes/district.php?province=$1&district=$2 [L]
-
-RewriteRule ^portfolio/?$ routes/portfolio.php [L]
-RewriteRule ^portfolio/([a-z0-9-]+)/?$ routes/portfolio-detail.php?slug=$1 [L]
 
 # 404 için
 ErrorDocument 404 /404.html
