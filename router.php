@@ -78,16 +78,29 @@ if ($requestPath === 'login') {
 }
 
 // Admin SPA Route - Serve React app
-if ($requestPath === 'admin' || strpos($requestPath, 'admin/') === 0) {
-    // If requesting a file in admin directory, serve it directly
+if ($requestPath === 'admin' || $requestPath === 'admin/' || strpos($requestPath, 'admin/') === 0) {
+    // If requesting a specific file in admin directory, serve it directly
     $filePath = __DIR__ . '/' . $requestPath;
     if (file_exists($filePath) && is_file($filePath)) {
-        return false; // Let PHP serve the file
+        // Determine content type
+        $ext = pathinfo($filePath, PATHINFO_EXTENSION);
+        $contentTypes = [
+            'js' => 'application/javascript',
+            'css' => 'text/css',
+            'svg' => 'image/svg+xml',
+            'html' => 'text/html'
+        ];
+        if (isset($contentTypes[$ext])) {
+            header('Content-Type: ' . $contentTypes[$ext]);
+        }
+        readfile($filePath);
+        exit;
     }
 
     // Otherwise serve index.html for SPA routing
     $indexPath = __DIR__ . '/admin/index.html';
     if (file_exists($indexPath)) {
+        header('Content-Type: text/html; charset=utf-8');
         readfile($indexPath);
         exit;
     }
