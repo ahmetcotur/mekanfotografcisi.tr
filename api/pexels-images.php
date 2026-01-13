@@ -40,26 +40,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $db->delete('pexels_images', ['id' => $id]);
             echo json_encode(['success' => true]);
         } elseif ($action === 'sync') {
-            require_once __DIR__ . '/../includes/Core/PexelsService.php';
-            $service = new \Core\PexelsService();
-            $photos = $service->getPhotos();
-            $count = 0;
-
-            foreach ($photos as $photo) {
-                // Check exist
-                $exists = $db->query("SELECT id FROM pexels_images WHERE image_url = ?", [$photo['src']]);
-                if (!$exists) {
-                    $db->insert('pexels_images', [
-                        'image_url' => $photo['src'],
-                        'photographer' => $photo['photographer'],
-                        'is_visible' => true,
-                        'display_order' => 1000 + $count // Append to end
-                    ]);
-                    $count++;
+            try {
+                if (!file_exists(__DIR__ . '/../includes/Core/PexelsService.php')) {
+                    throw new Exception("Service file not found at " . __DIR__ . '/../includes/Core/PexelsService.php');
                 }
-            }
+                require_once __DIR__ . '/../includes/Core/PexelsService.php';
 
-            echo json_encode(['success' => true, 'synced_count' => $count]);
+                if (!class_exists('\\Core\\PexelsService')) {
+                    throw new Exception("Class \\Core\\PexelsService not found");
+                }
+
+                $service = new \Core\PexelsService();
+                $photos = $service->getPhotos();
+                $count = 0;
+
+                foreach ($photos as $photo) {
+                    // Check exist
+                    $exists = $db->query("SELECT id FROM pexels_images WHERE image_url = ?", [$photo['src']]);
+                    if (!$exists) {
+                        $db->insert('pexels_images', [
+                            'image_url' => $photo['src'],
+                            'photographer' => $photo['photographer'],
+                            'is_visible' => true,
+                            'display_order' => 1000 + $count // Append to end
+                        ]);
+                        $count++;
+                    }
+                }
+
+                echo json_encode(['success' => true, 'synced_count' => $count]);
+            } catch (\Throwable $t) {
+                http_response_code(500);
+                echo json_encode(['success' => false, 'error' => $t->getMessage(), 'file' => $t->getFile(), 'line' => $t->getLine()]);
+            }
 
         } elseif ($action === 'add') {
             $imageUrl = $input['image_url'] ?? '';
