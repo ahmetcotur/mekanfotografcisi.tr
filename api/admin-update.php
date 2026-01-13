@@ -249,5 +249,6 @@ try {
 } catch (Exception $e) {
     http_response_code(400);
     error_log("API Error: " . $e->getMessage() . " in " . $e->getFile() . ":" . $e->getLine());
+    file_put_contents(__DIR__ . '/../debug_log.txt', date('[Y-m-d H:i:s] ') . "API Error: " . $e->getMessage() . "\n" . print_r($data, true) . "\n", FILE_APPEND);
     echo json_encode(['success' => false, 'error' => $e->getMessage()]);
 }

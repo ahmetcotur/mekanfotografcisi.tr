@@ -107,7 +107,9 @@ export default function Locations() {
                 position: 'bottom-end'
             });
         } catch (error) {
-            Swal.fire('Hata', 'Güncelleme başarısız', 'error');
+            console.error('Toggle Error:', error);
+            const msg = error.response?.data?.error || 'Güncelleme başarısız';
+            Swal.fire('Hata', msg, 'error');
         }
     };
 
@@ -144,7 +146,9 @@ export default function Locations() {
 
                 Swal.fire('Silindi', '', 'success');
             } catch (error) {
-                Swal.fire('Hata', 'Silme başarısız', 'error');
+                console.error('Delete Error:', error);
+                const msg = error.response?.data?.error || 'Silme başarısız';
+                Swal.fire('Hata', msg, 'error');
             }
         }
     };
@@ -323,8 +327,20 @@ export default function Locations() {
                             className={`p-4 border-b border-gray-50 cursor-pointer transition-all ${selectedProvince?.id === province.id ? 'bg-blue-50 border-l-4 border-l-blue-500' : 'hover:bg-gray-50'}`}
                             onClick={() => handleSelectProvince(province)}
                         >
-                            <div className="flex justify-between items-center">
-                                <span className="font-bold text-gray-700">{province.name}</span>
+                            <div className="flex justify-between items-center group">
+                                <div className="flex items-center gap-2">
+                                    <span className="font-bold text-gray-700">{province.name}</span>
+                                    <a
+                                        href={`/${province.slug}-mekan-fotografcisi`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-gray-300 hover:text-blue-500 transition-colors opacity-0 group-hover:opacity-100"
+                                        onClick={(e) => e.stopPropagation()}
+                                        title="Görüntüle"
+                                    >
+                                        🔗
+                                    </a>
+                                </div>
                                 <div className="flex gap-2">
                                     <button
                                         onClick={(e) => { e.stopPropagation(); toggleActive(province.id, province.is_active, 'locations_province'); }}
@@ -383,7 +399,19 @@ export default function Locations() {
                                 onClick={() => handleSelectDistrict(district)}
                             >
                                 <div className="flex justify-between items-center">
-                                    <span className="font-bold text-gray-700">{district.name}</span>
+                                    <div className="flex items-center gap-2">
+                                        <span className="font-bold text-gray-700">{district.name}</span>
+                                        <a
+                                            href={`/${district.slug}-mekan-fotografcisi`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-gray-300 hover:text-blue-500 transition-colors opacity-0 group-hover:opacity-100"
+                                            onClick={(e) => e.stopPropagation()}
+                                            title="Görüntüle"
+                                        >
+                                            🔗
+                                        </a>
+                                    </div>
                                     <div className="flex gap-2">
                                         <button
                                             onClick={(e) => { e.stopPropagation(); toggleActive(district.id, district.is_active, 'locations_district'); }}
@@ -445,7 +473,12 @@ export default function Locations() {
                                 className="p-4 border-b border-gray-50 hover:bg-gray-50 transition-all group"
                             >
                                 <div className="flex justify-between items-center">
-                                    <span className="font-bold text-gray-700">{town.name}</span>
+                                    <div className="flex items-center gap-2">
+                                        <span className="font-bold text-gray-700">{town.name}</span>
+                                        <a href={`/${town.slug}-mekan-fotografcisi`} target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-blue-500 transition-colors opacity-0 group-hover:opacity-100" title="Görüntüle">
+                                            🔗
+                                        </a>
+                                    </div>
                                     <div className="flex gap-2">
                                         <button
                                             onClick={() => toggleActive(town.id, town.is_active, 'locations_town')}

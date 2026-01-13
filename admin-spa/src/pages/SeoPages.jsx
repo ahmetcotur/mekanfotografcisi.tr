@@ -89,7 +89,18 @@ export default function SeoPages() {
                                     <div className="text-[10px] text-gray-400 mt-0.5 line-clamp-1">{page.excerpt}</div>
                                 </td>
                                 <td className="px-6 py-4">
-                                    <div className="text-xs font-mono text-blue-500">/{page.slug}</div>
+                                    <div className="flex items-center gap-2">
+                                        <div className="text-xs font-mono text-blue-500">/{page.slug}</div>
+                                        <a
+                                            href={`/${page.slug}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-gray-400 hover:text-blue-600 transition-colors"
+                                            title="Sayfayı Görüntüle"
+                                        >
+                                            🔗
+                                        </a>
+                                    </div>
                                 </td>
                                 <td className="px-6 py-4">
                                     <span className="px-2 py-0.5 rounded bg-gray-100 text-[10px] font-black uppercase text-gray-500 tracking-tighter">
