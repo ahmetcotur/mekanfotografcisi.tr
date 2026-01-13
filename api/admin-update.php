@@ -39,6 +39,9 @@ try {
         if ($table === 'posts' && isset($data['post_type'])) {
             $where['post_type'] = $data['post_type'];
         }
+        if ($table === 'posts' && isset($data['slug'])) {
+            $where['slug'] = $data['slug'];
+        }
         if ($table === 'locations_district' && isset($data['province_id'])) {
             $where['province_id'] = $data['province_id'];
         }

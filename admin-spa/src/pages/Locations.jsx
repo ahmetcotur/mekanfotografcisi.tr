@@ -275,6 +275,50 @@ export default function Locations() {
         }
     };
 
+    // Content Editing
+    const [editingPage, setEditingPage] = useState(null);
+
+    const handleEditContent = async (item) => {
+        // Construct expected slug
+        const expectedSlug = `${item.slug}-mekan-fotografcisi`;
+
+        try {
+            // Check if page exists
+            const response = await api.get(`/admin-update.php?table=posts&action=list&post_type=seo_page&slug=${expectedSlug}`);
+            const existingPage = response.data.data?.[0];
+
+            if (existingPage) {
+                setEditingPage(existingPage);
+            } else {
+                // Prepare new page template
+                setEditingPage({
+                    title: `${item.name} Mekan Fotoğrafçısı`,
+                    slug: expectedSlug,
+                    content: `<p>${item.name} bölgesinde profesyonel mekan çekimi hizmetleri.</p>`,
+                    excerpt: `${item.name} mekan fotoğrafçısı, otel, villa ve emlak çekimi hizmetleri.`,
+                    post_type: 'seo_page',
+                    post_status: 'publish'
+                });
+            }
+        } catch (error) {
+            console.error('Error fetching page content', error);
+            Swal.fire('Hata', 'İçerik yüklenemedi', 'error');
+        }
+    };
+
+    const handleSaveContent = async () => {
+        try {
+            await api.post('/admin-update.php', {
+                action: 'save-post',
+                ...editingPage
+            });
+            Swal.fire('Kaydedildi', 'İçerik güncellendi', 'success');
+            setEditingPage(null);
+        } catch (error) {
+            Swal.fire('Hata', 'Kaydetme başarısız', 'error');
+        }
+    };
+
     const FilterBar = ({ search, setSearch, filter, setFilter }) => (
         <div className="flex gap-2 mb-4 px-1">
             <input
@@ -330,6 +374,13 @@ export default function Locations() {
                             <div className="flex justify-between items-center group">
                                 <div className="flex items-center gap-2">
                                     <span className="font-bold text-gray-700">{province.name}</span>
+                                    <button
+                                        onClick={(e) => { e.stopPropagation(); handleEditContent(province); }}
+                                        className="text-gray-300 hover:text-blue-500 transition-colors opacity-0 group-hover:opacity-100"
+                                        title="İçeriği Düzenle"
+                                    >
+                                        ✏️
+                                    </button>
                                     <a
                                         href={`/${province.slug}-mekan-fotografcisi`}
                                         target="_blank"
@@ -398,9 +449,16 @@ export default function Locations() {
                                 className={`p-4 border-b border-gray-50 cursor-pointer transition-all ${selectedDistrict?.id === district.id ? 'bg-blue-50 border-l-4 border-l-blue-500' : 'hover:bg-gray-50'}`}
                                 onClick={() => handleSelectDistrict(district)}
                             >
-                                <div className="flex justify-between items-center">
+                                <div className="flex justify-between items-center group">
                                     <div className="flex items-center gap-2">
                                         <span className="font-bold text-gray-700">{district.name}</span>
+                                        <button
+                                            onClick={(e) => { e.stopPropagation(); handleEditContent(district); }}
+                                            className="text-gray-300 hover:text-blue-500 transition-colors opacity-0 group-hover:opacity-100"
+                                            title="İçeriği Düzenle"
+                                        >
+                                            ✏️
+                                        </button>
                                         <a
                                             href={`/${district.slug}-mekan-fotografcisi`}
                                             target="_blank"
@@ -475,6 +533,13 @@ export default function Locations() {
                                 <div className="flex justify-between items-center">
                                     <div className="flex items-center gap-2">
                                         <span className="font-bold text-gray-700">{town.name}</span>
+                                        <button
+                                            onClick={() => handleEditContent(town)}
+                                            className="text-gray-300 hover:text-blue-500 transition-colors opacity-0 group-hover:opacity-100"
+                                            title="İçeriği Düzenle"
+                                        >
+                                            ✏️
+                                        </button>
                                         <a href={`/${town.slug}-mekan-fotografcisi`} target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-blue-500 transition-colors opacity-0 group-hover:opacity-100" title="Görüntüle">
                                             🔗
                                         </a>
@@ -494,6 +559,97 @@ export default function Locations() {
                     )}
                 </div>
             </div>
+
+            {/* Edit Content Modal */}
+            {editingPage && (
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="bg-white rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden"
+                    >
+                        <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                            <h2 className="text-xl font-bold text-gray-800">İçerik Düzenle</h2>
+                            <button onClick={() => setEditingPage(null)} className="text-gray-400 hover:text-gray-600">
+                                ✕
+                            </button>
+                        </div>
+
+                        <div className="p-6 overflow-y-auto custom-scrollbar space-y-6">
+                            {/* SEO Tips Alert */}
+                            <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 flex gap-3">
+                                <span className="text-xl">💡</span>
+                                <div>
+                                    <h4 className="font-bold text-blue-900 text-sm">SEO İpucu</h4>
+                                    <p className="text-xs text-blue-700 mt-1">
+                                        Her lokasyon için özgün başlık ve içerik girmek SEO performansını artırır.
+                                        Şehir/semt ismini başlıkta ve metnin ilk paragrafında geçirmeye özen gösterin.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-6">
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Sayfa Başlığı (H1)</label>
+                                    <input
+                                        type="text"
+                                        value={editingPage.title}
+                                        onChange={(e) => setEditingPage({ ...editingPage, title: e.target.value })}
+                                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none font-bold text-gray-800"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">URL (Slug)</label>
+                                    <input
+                                        type="text"
+                                        value={editingPage.slug}
+                                        readOnly
+                                        disabled
+                                        className="w-full px-4 py-3 bg-gray-100 border border-gray-200 rounded-xl text-gray-400 font-mono text-xs cursor-not-allowed select-none"
+                                        title="Lokasyon URL yapısı standarttır, değiştirilemez."
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">İçerik (HTML)</label>
+                                <textarea
+                                    value={editingPage.content || ''}
+                                    onChange={(e) => setEditingPage({ ...editingPage, content: e.target.value })}
+                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none font-mono text-sm h-64"
+                                    placeholder="<p>Sayfa içeriği...</p>"
+                                />
+                                <p className="text-[10px] text-gray-400 mt-1">İpucu: HTML etiketleri kullanabilirsiniz (&lt;h2&gt;, &lt;p&gt;, &lt;ul&gt; vb.)</p>
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Meta Açıklaması (Description)</label>
+                                <textarea
+                                    value={editingPage.excerpt || ''}
+                                    onChange={(e) => setEditingPage({ ...editingPage, excerpt: e.target.value })}
+                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm h-24"
+                                    placeholder="Google arama sonuçlarında görünecek kısa açıklama..."
+                                />
+                            </div>
+                        </div>
+
+                        <div className="p-6 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
+                            <button
+                                onClick={() => setEditingPage(null)}
+                                className="px-6 py-2.5 bg-white border border-gray-200 text-gray-700 font-bold rounded-xl hover:bg-gray-50 transition-colors"
+                            >
+                                İptal
+                            </button>
+                            <button
+                                onClick={handleSaveContent}
+                                className="px-6 py-2.5 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all"
+                            >
+                                Değişiklikleri Kaydet
+                            </button>
+                        </div>
+                    </motion.div>
+                </div>
+            )}
         </motion.div>
     );
 }
