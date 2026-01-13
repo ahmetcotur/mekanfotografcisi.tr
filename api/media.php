@@ -16,7 +16,8 @@ if (!is_dir($uploadDir)) {
 }
 
 try {
-    $action = $_GET['action'] ?? $_POST['action'] ?? 'list';
+    $jsonInput = json_decode(file_get_contents('php://input'), true) ?? [];
+    $action = $_GET['action'] ?? $_POST['action'] ?? $jsonInput['action'] ?? 'list';
 
     if ($action === 'list') {
         $folderId = !empty($_GET['folder_id']) ? $_GET['folder_id'] : null;
@@ -39,9 +40,8 @@ try {
         ]);
 
     } elseif ($action === 'create-folder') {
-        $input = json_decode(file_get_contents('php://input'), true);
-        $name = $input['name'] ?? '';
-        $parentId = !empty($input['parent_id']) ? $input['parent_id'] : null;
+        $name = $jsonInput['name'] ?? '';
+        $parentId = !empty($jsonInput['parent_id']) ? $jsonInput['parent_id'] : null;
 
         if (empty($name))
             throw new Exception('Folder name is required');
@@ -91,8 +91,7 @@ try {
         }
 
     } elseif ($action === 'delete-file') {
-        $input = json_decode(file_get_contents('php://input'), true);
-        $id = $input['id'] ?? '';
+        $id = $jsonInput['id'] ?? '';
 
         $file = $db->select('media', ['id' => $id]);
         if (!empty($file)) {
@@ -104,8 +103,7 @@ try {
         echo json_encode(['success' => true]);
 
     } elseif ($action === 'delete-folder') {
-        $input = json_decode(file_get_contents('php://input'), true);
-        $id = $input['id'] ?? '';
+        $id = $jsonInput['id'] ?? '';
 
         // Safety: only delete empty folders?
         $files = $db->select('media', ['folder_id' => $id]);
