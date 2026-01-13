@@ -183,7 +183,17 @@ Admin panel'e giriş yaptıktan sonra:
 3. Build tamamlandıktan sonra uygulama otomatik restart olur
 4. Migration'lar varsa Supabase Dashboard'dan manuel çalıştırın
 
-## 🐛 Troubleshooting
+## 🚨 KRİTİK: "Welcome to nginx" Hatası Alıyorsanız
+
+Eğer hala varsayılan Nginx sayfasını görüyorsanız, Coolify projenizi **Dockerfile** üzerinden değil, varsayılan bir imaj üzerinden çalıştırıyor demektir.
+
+### Kontrol Listesi:
+1. **Build Pack**: Uygulama ayarlarında "Build Pack" kısmının **Dockerfile** olduğundan %100 emin olun.
+2. **Port (Destination Port)**: Değerin **80** olduğundan emin olun.
+3. **Deployment**: Değişiklik yaptıktan sonra sağ üstteki **"Deploy"** butonuna basarak temiz bir kurulum başlatın.
+4. **Is it a static site?**: Bu seçeneğin **KAPALI** (No) olması gerekir.
+
+Eğer bu ayarlar doğruysa, Dockerfile projenizdeki `index.php`'yi otomatik olarak ana giriş noktası yapacaktır.
 
 ### Admin Panel'de Supabase Bağlantı Hatası
 
