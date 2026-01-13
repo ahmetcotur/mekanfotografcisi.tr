@@ -63,7 +63,7 @@ function updateStepUI() {
     document.querySelectorAll('.step-content').forEach(el => el.classList.remove('block'));
 
     // Show current step
-    const currentEl = document.getElementById(`step-${currentStep}`);
+    const currentEl = document.getElementById(`step-${window.currentStep}`);
     if (currentEl) {
         currentEl.classList.remove('hidden');
         currentEl.classList.add('block'); // Important for animation/display
