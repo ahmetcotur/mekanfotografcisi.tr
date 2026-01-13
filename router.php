@@ -25,12 +25,21 @@ require_once __DIR__ . '/includes/helpers.php';
 use Core\Post;
 use Core\TemplateLoader;
 
-$requestUri = $_SERVER['REQUEST_URI'];
-$requestPath = parse_url($requestUri, PHP_URL_PATH);
+$requestUri = $_SERVER['REQUEST_URI'] ?? '';
+$requestPath = parse_url($requestUri, PHP_URL_PATH) ?: '/';
+
+// Force cleanup of common prefixes that cause 404s
+$requestPath = str_replace('/index.php', '', $requestPath);
 $requestPath = trim($requestPath, '/');
 
 // Login Route
 if ($requestPath === 'login') {
+    // If already logged in, go to admin
+    session_start();
+    if (isset($_SESSION['admin_user_id'])) {
+        header('Location: /admin/');
+        exit;
+    }
     require_once __DIR__ . '/login.php';
     exit;
 }

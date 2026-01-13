@@ -55,6 +55,16 @@ $schema = [
 ?>
 
 <head>
+    <!-- Tailwind Console Warning Filter (must be at the top) -->
+    <script>
+        (function () {
+            const originalWarn = console.warn;
+            console.warn = function (...args) {
+                if (args[0] && typeof args[0] === 'string' && args[0].includes('cdn.tailwindcss.com should not be used in production')) return;
+                originalWarn.apply(console, args);
+            };
+        })();
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="index, follow">
@@ -91,16 +101,6 @@ $schema = [
         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap"
         rel="stylesheet">
 
-    <!-- Tailwind CSS (Console Warning Filter) -->
-    <script>
-        (function () {
-            const originalWarn = console.warn;
-            console.warn = function (...args) {
-                if (args[0] && typeof args[0] === 'string' && args[0].includes('cdn.tailwindcss.com should not be used in production')) return;
-                originalWarn.apply(console, args);
-            };
-        })();
-    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <?php
     $primaryColor = get_setting('primary_color', '#0ea5e9'); // Default Sky 500
@@ -220,8 +220,8 @@ $schema = [
 
     <?php if (isset($schemaMarkup)): ?>
         <script type="application/ld+json">
-                                <?= json_encode($schemaMarkup, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>
-                                    </script>
+                                    <?= json_encode($schemaMarkup, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>
+                                        </script>
     <?php endif; ?>
 </head>
 

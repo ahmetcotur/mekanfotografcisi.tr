@@ -184,7 +184,7 @@
     </div>
 </div>
 
-<script src="/assets/js/quote-wizard.js?v=MF1.1"></script>
+<script src="/assets/js/quote-wizard-v2.js?v=2.0.0"></script>
 
 <script>
     function openInquiryModal() {
