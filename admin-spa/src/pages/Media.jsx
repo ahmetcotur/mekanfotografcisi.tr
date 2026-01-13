@@ -57,30 +57,53 @@ export default function Media() {
     };
 
     const handleUpload = async (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
+        const files = Array.from(e.target.files);
+        if (files.length === 0) return;
 
         setUploading(true);
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('folder_id', currentFolder || '');
-        formData.append('action', 'upload');
+        let successCount = 0;
+        let failCount = 0;
 
         try {
-            await api.post('/media.php', formData, {
-                headers: { 'Content-Type': 'multipart/form-data' }
-            });
+            await Promise.all(files.map(async (file) => {
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('folder_id', currentFolder || '');
+                formData.append('action', 'upload');
+
+                try {
+                    await api.post('/media.php', formData, {
+                        headers: { 'Content-Type': 'multipart/form-data' }
+                    });
+                    successCount++;
+                } catch (err) {
+                    console.error('Upload failed for file:', file.name, err);
+                    failCount++;
+                }
+            }));
+
             loadMedia(currentFolder);
-            Swal.fire({
-                title: 'Yüklendi',
-                icon: 'success',
-                timer: 1000,
-                showConfirmButton: false
-            });
+
+            if (failCount === 0) {
+                Swal.fire({
+                    title: 'Yüklendi',
+                    text: `${successCount} dosya başarıyla yüklendi.`,
+                    icon: 'success',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+            } else {
+                Swal.fire({
+                    title: 'Tamamlandı',
+                    text: `${successCount} dosya yüklendi, ${failCount} dosya ise yüklenemedi.`,
+                    icon: 'warning'
+                });
+            }
         } catch (error) {
-            Swal.fire('Hata', 'Yükleme başarısız', 'error');
+            Swal.fire('Hata', 'Yükleme işlemi başlatılamadı', 'error');
         } finally {
             setUploading(false);
+            e.target.value = ''; // Reset input
         }
     };
 
@@ -158,7 +181,7 @@ export default function Media() {
                     <label className={`px-5 py-2.5 ${uploading ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'} text-white rounded-xl font-bold cursor-pointer transition-all shadow-lg shadow-blue-500/20 flex items-center gap-2`}>
                         <span>{uploading ? '⌛' : '📤'}</span>
                         {uploading ? 'Yükleniyor...' : 'Dosya Yükle'}
-                        <input type="file" className="hidden" onChange={handleUpload} disabled={uploading} accept="image/*" />
+                        <input type="file" className="hidden" onChange={handleUpload} disabled={uploading} accept="image/*" multiple />
                     </label>
                 </div>
             </div>
@@ -204,13 +227,26 @@ export default function Media() {
                                 className="group relative aspect-square bg-white rounded-3xl shadow-sm border border-gray-100 hover:border-blue-400 hover:shadow-xl hover:shadow-blue-500/5 transition-all p-4 flex flex-col items-center justify-center cursor-pointer"
                                 onClick={() => setCurrentFolder(folder.id)}
                             >
+                                <div className="absolute inset-0 bg-blue-900/60 opacity-0 group-hover:opacity-100 transition-all flex flex-col items-center justify-center gap-3 rounded-3xl z-10">
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            copyToClipboard(`[gallery id="${folder.id}"]`, 'shortcode');
+                                        }}
+                                        className="w-12 h-12 bg-white rounded-xl text-green-600 shadow-xl hover:scale-110 active:scale-95 transition-all flex items-center justify-center"
+                                        title="Galeri Kodunu Kopyala"
+                                    >
+                                        🖼️
+                                    </button>
+                                    <div className="text-[10px] text-white/80 font-black tracking-widest uppercase">Galeri Kodu</div>
+                                </div>
                                 <div className="text-5xl mb-2 drop-shadow-sm group-hover:scale-110 transition-transform">📂</div>
                                 <span className="text-[11px] font-bold text-gray-700 text-center truncate w-full px-2 uppercase tracking-tighter">
                                     {folder.name}
                                 </span>
                                 <button
                                     onClick={(e) => { e.stopPropagation(); handleDeleteFolder(folder.id); }}
-                                    className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 p-1.5 text-red-500 hover:bg-red-50 rounded-xl transition-all"
+                                    className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 p-1.5 text-red-500 hover:bg-red-50 rounded-xl transition-all z-20"
                                 >
                                     🗑️
                                 </button>
@@ -239,20 +275,13 @@ export default function Media() {
                                         <div className="flex gap-2">
                                             <button
                                                 onClick={() => copyToClipboard(file.public_url)}
-                                                className="w-10 h-10 bg-white rounded-xl text-blue-600 shadow-xl hover:scale-110 active:scale-95 transition-all flex items-center justify-center"
+                                                className="w-12 h-12 bg-white rounded-xl text-blue-600 shadow-xl hover:scale-110 active:scale-95 transition-all flex items-center justify-center"
                                                 title="Link Kopyala"
                                             >
                                                 🔗
                                             </button>
-                                            <button
-                                                onClick={() => copyToClipboard(`[gallery id="${file.folder_id}"]`, 'shortcode')}
-                                                className="w-10 h-10 bg-white rounded-xl text-green-600 shadow-xl hover:scale-110 active:scale-95 transition-all flex items-center justify-center"
-                                                title="Galeri Kodu Kopyala"
-                                            >
-                                                🖼️
-                                            </button>
                                         </div>
-                                        <div className="text-[10px] text-white/80 font-black tracking-widest uppercase">Kopyala</div>
+                                        <div className="text-[10px] text-white/80 font-black tracking-widest uppercase">Link Kopyala</div>
                                     </div>
                                 </div>
                                 <div className="absolute top-2 right-2 flex gap-1">
