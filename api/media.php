@@ -41,7 +41,7 @@ try {
     } elseif ($action === 'create-folder') {
         $input = json_decode(file_get_contents('php://input'), true);
         $name = $input['name'] ?? '';
-        $parentId = $input['parent_id'] ?? null;
+        $parentId = !empty($input['parent_id']) ? $input['parent_id'] : null;
 
         if (empty($name))
             throw new Exception('Folder name is required');
