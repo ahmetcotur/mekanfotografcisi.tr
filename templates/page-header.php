@@ -73,6 +73,7 @@ $schema = [
     <title><?= htmlspecialchars($seoTitle) ?></title>
     <meta name="description" content="<?= htmlspecialchars($seoDescription) ?>">
     <link rel="canonical" href="<?= htmlspecialchars($currentUrl) ?>">
+    <link rel="icon" href="<?= htmlspecialchars(get_setting('favicon_url', '/favicon.ico')) ?>">
 
     <!-- Open Graph -->
     <meta property="og:locale" content="tr_TR">
@@ -220,8 +221,8 @@ $schema = [
 
     <?php if (isset($schemaMarkup)): ?>
         <script type="application/ld+json">
-                                            <?= json_encode($schemaMarkup, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>
-                                                </script>
+                                                <?= json_encode($schemaMarkup, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>
+                                                    </script>
     <?php endif; ?>
 </head>
 

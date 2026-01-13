@@ -199,8 +199,8 @@ export default function Settings() {
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id)}
                             className={`px-6 py-4 font-bold text-sm flex items-center gap-2 whitespace-nowrap transition-all ${activeTab === tab.id
-                                    ? 'text-blue-600 bg-blue-50/50 border-b-2 border-blue-600'
-                                    : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700'
+                                ? 'text-blue-600 bg-blue-50/50 border-b-2 border-blue-600'
+                                : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700'
                                 }`}
                         >
                             <span>{tab.icon}</span> {tab.label}
@@ -214,8 +214,8 @@ export default function Settings() {
                         <div className="grid md:grid-cols-2 gap-6">
                             {renderField('site_title', 'Site Başlığı (Title)', 'text', 'Örn: Mekan Fotoğrafçısı')}
                             {renderField('site_description', 'Site Açıklaması (Meta Description)', 'textarea', 'Site hakkında kısa bilgi...')}
-                            {renderField('site_logo', 'Logo', 'image')}
-                            {renderField('site_favicon', 'Favicon', 'image')}
+                            {renderField('logo_url', 'Logo', 'image')}
+                            {renderField('favicon_url', 'Favicon', 'image')}
                             {renderField('google_analytics', 'Google Analytics ID', 'text', 'UA-XXXXX-Y')}
                         </div>
                     )}
@@ -242,8 +242,8 @@ export default function Settings() {
 
                     {activeTab === 'style' && (
                         <div className="grid md:grid-cols-2 gap-6">
-                            {renderField('color_brand_primary', 'Ana Renk (Primary)', 'color')}
-                            {renderField('color_brand_secondary', 'İkincil Renk (Secondary)', 'color')}
+                            {renderField('primary_color', 'Ana Renk (Primary)', 'color')}
+                            {renderField('secondary_color', 'İkincil Renk (Secondary)', 'color')}
 
                             <div className="col-span-full mt-4 p-4 bg-gray-50 rounded-2xl">
                                 <p className="text-sm text-gray-500">Not: Renk değişikliklerinin sitede aktif olması için CSS değişkenlerinin ayarlanmış olması gerekir.</p>
