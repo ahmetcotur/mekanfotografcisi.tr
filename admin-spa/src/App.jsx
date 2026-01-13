@@ -1,6 +1,11 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
+import Locations from './pages/Locations';
+import Services from './pages/Services';
+import Quotes from './pages/Quotes';
+import Media from './pages/Media';
+import Settings from './pages/Settings';
 import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
 import useAuthStore from './store/authStore';
@@ -16,11 +21,11 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route element={<Layout />}>
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/locations" element={<div className="text-center py-12">Locations - Coming Soon</div>} />
-            <Route path="/services" element={<div className="text-center py-12">Services - Coming Soon</div>} />
-            <Route path="/quotes" element={<div className="text-center py-12">Quotes - Coming Soon</div>} />
-            <Route path="/media" element={<div className="text-center py-12">Media - Coming Soon</div>} />
-            <Route path="/settings" element={<div className="text-center py-12">Settings - Coming Soon</div>} />
+            <Route path="/locations" element={<Locations />} />
+            <Route path="/services" element={<Services />} />
+            <Route path="/quotes" element={<Quotes />} />
+            <Route path="/media" element={<Media />} />
+            <Route path="/settings" element={<Settings />} />
           </Route>
         </Route>
       </Routes>
