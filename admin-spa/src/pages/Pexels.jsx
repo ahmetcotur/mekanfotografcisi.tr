@@ -74,7 +74,10 @@ export default function Pexels() {
                 loadImages();
             }
         } catch (error) {
-            Swal.fire('Hata', 'Senkronizasyon başarısız oldu.', 'error');
+            console.error('Sync error:', error);
+            const msg = error.response?.data?.error || error.message || 'Senkronizasyon başarısız oldu.';
+            const detail = error.response?.data?.file ? `\nFile: ${error.response.data.file}:${error.response.data.line}` : '';
+            Swal.fire('Hata', msg + detail, 'error');
         } finally {
             setLoading(false);
         }
