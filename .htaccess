@@ -1,8 +1,63 @@
+RewriteEngine On
 
+# Force HTTPS (production için - yorumu kaldırın production'da)
+# Uncomment the following lines in production:
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-# php -- BEGIN cPanel-generated handler, do not edit
-# “ea-php74” paketini varsayılan “PHP” programlama dili olarak ayarlayın.
-<IfModule mime_module>
-  AddHandler application/x-httpd-ea-php74 .php .php7 .phtml
+# Performance: Enable compression
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
 </IfModule>
-# php -- END cPanel-generated handler, do not edit
+
+# Performance: Browser caching
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType application/pdf "access plus 1 month"
+    ExpiresByType text/html "access plus 0 seconds"
+</IfModule>
+
+# Security: Prevent access to sensitive files
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+<FilesMatch "\.env$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Ana sayfa - mevcut index.html'i koru
+RewriteRule ^$ index.html [L]
+
+# Admin panel
+RewriteRule ^admin/?$ admin/index.html [L]
+RewriteRule ^admin/(.*)$ admin/$1 [L]
+
+# API endpoints
+RewriteRule ^api/(.*)$ api/$1 [L]
+
+# Sitemap
+RewriteRule ^sitemap\.xml$ sitemap.php [L]
+
+# SEO sayfaları için route handler
+RewriteRule ^services/?$ routes/services.php [L]
+RewriteRule ^services/([a-z0-9-]+)/?$ routes/service-detail.php?slug=$1 [L]
+
+RewriteRule ^locations/?$ routes/locations.php [L]
+RewriteRule ^locations/([a-z0-9-]+)/?$ routes/province.php?province=$1 [L]
+RewriteRule ^locations/([a-z0-9-]+)/([a-z0-9-]+)/?$ routes/district.php?province=$1&district=$2 [L]
+
+RewriteRule ^portfolio/?$ routes/portfolio.php [L]
+RewriteRule ^portfolio/([a-z0-9-]+)/?$ routes/portfolio-detail.php?slug=$1 [L]
+
+# 404 için
+ErrorDocument 404 /404.html

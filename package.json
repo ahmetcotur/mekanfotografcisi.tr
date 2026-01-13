@@ -1,0 +1,39 @@
+{
+  "name": "mekanfotografcisi-seo-extension",
+  "version": "1.0.0",
+  "description": "SEO extension system for mekanfotografcisi.tr with Supabase backend",
+  "main": "index.js",
+  "scripts": {
+    "seed": "node scripts/seed-locations.js",
+    "seed:verify": "node scripts/seed-locations.js --verify",
+    "dev": "php -S localhost:8000",
+    "admin": "cd admin && python -m http.server 8080",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "seo",
+    "photography",
+    "location-based",
+    "supabase",
+    "turkey"
+  ],
+  "author": "Mekan Fotoğrafçısı",
+  "license": "MIT",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.38.0"
+  },
+  "devDependencies": {
+    "dotenv": "^16.3.1"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mekanfotografcisi/seo-extension.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mekanfotografcisi/seo-extension/issues"
+  },
+  "homepage": "https://mekanfotografcisi.tr"
+}

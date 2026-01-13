@@ -1,0 +1,1023 @@
+{
+  "regions": [
+    {
+      "name": "Marmara Bölgesi",
+      "provinces": [
+        {
+          "name": "İstanbul",
+          "plate_code": 34
+        },
+        {
+          "name": "Ankara",
+          "plate_code": 6
+        },
+        {
+          "name": "İzmir",
+          "plate_code": 35
+        },
+        {
+          "name": "Bursa",
+          "plate_code": 16
+        },
+        {
+          "name": "Kocaeli",
+          "plate_code": 41
+        },
+        {
+          "name": "Sakarya",
+          "plate_code": 54
+        },
+        {
+          "name": "Balıkesir",
+          "plate_code": 10
+        },
+        {
+          "name": "Çanakkale",
+          "plate_code": 17
+        },
+        {
+          "name": "Edirne",
+          "plate_code": 22
+        },
+        {
+          "name": "Kırklareli",
+          "plate_code": 39
+        },
+        {
+          "name": "Tekirdağ",
+          "plate_code": 59
+        },
+        {
+          "name": "Yalova",
+          "plate_code": 77
+        },
+        {
+          "name": "Bilecik",
+          "plate_code": 11
+        }
+      ]
+    },
+    {
+      "name": "Ege Bölgesi",
+      "provinces": [
+        {
+          "name": "İzmir",
+          "plate_code": 35
+        },
+        {
+          "name": "Aydın",
+          "plate_code": 9
+        },
+        {
+          "name": "Denizli",
+          "plate_code": 20
+        },
+        {
+          "name": "Muğla",
+          "plate_code": 48
+        },
+        {
+          "name": "Manisa",
+          "plate_code": 45
+        },
+        {
+          "name": "Afyonkarahisar",
+          "plate_code": 3
+        },
+        {
+          "name": "Kütahya",
+          "plate_code": 43
+        },
+        {
+          "name": "Uşak",
+          "plate_code": 64
+        }
+      ]
+    },
+    {
+      "name": "Akdeniz Bölgesi",
+      "provinces": [
+        {
+          "name": "Antalya",
+          "plate_code": 7
+        },
+        {
+          "name": "Mersin",
+          "plate_code": 33
+        },
+        {
+          "name": "Adana",
+          "plate_code": 1
+        },
+        {
+          "name": "Hatay",
+          "plate_code": 31
+        },
+        {
+          "name": "Kahramanmaraş",
+          "plate_code": 46
+        },
+        {
+          "name": "Osmaniye",
+          "plate_code": 80
+        },
+        {
+          "name": "Isparta",
+          "plate_code": 32
+        },
+        {
+          "name": "Burdur",
+          "plate_code": 15
+        }
+      ]
+    },
+    {
+      "name": "İç Anadolu Bölgesi",
+      "provinces": [
+        {
+          "name": "Ankara",
+          "plate_code": 6
+        },
+        {
+          "name": "Konya",
+          "plate_code": 42
+        },
+        {
+          "name": "Kayseri",
+          "plate_code": 38
+        },
+        {
+          "name": "Sivas",
+          "plate_code": 58
+        },
+        {
+          "name": "Eskişehir",
+          "plate_code": 26
+        },
+        {
+          "name": "Çankırı",
+          "plate_code": 18
+        },
+        {
+          "name": "Karaman",
+          "plate_code": 70
+        },
+        {
+          "name": "Kırıkkale",
+          "plate_code": 71
+        },
+        {
+          "name": "Kırşehir",
+          "plate_code": 40
+        },
+        {
+          "name": "Nevşehir",
+          "plate_code": 50
+        },
+        {
+          "name": "Niğde",
+          "plate_code": 51
+        },
+        {
+          "name": "Yozgat",
+          "plate_code": 66
+        },
+        {
+          "name": "Aksaray",
+          "plate_code": 68
+        }
+      ]
+    },
+    {
+      "name": "Karadeniz Bölgesi",
+      "provinces": [
+        {
+          "name": "Samsun",
+          "plate_code": 55
+        },
+        {
+          "name": "Trabzon",
+          "plate_code": 61
+        },
+        {
+          "name": "Ordu",
+          "plate_code": 52
+        },
+        {
+          "name": "Rize",
+          "plate_code": 53
+        },
+        {
+          "name": "Giresun",
+          "plate_code": 28
+        },
+        {
+          "name": "Amasya",
+          "plate_code": 5
+        },
+        {
+          "name": "Tokat",
+          "plate_code": 60
+        },
+        {
+          "name": "Sinop",
+          "plate_code": 57
+        },
+        {
+          "name": "Kastamonu",
+          "plate_code": 37
+        },
+        {
+          "name": "Çorum",
+          "plate_code": 19
+        },
+        {
+          "name": "Zonguldak",
+          "plate_code": 67
+        },
+        {
+          "name": "Bolu",
+          "plate_code": 14
+        },
+        {
+          "name": "Düzce",
+          "plate_code": 81
+        },
+        {
+          "name": "Bartın",
+          "plate_code": 74
+        },
+        {
+          "name": "Karabük",
+          "plate_code": 78
+        },
+        {
+          "name": "Artvin",
+          "plate_code": 8
+        },
+        {
+          "name": "Gümüşhane",
+          "plate_code": 29
+        },
+        {
+          "name": "Bayburt",
+          "plate_code": 69
+        }
+      ]
+    },
+    {
+      "name": "Doğu Anadolu Bölgesi",
+      "provinces": [
+        {
+          "name": "Erzurum",
+          "plate_code": 25
+        },
+        {
+          "name": "Malatya",
+          "plate_code": 44
+        },
+        {
+          "name": "Elazığ",
+          "plate_code": 23
+        },
+        {
+          "name": "Diyarbakır",
+          "plate_code": 21
+        },
+        {
+          "name": "Van",
+          "plate_code": 65
+        },
+        {
+          "name": "Ağrı",
+          "plate_code": 4
+        },
+        {
+          "name": "Muş",
+          "plate_code": 49
+        },
+        {
+          "name": "Bitlis",
+          "plate_code": 13
+        },
+        {
+          "name": "Hakkari",
+          "plate_code": 30
+        },
+        {
+          "name": "Kars",
+          "plate_code": 36
+        },
+        {
+          "name": "Ardahan",
+          "plate_code": 75
+        },
+        {
+          "name": "Iğdır",
+          "plate_code": 76
+        },
+        {
+          "name": "Bingöl",
+          "plate_code": 12
+        },
+        {
+          "name": "Tunceli",
+          "plate_code": 62
+        }
+      ]
+    },
+    {
+      "name": "Güneydoğu Anadolu Bölgesi",
+      "provinces": [
+        {
+          "name": "Gaziantep",
+          "plate_code": 27
+        },
+        {
+          "name": "Şanlıurfa",
+          "plate_code": 63
+        },
+        {
+          "name": "Diyarbakır",
+          "plate_code": 21
+        },
+        {
+          "name": "Mardin",
+          "plate_code": 47
+        },
+        {
+          "name": "Batman",
+          "plate_code": 72
+        },
+        {
+          "name": "Şırnak",
+          "plate_code": 73
+        },
+        {
+          "name": "Siirt",
+          "plate_code": 56
+        },
+        {
+          "name": "Kilis",
+          "plate_code": 79
+        },
+        {
+          "name": "Adıyaman",
+          "plate_code": 2
+        }
+      ]
+    }
+  ],
+  "districts": {
+    "Antalya": [
+      {
+        "name": "Merkez",
+        "slug": "merkez"
+      },
+      {
+        "name": "Kaş",
+        "slug": "kas"
+      },
+      {
+        "name": "Kalkan",
+        "slug": "kalkan"
+      },
+      {
+        "name": "Kemer",
+        "slug": "kemer"
+      },
+      {
+        "name": "Finike",
+        "slug": "finike"
+      },
+      {
+        "name": "Demre",
+        "slug": "demre"
+      },
+      {
+        "name": "Kumluca",
+        "slug": "kumluca"
+      },
+      {
+        "name": "Elmalı",
+        "slug": "elmali"
+      },
+      {
+        "name": "Korkuteli",
+        "slug": "korkuteli"
+      },
+      {
+        "name": "Serik",
+        "slug": "serik"
+      },
+      {
+        "name": "Manavgat",
+        "slug": "manavgat"
+      },
+      {
+        "name": "Alanya",
+        "slug": "alanya"
+      },
+      {
+        "name": "Gazipaşa",
+        "slug": "gazipasa"
+      },
+      {
+        "name": "Gündoğmuş",
+        "slug": "gundogmus"
+      },
+      {
+        "name": "İbradı",
+        "slug": "ibradi"
+      },
+      {
+        "name": "Akseki",
+        "slug": "akseki"
+      },
+      {
+        "name": "Döşemealtı",
+        "slug": "dosemealti"
+      },
+      {
+        "name": "Kepez",
+        "slug": "kepez"
+      },
+      {
+        "name": "Konyaaltı",
+        "slug": "konyaalti"
+      },
+      {
+        "name": "Muratpaşa",
+        "slug": "muratpasa"
+      },
+      {
+        "name": "Aksu",
+        "slug": "aksu"
+      }
+    ],
+    "Adana": [
+      {
+        "name": "Seyhan",
+        "slug": "seyhan"
+      },
+      {
+        "name": "Yüreğir",
+        "slug": "yuregir"
+      },
+      {
+        "name": "Çukurova",
+        "slug": "cukurova"
+      },
+      {
+        "name": "Sarıçam",
+        "slug": "saricam"
+      },
+      {
+        "name": "Ceyhan",
+        "slug": "ceyhan"
+      },
+      {
+        "name": "Kozan",
+        "slug": "kozan"
+      },
+      {
+        "name": "İmamoğlu",
+        "slug": "imamoglu"
+      },
+      {
+        "name": "Karataş",
+        "slug": "karatas"
+      },
+      {
+        "name": "Karaisalı",
+        "slug": "karaisali"
+      },
+      {
+        "name": "Pozantı",
+        "slug": "pozanti"
+      },
+      {
+        "name": "Yumurtalık",
+        "slug": "yumurtalik"
+      },
+      {
+        "name": "Tufanbeyli",
+        "slug": "tufanbeyli"
+      },
+      {
+        "name": "Feke",
+        "slug": "feke"
+      },
+      {
+        "name": "Aladağ",
+        "slug": "aladag"
+      },
+      {
+        "name": "Saimbeyli",
+        "slug": "saimbeyli"
+      }
+    ],
+    "Aydın": [
+      {
+        "name": "Efeler",
+        "slug": "efeler"
+      },
+      {
+        "name": "Bozdoğan",
+        "slug": "bozdogan"
+      },
+      {
+        "name": "Buharkent",
+        "slug": "buharkent"
+      },
+      {
+        "name": "Çine",
+        "slug": "cine"
+      },
+      {
+        "name": "Didim",
+        "slug": "didim"
+      },
+      {
+        "name": "Germencik",
+        "slug": "germencik"
+      },
+      {
+        "name": "İncirliova",
+        "slug": "incirliova"
+      },
+      {
+        "name": "Karacasu",
+        "slug": "karacasu"
+      },
+      {
+        "name": "Karpuzlu",
+        "slug": "karpuzlu"
+      },
+      {
+        "name": "Koçarlı",
+        "slug": "kocarli"
+      },
+      {
+        "name": "Köşk",
+        "slug": "kosk"
+      },
+      {
+        "name": "Kuşadası",
+        "slug": "kusadasi"
+      },
+      {
+        "name": "Kuyucak",
+        "slug": "kuyucak"
+      },
+      {
+        "name": "Nazilli",
+        "slug": "nazilli"
+      },
+      {
+        "name": "Söke",
+        "slug": "soke"
+      },
+      {
+        "name": "Sultanhisar",
+        "slug": "sultanhisar"
+      },
+      {
+        "name": "Yenipazar",
+        "slug": "yenipazar"
+      }
+    ],
+    "Muğla": [
+      {
+        "name": "Merkez",
+        "slug": "merkez"
+      },
+      {
+        "name": "Bodrum",
+        "slug": "bodrum"
+      },
+      {
+        "name": "Marmaris",
+        "slug": "marmaris"
+      },
+      {
+        "name": "Fethiye",
+        "slug": "fethiye"
+      },
+      {
+        "name": "Datça",
+        "slug": "datca"
+      },
+      {
+        "name": "Köyceğiz",
+        "slug": "koycegiz"
+      },
+      {
+        "name": "Ortaca",
+        "slug": "ortaca"
+      },
+      {
+        "name": "Dalaman",
+        "slug": "dalaman"
+      },
+      {
+        "name": "Seydikemer",
+        "slug": "seydikemer"
+      },
+      {
+        "name": "Kavaklıdere",
+        "slug": "kavaklidere"
+      },
+      {
+        "name": "Ula",
+        "slug": "ula"
+      },
+      {
+        "name": "Yatağan",
+        "slug": "yatagan"
+      },
+      {
+        "name": "Milas",
+        "slug": "milas"
+      }
+    ],
+    "İstanbul": [
+      {
+        "name": "Adalar",
+        "slug": "adalar"
+      },
+      {
+        "name": "Arnavutköy",
+        "slug": "arnavutkoy"
+      },
+      {
+        "name": "Ataşehir",
+        "slug": "atasehir"
+      },
+      {
+        "name": "Avcılar",
+        "slug": "avcilar"
+      },
+      {
+        "name": "Bağcılar",
+        "slug": "bagcilar"
+      },
+      {
+        "name": "Bahçelievler",
+        "slug": "bahcelievler"
+      },
+      {
+        "name": "Bakırköy",
+        "slug": "bakirkoy"
+      },
+      {
+        "name": "Başakşehir",
+        "slug": "basaksehir"
+      },
+      {
+        "name": "Bayrampaşa",
+        "slug": "bayrampasa"
+      },
+      {
+        "name": "Beşiktaş",
+        "slug": "besiktas"
+      },
+      {
+        "name": "Beykoz",
+        "slug": "beykoz"
+      },
+      {
+        "name": "Beylikdüzü",
+        "slug": "beylikduzu"
+      },
+      {
+        "name": "Beyoğlu",
+        "slug": "beyoglu"
+      },
+      {
+        "name": "Büyükçekmece",
+        "slug": "buyukcekmece"
+      },
+      {
+        "name": "Çatalca",
+        "slug": "catalca"
+      },
+      {
+        "name": "Çekmeköy",
+        "slug": "cekmekoy"
+      },
+      {
+        "name": "Esenler",
+        "slug": "esenler"
+      },
+      {
+        "name": "Esenyurt",
+        "slug": "esenyurt"
+      },
+      {
+        "name": "Eyüpsultan",
+        "slug": "eyupsultan"
+      },
+      {
+        "name": "Fatih",
+        "slug": "fatih"
+      },
+      {
+        "name": "Gaziosmanpaşa",
+        "slug": "gaziosmanpasa"
+      },
+      {
+        "name": "Güngören",
+        "slug": "gungoren"
+      },
+      {
+        "name": "Kadıköy",
+        "slug": "kadikoy"
+      },
+      {
+        "name": "Kağıthane",
+        "slug": "kagithane"
+      },
+      {
+        "name": "Kartal",
+        "slug": "kartal"
+      },
+      {
+        "name": "Küçükçekmece",
+        "slug": "kucukcekmece"
+      },
+      {
+        "name": "Maltepe",
+        "slug": "maltepe"
+      },
+      {
+        "name": "Pendik",
+        "slug": "pendik"
+      },
+      {
+        "name": "Sancaktepe",
+        "slug": "sancaktepe"
+      },
+      {
+        "name": "Sarıyer",
+        "slug": "sariyer"
+      },
+      {
+        "name": "Silivri",
+        "slug": "silivri"
+      },
+      {
+        "name": "Sultanbeyli",
+        "slug": "sultanbeyli"
+      },
+      {
+        "name": "Sultangazi",
+        "slug": "sultangazi"
+      },
+      {
+        "name": "Şile",
+        "slug": "sile"
+      },
+      {
+        "name": "Şişli",
+        "slug": "sisli"
+      },
+      {
+        "name": "Tuzla",
+        "slug": "tuzla"
+      },
+      {
+        "name": "Ümraniye",
+        "slug": "umraniye"
+      },
+      {
+        "name": "Üsküdar",
+        "slug": "uskudar"
+      },
+      {
+        "name": "Zeytinburnu",
+        "slug": "zeytinburnu"
+      }
+    ],
+    "Ankara": [
+      {
+        "name": "Altındağ",
+        "slug": "altindag"
+      },
+      {
+        "name": "Ayaş",
+        "slug": "ayas"
+      },
+      {
+        "name": "Bala",
+        "slug": "bala"
+      },
+      {
+        "name": "Beypazarı",
+        "slug": "beypazari"
+      },
+      {
+        "name": "Çamlıdere",
+        "slug": "camlidere"
+      },
+      {
+        "name": "Çankaya",
+        "slug": "cankaya"
+      },
+      {
+        "name": "Çubuk",
+        "slug": "cubuk"
+      },
+      {
+        "name": "Elmadağ",
+        "slug": "elmadag"
+      },
+      {
+        "name": "Etimesgut",
+        "slug": "etimesgut"
+      },
+      {
+        "name": "Evren",
+        "slug": "evren"
+      },
+      {
+        "name": "Gölbaşı",
+        "slug": "golbasi"
+      },
+      {
+        "name": "Güdül",
+        "slug": "gudul"
+      },
+      {
+        "name": "Haymana",
+        "slug": "haymana"
+      },
+      {
+        "name": "Kalecik",
+        "slug": "kalecik"
+      },
+      {
+        "name": "Kazan",
+        "slug": "kazan"
+      },
+      {
+        "name": "Keçiören",
+        "slug": "kecioren"
+      },
+      {
+        "name": "Kızılcahamam",
+        "slug": "kizilcahamam"
+      },
+      {
+        "name": "Mamak",
+        "slug": "mamak"
+      },
+      {
+        "name": "Nallıhan",
+        "slug": "nallihan"
+      },
+      {
+        "name": "Polatlı",
+        "slug": "polatli"
+      },
+      {
+        "name": "Pursaklar",
+        "slug": "pursaklar"
+      },
+      {
+        "name": "Sincan",
+        "slug": "sincan"
+      },
+      {
+        "name": "Şereflikoçhisar",
+        "slug": "sereflikochisari"
+      },
+      {
+        "name": "Yenimahalle",
+        "slug": "yenimahalle"
+      }
+    ],
+    "İzmir": [
+      {
+        "name": "Aliağa",
+        "slug": "aliaga"
+      },
+      {
+        "name": "Balçova",
+        "slug": "balcova"
+      },
+      {
+        "name": "Bayındır",
+        "slug": "bayindir"
+      },
+      {
+        "name": "Bayraklı",
+        "slug": "bayrakli"
+      },
+      {
+        "name": "Bergama",
+        "slug": "bergama"
+      },
+      {
+        "name": "Beydağ",
+        "slug": "beydag"
+      },
+      {
+        "name": "Bornova",
+        "slug": "bornova"
+      },
+      {
+        "name": "Buca",
+        "slug": "buca"
+      },
+      {
+        "name": "Çeşme",
+        "slug": "cesme"
+      },
+      {
+        "name": "Çiğli",
+        "slug": "cigli"
+      },
+      {
+        "name": "Dikili",
+        "slug": "dikili"
+      },
+      {
+        "name": "Foça",
+        "slug": "foca"
+      },
+      {
+        "name": "Gaziemir",
+        "slug": "gaziemir"
+      },
+      {
+        "name": "Güzelbahçe",
+        "slug": "guzelbahce"
+      },
+      {
+        "name": "Karabağlar",
+        "slug": "karabaglar"
+      },
+      {
+        "name": "Karaburun",
+        "slug": "karaburun"
+      },
+      {
+        "name": "Karşıyaka",
+        "slug": "karsiyaka"
+      },
+      {
+        "name": "Kemalpaşa",
+        "slug": "kemalpasa"
+      },
+      {
+        "name": "Kınık",
+        "slug": "kinik"
+      },
+      {
+        "name": "Kiraz",
+        "slug": "kiraz"
+      },
+      {
+        "name": "Konak",
+        "slug": "konak"
+      },
+      {
+        "name": "Menderes",
+        "slug": "menderes"
+      },
+      {
+        "name": "Menemen",
+        "slug": "menemen"
+      },
+      {
+        "name": "Narlıdere",
+        "slug": "narlidere"
+      },
+      {
+        "name": "Ödemiş",
+        "slug": "odemis"
+      },
+      {
+        "name": "Seferihisar",
+        "slug": "seferihisar"
+      },
+      {
+        "name": "Selçuk",
+        "slug": "selcuk"
+      },
+      {
+        "name": "Tire",
+        "slug": "tire"
+      },
+      {
+        "name": "Torbalı",
+        "slug": "torbali"
+      },
+      {
+        "name": "Urla",
+        "slug": "urla"
+      }
+    ]
+  }
+}

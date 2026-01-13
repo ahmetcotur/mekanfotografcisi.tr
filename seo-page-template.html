@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow">
+    
+    <!-- SEO Meta Tags - Will be populated by JavaScript -->
+    <title id="pageTitle">Mekan Fotoğrafçısı</title>
+    <meta name="description" id="pageDescription" content="">
+    <meta name="keywords" content="mekan fotoğrafçısı, mimari fotoğrafçılık, iç mekan fotoğrafçısı, emlak fotoğrafçılığı, profesyonel fotoğrafçılık">
+    <meta name="author" content="Mekan Fotoğrafçısı">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" id="canonicalUrl" href="">
+    
+    <!-- OpenGraph Meta Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" id="ogTitle" content="">
+    <meta property="og:description" id="ogDescription" content="">
+    <meta property="og:url" id="ogUrl" content="">
+    <meta property="og:site_name" content="Mekan Fotoğrafçısı">
+    <meta property="og:locale" content="tr_TR">
+    <meta property="og:image" content="https://mekanfotografcisi.tr/assets/images/hero-bg.jpg">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" id="twitterTitle" content="">
+    <meta name="twitter:description" id="twitterDescription" content="">
+    <meta name="twitter:image" content="https://mekanfotografcisi.tr/assets/images/hero-bg.jpg">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/assets/css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Additional SEO Page Styles -->
+    <style>
+        .seo-page {
+            padding-top: 100px; /* Account for fixed header */
+        }
+        
+        .seo-hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/assets/images/hero-bg.jpg');
+            background-size: cover;
+            background-position: center;
+            padding: 80px 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .seo-hero h1 {
+            font-size: 2.5rem;
+            color: white;
+            margin-bottom: 1rem;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        }
+        
+        .seo-hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+        
+        .breadcrumbs {
+            background: var(--light-color);
+            padding: 15px 0;
+            font-size: 14px;
+        }
+        
+        .breadcrumbs a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .breadcrumbs a:hover {
+            color: var(--accent-color);
+        }
+        
+        .breadcrumbs span {
+            margin: 0 8px;
+            color: #666;
+        }
+        
+        .seo-content {
+            padding: 60px 0;
+        }
+        
+        .seo-content h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        
+        .seo-content h3 {
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+            margin-top: 30px;
+        }
+        
+        .seo-content p {
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+        
+        .seo-content ul {
+            margin-bottom: 20px;
+            padding-left: 20px;
+        }
+        
+        .seo-content li {
+            list-style: disc;
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+        
+        .districts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 30px 0;
+        }
+        
+        .district-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .district-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .district-card a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .district-card a:hover {
+            color: var(--accent-color);
+        }
+        
+        .faq-section {
+            background: var(--light-color);
+            padding: 50px 0;
+            margin-top: 40px;
+        }
+        
+        .faq-item {
+            background: white;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .faq-question {
+            background: var(--primary-color);
+            color: white;
+            padding: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .faq-question:hover {
+            background: var(--secondary-color);
+        }
+        
+        .faq-answer {
+            padding: 20px;
+            display: none;
+            line-height: 1.6;
+        }
+        
+        .faq-answer.active {
+            display: block;
+        }
+        
+        .faq-toggle {
+            font-size: 20px;
+            transition: transform 0.3s ease;
+        }
+        
+        .faq-toggle.active {
+            transform: rotate(45deg);
+        }
+        
+        .cta-section {
+            background: var(--primary-color);
+            color: white;
+            padding: 50px 0;
+            text-align: center;
+        }
+        
+        .cta-section h2 {
+            color: white;
+            margin-bottom: 20px;
+        }
+        
+        .cta-section p {
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 100px 20px;
+            color: #666;
+        }
+        
+        .loading::before {
+            content: '';
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            text-align: center;
+            padding: 100px 20px;
+            color: var(--danger-color);
+        }
+        
+        @media (max-width: 768px) {
+            .seo-hero h1 {
+                font-size: 2rem;
+            }
+            
+            .seo-hero p {
+                font-size: 1rem;
+            }
+            
+            .districts-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 10px;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                max-width: 250px;
+                margin: 0 auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Include the original header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <div class="logo">
+                    <h1><a href="/" style="color: inherit; text-decoration: none;">Mekan Fotoğrafçısı</a></h1>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="/#hizmetler">Hizmetler</a></li>
+                    <li><a href="/#portfolio">Portfolyo</a></li>
+                    <li><a href="/#hakkimizda">Hakkımızda</a></li>
+                    <li><a href="/#bolge-uzmanligi">Hizmet Bölgelerimiz</a></li>
+                    <li><a href="/#iletisim">İletişim</a></li>
+                </ul>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="seo-page">
+        <!-- Loading State -->
+        <div id="loadingState" class="loading">
+            <div>Sayfa yükleniyor...</div>
+        </div>
+
+        <!-- Error State -->
+        <div id="errorState" class="error-message" style="display: none;">
+            <h2>Sayfa Bulunamadı</h2>
+            <p>Aradığınız sayfa bulunamadı veya kaldırılmış olabilir.</p>
+            <a href="/" class="btn btn-primary">Ana Sayfaya Dön</a>
+        </div>
+
+        <!-- Page Content -->
+        <div id="pageContent" style="display: none;">
+            <!-- Breadcrumbs -->
+            <section class="breadcrumbs">
+                <div class="container">
+                    <div id="breadcrumbsContainer"></div>
+                </div>
+            </section>
+
+            <!-- Hero Section -->
+            <section class="seo-hero">
+                <div class="container">
+                    <h1 id="heroTitle"></h1>
+                    <p id="heroDescription"></p>
+                    <div class="hero-buttons">
+                        <a href="/#iletisim" class="btn btn-primary">Teklif Al</a>
+                        <a href="/#iletisim" class="btn btn-secondary">Çekim Planla</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Main Content -->
+            <section class="seo-content">
+                <div class="container">
+                    <div id="mainContent"></div>
+                    
+                    <!-- Districts Grid (for province pages) -->
+                    <div id="districtsSection" style="display: none;">
+                        <h2>Hizmet Verdiğimiz İlçeler</h2>
+                        <div id="districtsGrid" class="districts-grid"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FAQ Section -->
+            <section id="faqSection" class="faq-section" style="display: none;">
+                <div class="container">
+                    <h2 class="section-title">Sıkça Sorulan Sorular</h2>
+                    <div id="faqContainer"></div>
+                </div>
+            </section>
+
+            <!-- CTA Section -->
+            <section class="cta-section">
+                <div class="container">
+                    <h2>Hemen İletişime Geçin!</h2>
+                    <p>Profesyonel mekan fotoğrafçılığı hizmetleri için bugün bizimle iletişime geçin.</p>
+                    <div class="cta-buttons">
+                        <a href="tel:+905074677502" class="btn btn-secondary">+90 507 467 75 02</a>
+                        <a href="/#iletisim" class="btn btn-primary">Teklif Al</a>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Include the original footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h3>Mekan Fotoğrafçısı</h3>
+                    <p>Antalya ve Muğla'da Profesyonel Mimari ve İç Mekan Fotoğrafçılığı Hizmetleri</p>
+                    <div class="footer-locations">
+                        <p><strong>Hizmet Verdiğimiz Bölgeler:</strong> Kaş, Kalkan, Fethiye, Ölüdeniz, Göcek, Marmaris, Bodrum, Datça, Kemer, Antalya Merkez, Muğla Merkez ve çevresi</p>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>Hızlı Erişim</h4>
+                    <ul>
+                        <li><a href="/#hizmetler">Hizmetler</a></li>
+                        <li><a href="/#portfolio">Portfolyo</a></li>
+                        <li><a href="/#hakkimizda">Hakkımızda</a></li>
+                        <li><a href="/#bolge-uzmanligi">Hizmet Bölgelerimiz</a></li>
+                        <li><a href="/#iletisim">İletişim</a></li>
+                    </ul>
+                </div>
+                <div class="footer-social">
+                    <h4>Sosyal Medya</h4>
+                    <div class="social-icons">
+                        <a href="#" aria-label="Instagram"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg></a>
+                        <a href="#" aria-label="Facebook"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg></a>
+                        <a href="#" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Mekan Fotoğrafçısı | Kalkan Mah. Şehitler Cad. no 7 Kaş / Antalya | +90 507 467 75 02</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JSON-LD Schema Markup -->
+    <script type="application/ld+json" id="schemaMarkup"></script>
+
+    <!-- JavaScript -->
+    <script src="/assets/js/main.js"></script>
+    <script>
+        // SEO Page JavaScript
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Get slug from URL
+            const path = window.location.pathname;
+            const slug = path.startsWith('/') ? path.substring(1) : path;
+            
+            if (!slug) {
+                showError();
+                return;
+            }
+            
+            try {
+                // Fetch page data from API
+                const response = await fetch(`/api/seo-page.php?slug=${encodeURIComponent(slug)}`);
+                const result = await response.json();
+                
+                if (!response.ok || !result.success) {
+                    throw new Error(result.error || 'Page not found');
+                }
+                
+                const { seo_page, related, breadcrumbs, canonical_url, schema_markup } = result.data;
+                
+                // Update page metadata
+                updateMetadata(seo_page, canonical_url);
+                
+                // Render page content
+                renderBreadcrumbs(breadcrumbs);
+                renderHero(seo_page);
+                renderContent(seo_page, related);
+                renderFAQ(seo_page.faq_json);
+                
+                // Add schema markup
+                document.getElementById('schemaMarkup').textContent = JSON.stringify(schema_markup);
+                
+                // Show page content
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('pageContent').style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error loading page:', error);
+                showError();
+            }
+        });
+        
+        function updateMetadata(seoPage, canonicalUrl) {
+            // Update title and meta tags
+            document.title = seoPage.title;
+            document.getElementById('pageTitle').textContent = seoPage.title;
+            document.getElementById('pageDescription').setAttribute('content', seoPage.meta_description);
+            document.getElementById('canonicalUrl').setAttribute('href', canonicalUrl);
+            
+            // Update OpenGraph tags
+            document.getElementById('ogTitle').setAttribute('content', seoPage.title);
+            document.getElementById('ogDescription').setAttribute('content', seoPage.meta_description);
+            document.getElementById('ogUrl').setAttribute('content', canonicalUrl);
+            
+            // Update Twitter Card tags
+            document.getElementById('twitterTitle').setAttribute('content', seoPage.title);
+            document.getElementById('twitterDescription').setAttribute('content', seoPage.meta_description);
+        }
+        
+        function renderBreadcrumbs(breadcrumbs) {
+            const container = document.getElementById('breadcrumbsContainer');
+            container.innerHTML = breadcrumbs.map((crumb, index) => {
+                const isLast = index === breadcrumbs.length - 1;
+                if (isLast) {
+                    return `<strong>${crumb.name}</strong>`;
+                } else {
+                    return `<a href="${crumb.url}">${crumb.name}</a><span>›</span>`;
+                }
+            }).join(' ');
+        }
+        
+        function renderHero(seoPage) {
+            document.getElementById('heroTitle').textContent = seoPage.h1;
+            document.getElementById('heroDescription').textContent = seoPage.meta_description;
+        }
+        
+        function renderContent(seoPage, related) {
+            const container = document.getElementById('mainContent');
+            
+            // Convert markdown to HTML (simple implementation)
+            const htmlContent = markdownToHtml(seoPage.content_md);
+            container.innerHTML = htmlContent;
+            
+            // Show districts for province pages
+            if (seoPage.type === 'province' && related.districts && related.districts.length > 0) {
+                const districtsSection = document.getElementById('districtsSection');
+                const districtsGrid = document.getElementById('districtsGrid');
+                
+                districtsGrid.innerHTML = related.districts.map(district => `
+                    <div class="district-card">
+                        <a href="/locations/${related.province.slug}/${district.slug}">
+                            ${district.name}
+                        </a>
+                    </div>
+                `).join('');
+                
+                districtsSection.style.display = 'block';
+            }
+        }
+        
+        function renderFAQ(faqJson) {
+            if (!faqJson || !faqJson.questions || faqJson.questions.length === 0) {
+                return;
+            }
+            
+            const faqSection = document.getElementById('faqSection');
+            const faqContainer = document.getElementById('faqContainer');
+            
+            faqContainer.innerHTML = faqJson.questions.map((faq, index) => `
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(${index})">
+                        <span>${faq.question}</span>
+                        <span class="faq-toggle" id="toggle-${index}">+</span>
+                    </div>
+                    <div class="faq-answer" id="answer-${index}">
+                        ${faq.answer}
+                    </div>
+                </div>
+            `).join('');
+            
+            faqSection.style.display = 'block';
+        }
+        
+        function toggleFAQ(index) {
+            const answer = document.getElementById(`answer-${index}`);
+            const toggle = document.getElementById(`toggle-${index}`);
+            
+            if (answer.classList.contains('active')) {
+                answer.classList.remove('active');
+                toggle.classList.remove('active');
+                toggle.textContent = '+';
+            } else {
+                // Close all other FAQs
+                document.querySelectorAll('.faq-answer').forEach(el => el.classList.remove('active'));
+                document.querySelectorAll('.faq-toggle').forEach(el => {
+                    el.classList.remove('active');
+                    el.textContent = '+';
+                });
+                
+                // Open this FAQ
+                answer.classList.add('active');
+                toggle.classList.add('active');
+                toggle.textContent = '×';
+            }
+        }
+        
+        function showError() {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('errorState').style.display = 'block';
+        }
+        
+        // Simple markdown to HTML converter
+        function markdownToHtml(markdown) {
+            return markdown
+                .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+                .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+                .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+                .replace(/\*\*(.*)\*\*/gim, '<strong>$1</strong>')
+                .replace(/\*(.*)\*/gim, '<em>$1</em>')
+                .replace(/\[([^\]]*)\]\(([^\)]*)\)/gim, '<a href="$2">$1</a>')
+                .replace(/\n\n/gim, '</p><p>')
+                .replace(/^(.*)$/gim, '<p>$1</p>')
+                .replace(/<p><\/p>/gim, '')
+                .replace(/<p>(<h[1-6]>.*<\/h[1-6]>)<\/p>/gim, '$1')
+                .replace(/^- (.*)$/gim, '<li>$1</li>')
+                .replace(/(<li>.*<\/li>)/gims, '<ul>$1</ul>');
+        }
+    </script>
+</body>
+</html>

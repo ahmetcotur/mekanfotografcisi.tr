@@ -1,0 +1,208 @@
+{
+    "Antalya": {
+        "Kaş": [
+            {
+                "name": "Andifli",
+                "slug": "andifli"
+            },
+            {
+                "name": "Kalkan",
+                "slug": "kalkan"
+            },
+            {
+                "name": "Gelemiş",
+                "slug": "gelemis"
+            },
+            {
+                "name": "İslamlar",
+                "slug": "islamlar"
+            },
+            {
+                "name": "Yeşilköy",
+                "slug": "yesilkoy"
+            },
+            {
+                "name": "Kınık",
+                "slug": "kinik"
+            },
+            {
+                "name": "Ova",
+                "slug": "ova"
+            },
+            {
+                "name": "Sarıbelen",
+                "slug": "saribelen"
+            },
+            {
+                "name": "Bezirgan",
+                "slug": "bezirgan"
+            },
+            {
+                "name": "Gökçeören",
+                "slug": "gokceoren"
+            },
+            {
+                "name": "Hacıoğlan",
+                "slug": "hacioglan"
+            },
+            {
+                "name": "Üzümlü",
+                "slug": "uzumlu"
+            },
+            {
+                "name": "Ahatlı",
+                "slug": "ahatli"
+            },
+            {
+                "name": "Aklar",
+                "slug": "aklar"
+            },
+            {
+                "name": "Akörü",
+                "slug": "akoru"
+            },
+            {
+                "name": "Bayındır",
+                "slug": "bayindir"
+            },
+            {
+                "name": "Beldibi",
+                "slug": "beldibi"
+            },
+            {
+                "name": "Belenli",
+                "slug": "belenli"
+            },
+            {
+                "name": "Belkonak",
+                "slug": "belkonak"
+            },
+            {
+                "name": "Boğazcık",
+                "slug": "bogazcik"
+            },
+            {
+                "name": "Çamlıköy",
+                "slug": "camlikoy"
+            },
+            {
+                "name": "Çavdır",
+                "slug": "cavdir"
+            },
+            {
+                "name": "Çayköy",
+                "slug": "caykoy"
+            },
+            {
+                "name": "Cemre",
+                "slug": "cemre"
+            },
+            {
+                "name": "Çerçiler",
+                "slug": "cerciler"
+            },
+            {
+                "name": "Çeşme",
+                "slug": "cesme"
+            },
+            {
+                "name": "Çukurbağ",
+                "slug": "cukurbag"
+            },
+            {
+                "name": "Dere",
+                "slug": "dere"
+            },
+            {
+                "name": "Dirgenler",
+                "slug": "dirgenler"
+            },
+            {
+                "name": "Doğantaş",
+                "slug": "dogantas"
+            },
+            {
+                "name": "Gökçeören",
+                "slug": "gokceoren"
+            },
+            {
+                "name": "Gürsu",
+                "slug": "gursu"
+            },
+            {
+                "name": "Hacıoğlan",
+                "slug": "hacioglan"
+            },
+            {
+                "name": "İkizce",
+                "slug": "ikizce"
+            },
+            {
+                "name": "Karadağ",
+                "slug": "karadag"
+            },
+            {
+                "name": "Kasaba",
+                "slug": "kasaba"
+            },
+            {
+                "name": "Kemerr",
+                "slug": "kemerr"
+            },
+            {
+                "name": "Kızılağaç",
+                "slug": "kizilagac"
+            },
+            {
+                "name": "Orta",
+                "slug": "orta"
+            },
+            {
+                "name": "Palamut",
+                "slug": "palamut"
+            },
+            {
+                "name": "Sarılar",
+                "slug": "sarilar"
+            },
+            {
+                "name": "Sinneli",
+                "slug": "sinneli"
+            },
+            {
+                "name": "Sütleğen",
+                "slug": "sutlegen"
+            },
+            {
+                "name": "Uğrar",
+                "slug": "ugrar"
+            },
+            {
+                "name": "Yayla",
+                "slug": "yayla"
+            },
+            {
+                "name": "Yayla Kılınçlı",
+                "slug": "yayla-kilincli"
+            },
+            {
+                "name": "Yayla Palamut",
+                "slug": "yayla-palamut"
+            },
+            {
+                "name": "Yeniköy",
+                "slug": "yenikoy"
+            }
+        ],
+        "Demre": [
+            {
+                "name": "Beymelek",
+                "slug": "beymelek"
+            },
+            {
+                "name": "Köşkerler",
+                "slug": "koskerler"
+            }
+        ]
+    }
+}

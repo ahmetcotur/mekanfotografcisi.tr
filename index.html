@@ -1,29 +1,38 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Mekan Fotoğrafçısı - Antalya ve Muğla bölgesinde profesyonel mimari ve iç mekan fotoğrafçılığı hizmetleri. Kaş, Kalkan, Fethiye, Göcek ve tüm Akdeniz'de emlak, otel, villa ve iş yerleri için yüksek kaliteli fotoğraflar.">
-    <meta name="keywords" content="mekan fotoğrafçısı, Antalya fotoğrafçı, Muğla fotoğrafçı, Kaş, Kalkan, Fethiye, Bodrum, mimari fotoğrafçılık, iç mekan fotoğrafçısı, emlak fotoğrafçılığı, villa fotoğrafçılığı, profesyonel mekan fotoğrafları, iç mimari fotoğrafçılık">
+    <meta name="description"
+        content="Mekan Fotoğrafçısı - Antalya ve Muğla bölgesinde profesyonel mimari ve iç mekan fotoğrafçılığı hizmetleri. Kaş, Kalkan, Fethiye, Göcek ve tüm Akdeniz'de emlak, otel, villa ve iş yerleri için yüksek kaliteli fotoğraflar.">
+    <meta name="keywords"
+        content="mekan fotoğrafçısı, Antalya fotoğrafçı, Muğla fotoğrafçı, Kaş, Kalkan, Fethiye, Bodrum, mimari fotoğrafçılık, iç mekan fotoğrafçısı, emlak fotoğrafçılığı, villa fotoğrafçılığı, profesyonel mekan fotoğrafları, iç mimari fotoğrafçılık">
     <meta name="author" content="Mekan Fotoğrafçısı">
     <meta name="robots" content="index, follow">
     <title>Mekan Fotoğrafçısı | Antalya ve Muğla'da Profesyonel Mimari ve İç Mekan Fotoğrafçılığı</title>
     <link rel="stylesheet" href="assets/css/styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet">
 </head>
+
 <body>
     <header class="header">
         <div class="container">
             <nav class="nav">
                 <div class="logo">
-                    <h1>Mekan Fotoğrafçısı</h1>
+                    <a href="/" class="logo-link">
+                        <h1>Mekan Fotoğrafçısı</h1>
+                    </a>
                 </div>
                 <ul class="nav-links">
                     <li><a href="#hizmetler">Hizmetler</a></li>
                     <li><a href="#portfolio">Portfolyo</a></li>
                     <li><a href="#hakkimizda">Hakkımızda</a></li>
+                    <li><a href="#testimonials">Müşteri Yorumları</a></li>
                     <li><a href="#bolge-uzmanligi">Hizmet Bölgelerimiz</a></li>
                     <li><a href="#iletisim">İletişim</a></li>
                 </ul>
@@ -40,7 +49,8 @@
         <div class="container">
             <div class="hero-content">
                 <h2>Antalya ve Muğla'da Mekanınızı En İyi Yansıtan Profesyonel Fotoğrafçılık</h2>
-                <p>Kaş, Kalkan, Fethiye, Bodrum ve tüm Akdeniz bölgesinde mimari yapılar ve iç mekanlar için üstün kalitede fotoğraf çekimleri sunuyoruz.</p>
+                <p>Kaş, Kalkan, Fethiye, Bodrum ve tüm Akdeniz bölgesinde mimari yapılar ve iç mekanlar için üstün
+                    kalitede fotoğraf çekimleri sunuyoruz.</p>
                 <div class="hero-buttons">
                     <a href="#iletisim" class="btn btn-primary">Teklif Al</a>
                     <a href="#iletisim" class="btn btn-secondary">Çekim Planla</a>
@@ -52,44 +62,103 @@
     <section id="hizmetler" class="section services">
         <div class="container">
             <h2 class="section-title">Hizmetlerimiz</h2>
-            <p class="section-subtitle">Antalya ve Muğla bölgesinde profesyonel mekan fotoğrafçılığında uzmanlaşmış ekibimizle sizlere sunduğumuz hizmetler</p>
-            
-            <div class="services-grid">
-                <div class="service-card">
-                    <div class="service-icon">
-                        <img src="assets/images/mimari-fotograf.jpg" alt="Mimari Fotoğrafçılık">
+            <p class="section-subtitle">Antalya ve Muğla bölgesinde profesyonel mekan fotoğrafçılığında uzmanlaşmış
+                ekibimizle sizlere sunduğumuz hizmetler</p>
+
+            <div class="services-carousel-wrapper">
+                <button class="carousel-btn carousel-btn-prev" aria-label="Önceki">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M15 18l-6-6 6-6" />
+                    </svg>
+                </button>
+                <div class="services-carousel">
+                    <div class="services-carousel-track">
+                        <div class="service-card">
+                            <div class="service-icon">
+                                <img src="assets/images/mimari-fotograf.jpg" alt="Mimari Fotoğrafçılık" loading="lazy">
+                            </div>
+                            <h3>Mimari Fotoğrafçılık</h3>
+                            <p>Kaş, Kalkan, Fethiye ve Bodrum'daki binaların dış cephe, peyzaj ve çevre düzenlemelerini
+                                en etkileyici açılardan fotoğraflıyoruz.</p>
+                            <a href="/services/mimari-fotografcilik" class="service-detail-link">Detayları Gör →</a>
+                        </div>
+
+                        <div class="service-card">
+                            <div class="service-icon">
+                                <img src="assets/images/ic-mekan.jpg" alt="İç Mekan Fotoğrafçılığı" loading="lazy">
+                            </div>
+                            <h3>İç Mekan Fotoğrafçılığı</h3>
+                            <p>Antalya ve Muğla'daki ev, villa, ofis ve ticari alanların iç mekan fotoğraflarını
+                                profesyonel ekipmanlarla çekiyoruz.</p>
+                            <a href="/services/ic-mekan-fotografciligi" class="service-detail-link">Detayları Gör →</a>
+                        </div>
+
+                        <div class="service-card">
+                            <div class="service-icon">
+                                <img src="assets/images/emlak-fotograf.jpg" alt="Emlak Fotoğrafçılığı" loading="lazy">
+                            </div>
+                            <h3>Emlak Fotoğrafçılığı</h3>
+                            <p>Özellikle Kaş, Kalkan, Datça ve Marmaris'teki satılık veya kiralık mülklerinizi en çekici
+                                şekilde göstererek pazarlama sürecinize katkı sağlıyoruz.</p>
+                            <a href="/services/emlak-fotografciligi" class="service-detail-link">Detayları Gör →</a>
+                        </div>
+
+                        <div class="service-card">
+                            <div class="service-icon">
+                                <img src="assets/images/otel-restoran.jpg" alt="Otel ve Restoran Fotoğrafçılığı"
+                                    loading="lazy">
+                            </div>
+                            <h3>Otel ve Restoran Fotoğrafçılığı</h3>
+                            <p>Antalya, Fethiye, Ölüdeniz ve Bodrum'daki otel odaları, restoranlar ve cafe mekanları
+                                için müşteri çekici fotoğraflar üretiyoruz.</p>
+                            <a href="/services/otel-restoran-fotografciligi" class="service-detail-link">Detayları Gör
+                                →</a>
+                        </div>
+
+                        <div class="service-card">
+                            <div class="service-icon">
+                                <img src="assets/images/portfolio-1.jpg" alt="Butik Otel Fotoğrafçılığı" loading="lazy">
+                            </div>
+                            <h3>Butik Otel Fotoğrafçılığı</h3>
+                            <p>Butik otellerin özel karakterini ve samimi atmosferini yansıtan profesyonel fotoğraflar.
+                            </p>
+                            <a href="/services/butik-otel-fotografciligi" class="service-detail-link">Detayları Gör
+                                →</a>
+                        </div>
+
+                        <div class="service-card">
+                            <div class="service-icon">
+                                <img src="assets/images/portfolio-2.jpg" alt="Yemek Fotoğrafçılığı" loading="lazy">
+                            </div>
+                            <h3>Yemek Fotoğrafçılığı</h3>
+                            <p>Restoran, cafe ve gastronomi işletmeleri için iştah açıcı, profesyonel yemek
+                                fotoğrafları.</p>
+                            <a href="/services/yemek-fotografciligi" class="service-detail-link">Detayları Gör →</a>
+                        </div>
+
+                        <div class="service-card">
+                            <div class="service-icon">
+                                <img src="assets/images/portfolio-3.jpg" alt="Lifestyle Fotoğrafçılığı" loading="lazy">
+                            </div>
+                            <h3>Lifestyle Fotoğrafçılığı</h3>
+                            <p>Mekanların yaşam tarzını yansıtan, duygusal bağ kuran profesyonel lifestyle fotoğrafları.
+                            </p>
+                            <a href="/services/lifestyle-fotografciligi" class="service-detail-link">Detayları Gör →</a>
+                        </div>
                     </div>
-                    <h3>Mimari Fotoğrafçılık</h3>
-                    <p>Kaş, Kalkan, Fethiye ve Bodrum'daki binaların dış cephe, peyzaj ve çevre düzenlemelerini en etkileyici açılardan fotoğraflıyoruz.</p>
                 </div>
-                
-                <div class="service-card">
-                    <div class="service-icon">
-                        <img src="assets/images/ic-mekan.jpg" alt="İç Mekan Fotoğrafçılığı">
-                    </div>
-                    <h3>İç Mekan Fotoğrafçılığı</h3>
-                    <p>Antalya ve Muğla'daki ev, villa, ofis ve ticari alanların iç mekan fotoğraflarını profesyonel ekipmanlarla çekiyoruz.</p>
-                </div>
-                
-                <div class="service-card">
-                    <div class="service-icon">
-                        <img src="assets/images/emlak-fotograf.jpg" alt="Emlak Fotoğrafçılığı">
-                    </div>
-                    <h3>Emlak Fotoğrafçılığı</h3>
-                    <p>Özellikle Kaş, Kalkan, Datça ve Marmaris'teki satılık veya kiralık mülklerinizi en çekici şekilde göstererek pazarlama sürecinize katkı sağlıyoruz.</p>
-                </div>
-                
-                <div class="service-card">
-                    <div class="service-icon">
-                        <img src="assets/images/otel-restoran.jpg" alt="Otel ve Restoran Fotoğrafçılığı">
-                    </div>
-                    <h3>Otel ve Restoran Fotoğrafçılığı</h3>
-                    <p>Antalya, Fethiye, Ölüdeniz ve Bodrum'daki otel odaları, restoranlar ve cafe mekanları için müşteri çekici fotoğraflar üretiyoruz.</p>
-                </div>
+                <button class="carousel-btn carousel-btn-next" aria-label="Sonraki">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 18l6-6-6-6" />
+                    </svg>
+                </button>
             </div>
-            
+
+            <div class="carousel-dots"></div>
+
             <div class="cta-container">
                 <a href="#iletisim" class="btn btn-primary">Teklif Al</a>
+                <a href="/services" class="btn btn-secondary" style="margin-left: 15px;">Tüm Hizmetler</a>
             </div>
         </div>
     </section>
@@ -98,7 +167,7 @@
         <div class="container">
             <h2 class="section-title">Portfolyo</h2>
             <p class="section-subtitle">Antalya ve Muğla'da daha önce gerçekleştirdiğimiz projelerden örnekler</p>
-            
+
             <div class="portfolio-filter">
                 <button class="filter-btn active" data-filter="all">Tümü</button>
                 <button class="filter-btn" data-filter="mimari">Mimari</button>
@@ -106,54 +175,73 @@
                 <button class="filter-btn" data-filter="emlak">Emlak</button>
                 <button class="filter-btn" data-filter="otel-restoran">Otel & Restoran</button>
             </div>
-            
+
             <div class="portfolio-grid">
                 <div class="portfolio-item" data-category="mimari">
-                    <img src="assets/images/portfolio-1.jpg" alt="Modern Mimari Yapı">
-                    <div class="portfolio-overlay">
-                        <h3>Modern Mimari Yapı</h3>
-                        <p>Kaş, Antalya, 2023</p>
-                    </div>
+                    <a href="/portfolio/modern-villa-kas">
+                        <img src="assets/images/portfolio-1.jpg" alt="Modern Mimari Yapı" loading="lazy">
+                        <div class="portfolio-overlay">
+                            <h3>Modern Villa Projesi - Kaş</h3>
+                            <p>Kaş, Antalya, 2023</p>
+                            <span class="portfolio-link">Detayları Gör →</span>
+                        </div>
+                    </a>
                 </div>
                 <div class="portfolio-item" data-category="ic-mekan">
-                    <img src="assets/images/portfolio-2.jpg" alt="Lüks Villa İç Mekan">
-                    <div class="portfolio-overlay">
-                        <h3>Lüks Villa İç Mekan</h3>
-                        <p>Kalkan, Antalya, 2023</p>
-                    </div>
+                    <a href="/portfolio/luks-otel-kalkan">
+                        <img src="assets/images/portfolio-2.jpg" alt="Lüks Villa İç Mekan" loading="lazy">
+                        <div class="portfolio-overlay">
+                            <h3>Lüks Otel İç Mekan - Kalkan</h3>
+                            <p>Kalkan, Antalya, 2023</p>
+                            <span class="portfolio-link">Detayları Gör →</span>
+                        </div>
+                    </a>
                 </div>
                 <div class="portfolio-item" data-category="otel-restoran">
-                    <img src="assets/images/portfolio-3.jpg" alt="Butik Otel Lobisi">
-                    <div class="portfolio-overlay">
-                        <h3>Butik Otel Lobisi</h3>
-                        <p>Fethiye, Muğla, 2022</p>
-                    </div>
+                    <a href="/portfolio/butik-otel-fethiye">
+                        <img src="assets/images/portfolio-3.jpg" alt="Butik Otel Lobisi" loading="lazy">
+                        <div class="portfolio-overlay">
+                            <h3>Butik Otel Projesi - Fethiye</h3>
+                            <p>Fethiye, Muğla, 2022</p>
+                            <span class="portfolio-link">Detayları Gör →</span>
+                        </div>
+                    </a>
                 </div>
                 <div class="portfolio-item" data-category="emlak">
-                    <img src="assets/images/portfolio-4.jpg" alt="Villa Projesi">
-                    <div class="portfolio-overlay">
-                        <h3>Villa Projesi</h3>
-                        <p>Bodrum, Muğla, 2023</p>
-                    </div>
+                    <a href="/portfolio/villa-kompleksi-bodrum">
+                        <img src="assets/images/portfolio-4.jpg" alt="Villa Projesi" loading="lazy">
+                        <div class="portfolio-overlay">
+                            <h3>Villa Kompleksi - Bodrum</h3>
+                            <p>Bodrum, Muğla, 2023</p>
+                            <span class="portfolio-link">Detayları Gör →</span>
+                        </div>
+                    </a>
                 </div>
                 <div class="portfolio-item" data-category="ic-mekan">
-                    <img src="assets/images/portfolio-5.jpg" alt="Modern Ofis Tasarımı">
-                    <div class="portfolio-overlay">
-                        <h3>Modern Ofis Tasarımı</h3>
-                        <p>Göcek, Muğla, 2022</p>
-                    </div>
+                    <a href="/portfolio/modern-ofis-istanbul">
+                        <img src="assets/images/portfolio-5.jpg" alt="Modern Ofis Tasarımı" loading="lazy">
+                        <div class="portfolio-overlay">
+                            <h3>Modern Ofis Tasarımı - İstanbul</h3>
+                            <p>İstanbul, 2022</p>
+                            <span class="portfolio-link">Detayları Gör →</span>
+                        </div>
+                    </a>
                 </div>
                 <div class="portfolio-item" data-category="otel-restoran">
-                    <img src="assets/images/portfolio-6.jpg" alt="Restoran İç Mekan">
-                    <div class="portfolio-overlay">
-                        <h3>Restoran İç Mekan</h3>
-                        <p>Kemer, Antalya, 2023</p>
-                    </div>
+                    <a href="/portfolio/restoran-ic-mekan-antalya">
+                        <img src="assets/images/portfolio-6.jpg" alt="Restoran İç Mekan" loading="lazy">
+                        <div class="portfolio-overlay">
+                            <h3>Restoran İç Mekan - Antalya</h3>
+                            <p>Antalya, 2023</p>
+                            <span class="portfolio-link">Detayları Gör →</span>
+                        </div>
+                    </a>
                 </div>
             </div>
-            
+
             <div class="cta-container">
                 <a href="#iletisim" class="btn btn-primary">Çekim Planla</a>
+                <a href="/portfolio" class="btn btn-secondary" style="margin-left: 15px;">Tüm Portfolio</a>
             </div>
         </div>
     </section>
@@ -163,15 +251,22 @@
             <div class="about-content">
                 <div class="about-text">
                     <h2 class="section-title">Hakkımızda</h2>
-                    <p>Mekan Fotoğrafçısı olarak 10 yılı aşkın deneyimimizle, Antalya ve Muğla bölgesinde mimari ve iç mekan fotoğrafçılığında öncü firmalardan biri haline geldik.</p>
-                    <p>Kaş merkezli profesyonel ekibimiz ve son teknoloji ekipmanlarımızla, Kalkan, Fethiye, Ölüdeniz, Marmaris, Bodrum, Datça ve tüm Akdeniz bölgesindeki mekanların en etkileyici yönlerini öne çıkaran fotoğraflar üretiyoruz. Her projeye özel yaklaşımımız ve detaylara verdiğimiz önem sayesinde müşterilerimizin beklentilerini aşan sonuçlar elde ediyoruz.</p>
-                    <p>Özellikle Antalya ve Muğla'daki emlak sektöründen mimarlık firmalarına, butik otellerden restoranlara kadar geniş bir müşteri portföyüne hizmet veriyoruz. Amacımız, mekanların gerçek potansiyelini gösterirken aynı zamanda bölgenin eşsiz doğal güzelliklerini de yansıtan estetik ve çekici fotoğraflar sunmaktır.</p>
+                    <p>Mekan Fotoğrafçısı olarak 10 yılı aşkın deneyimimizle, Antalya ve Muğla bölgesinde mimari ve iç
+                        mekan fotoğrafçılığında öncü firmalardan biri haline geldik.</p>
+                    <p>Kaş merkezli profesyonel ekibimiz ve son teknoloji ekipmanlarımızla, Kalkan, Fethiye, Ölüdeniz,
+                        Marmaris, Bodrum, Datça ve tüm Akdeniz bölgesindeki mekanların en etkileyici yönlerini öne
+                        çıkaran fotoğraflar üretiyoruz. Her projeye özel yaklaşımımız ve detaylara verdiğimiz önem
+                        sayesinde müşterilerimizin beklentilerini aşan sonuçlar elde ediyoruz.</p>
+                    <p>Özellikle Antalya ve Muğla'daki emlak sektöründen mimarlık firmalarına, butik otellerden
+                        restoranlara kadar geniş bir müşteri portföyüne hizmet veriyoruz. Amacımız, mekanların gerçek
+                        potansiyelini gösterirken aynı zamanda bölgenin eşsiz doğal güzelliklerini de yansıtan estetik
+                        ve çekici fotoğraflar sunmaktır.</p>
                     <div class="about-cta">
                         <a href="#iletisim" class="btn btn-primary">Bizimle Çalışın</a>
                     </div>
                 </div>
                 <div class="about-image">
-                    <img src="assets/images/about-us.jpg" alt="Mekan Fotoğrafçısı Ekibi">
+                    <img src="assets/images/about-us.jpg" alt="Mekan Fotoğrafçısı Ekibi" loading="lazy">
                 </div>
             </div>
         </div>
@@ -180,88 +275,219 @@
     <section id="bolge-uzmanligi" class="section region-expertise">
         <div class="container">
             <h2 class="section-title">Hizmet Bölgelerimiz</h2>
-            <p class="section-subtitle">Akdeniz ve Ege bölgesinin tüm güzel noktalarında profesyonel fotoğrafçılık hizmetleri sunuyoruz</p>
-            
+            <p class="section-subtitle">Akdeniz ve Ege bölgesinin tüm güzel noktalarında profesyonel fotoğrafçılık
+                hizmetleri sunuyoruz</p>
+
             <div class="region-content">
-                <div class="region-map">
-                    <img src="assets/images/akdeniz-harita.jpg" alt="Akdeniz Bölgesi Haritası">
+                <div class="animated-separator">
+                    <svg class="wave-separator" viewBox="0 0 1200 120" preserveAspectRatio="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path class="wave-path wave-1"
+                            d="M0,60 C300,20 600,100 900,60 C1050,40 1150,50 1200,60 L1200,120 L0,120 Z"
+                            fill="url(#waveGradient1)">
+                            <animateTransform attributeName="transform" type="translate"
+                                values="0,0; -30,5; 0,10; 30,5; 0,0" dur="12s" repeatCount="indefinite" />
+                        </path>
+                        <path class="wave-path wave-2"
+                            d="M0,70 C300,30 600,110 900,70 C1050,50 1150,60 1200,70 L1200,120 L0,120 Z"
+                            fill="url(#waveGradient2)">
+                            <animateTransform attributeName="transform" type="translate"
+                                values="0,0; 35,-5; 0,-10; -35,-5; 0,0" dur="10s" begin="-2s"
+                                repeatCount="indefinite" />
+                        </path>
+                        <path class="wave-path wave-3"
+                            d="M0,80 C300,40 600,120 900,80 C1050,60 1150,70 1200,80 L1200,120 L0,120 Z"
+                            fill="url(#waveGradient3)">
+                            <animateTransform attributeName="transform" type="translate"
+                                values="0,0; -20,8; 0,15; 20,8; 0,0" dur="14s" begin="-4s" repeatCount="indefinite" />
+                        </path>
+                        <defs>
+                            <linearGradient id="waveGradient1" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" style="stop-color:#2563eb;stop-opacity:0.3" />
+                                <stop offset="50%" style="stop-color:#3b82f6;stop-opacity:0.5" />
+                                <stop offset="100%" style="stop-color:#60a5fa;stop-opacity:0.3" />
+                            </linearGradient>
+                            <linearGradient id="waveGradient2" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" style="stop-color:#f59e0b;stop-opacity:0.3" />
+                                <stop offset="50%" style="stop-color:#fbbf24;stop-opacity:0.5" />
+                                <stop offset="100%" style="stop-color:#fcd34d;stop-opacity:0.3" />
+                            </linearGradient>
+                            <linearGradient id="waveGradient3" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" style="stop-color:#10b981;stop-opacity:0.2" />
+                                <stop offset="50%" style="stop-color:#34d399;stop-opacity:0.4" />
+                                <stop offset="100%" style="stop-color:#6ee7b7;stop-opacity:0.2" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
                 </div>
-                
+
                 <div class="region-info">
                     <div class="region-list">
                         <div class="region-column">
-                            <h3>Antalya Bölgesi</h3>
+                            <h3><a href="/locations/antalya" style="color: inherit; text-decoration: none;">Antalya
+                                    Bölgesi</a></h3>
                             <ul>
-                                <li>Kaş <span class="region-tag">Mimari Fotoğrafçılık</span></li>
-                                <li>Kalkan <span class="region-tag">Villa Fotoğrafçılığı</span></li>
-                                <li>Kemer <span class="region-tag">Otel Fotoğrafçılığı</span></li>
-                                <li>Finike <span class="region-tag">Emlak Fotoğrafçılığı</span></li>
-                                <li>Demre <span class="region-tag">İç Mekan</span></li>
-                                <li>Kumluca <span class="region-tag">Mimari</span></li>
-                                <li>Olympos <span class="region-tag">Butik Otel</span></li>
-                                <li>Çıralı <span class="region-tag">Pansiyon</span></li>
-                                <li>Tekirova <span class="region-tag">Resort</span></li>
-                                <li>Beldibi <span class="region-tag">Otel</span></li>
-                                <li>Göynük <span class="region-tag">Villa</span></li>
-                                <li>Antalya Merkez <span class="region-tag">Ofis</span></li>
-                                <li>Lara <span class="region-tag">Otel</span></li>
-                                <li>Belek <span class="region-tag">Golf Resort</span></li>
-                                <li>Side <span class="region-tag">Otel ve Restoranlar</span></li>
-                                <li>Manavgat <span class="region-tag">Emlak</span></li>
-                                <li>Alanya <span class="region-tag">Konut Projeleri</span></li>
-                                <li>Gazipaşa <span class="region-tag">Villa</span></li>
+                                <li><a href="/locations/antalya/kas">Kaş</a> <span class="region-tag"><a
+                                            href="/services/mimari-fotografcilik">Mimari Fotoğrafçılık</a></span></li>
+                                <li><a href="/locations/antalya/kalkan">Kalkan</a> <span class="region-tag"><a
+                                            href="/services/emlak-fotografciligi">Villa Fotoğrafçılığı</a></span></li>
+                                <li><a href="/locations/antalya/kemer">Kemer</a> <span class="region-tag"><a
+                                            href="/services/otel-restoran-fotografciligi">Otel Fotoğrafçılığı</a></span>
+                                </li>
+                                <li><a href="/locations/antalya/finike">Finike</a> <span class="region-tag"><a
+                                            href="/services/emlak-fotografciligi">Emlak Fotoğrafçılığı</a></span></li>
+                                <li><a href="/locations/antalya/demre">Demre</a> <span class="region-tag"><a
+                                            href="/services/ic-mekan-fotografciligi">İç Mekan</a></span></li>
+                                <li><a href="/locations/antalya/kumluca">Kumluca</a> <span class="region-tag"><a
+                                            href="/services/mimari-fotografcilik">Mimari</a></span></li>
+                                <li><a href="/locations/antalya/kemer">Olympos</a> <span class="region-tag"><a
+                                            href="/services/otel-restoran-fotografciligi">Butik Otel</a></span></li>
+                                <li><a href="/locations/antalya/kemer">Çıralı</a> <span class="region-tag"><a
+                                            href="/services/otel-restoran-fotografciligi">Pansiyon</a></span></li>
+                                <li><a href="/locations/antalya/kemer">Tekirova</a> <span class="region-tag"><a
+                                            href="/services/otel-restoran-fotografciligi">Resort</a></span></li>
+                                <li><a href="/locations/antalya/kemer">Beldibi</a> <span class="region-tag"><a
+                                            href="/services/otel-restoran-fotografciligi">Otel</a></span></li>
+                                <li><a href="/locations/antalya/kemer">Göynük</a> <span class="region-tag"><a
+                                            href="/services/emlak-fotografciligi">Villa</a></span></li>
+                                <li><a href="/locations/antalya/merkez">Antalya Merkez</a> <span class="region-tag"><a
+                                            href="/services/ic-mekan-fotografciligi">Ofis</a></span></li>
+                                <li><a href="/locations/antalya/muratpasa">Lara</a> <span class="region-tag"><a
+                                            href="/services/otel-restoran-fotografciligi">Otel</a></span></li>
+                                <li><a href="/locations/antalya/serik">Belek</a> <span class="region-tag"><a
+                                            href="/services/otel-restoran-fotografciligi">Golf Resort</a></span></li>
+                                <li><a href="/locations/antalya/manavgat">Side</a> <span class="region-tag"><a
+                                            href="/services/otel-restoran-fotografciligi">Otel ve Restoranlar</a></span>
+                                </li>
+                                <li><a href="/locations/antalya/manavgat">Manavgat</a> <span class="region-tag"><a
+                                            href="/services/emlak-fotografciligi">Emlak</a></span></li>
+                                <li><a href="/locations/antalya/alanya">Alanya</a> <span class="region-tag"><a
+                                            href="/services/emlak-fotografciligi">Konut Projeleri</a></span></li>
+                                <li><a href="/locations/antalya/gazipasa">Gazipaşa</a> <span class="region-tag"><a
+                                            href="/services/emlak-fotografciligi">Villa</a></span></li>
                             </ul>
                         </div>
-                        
+
                         <div class="region-column">
-                            <h3>Muğla Bölgesi</h3>
+                            <h3><a href="/locations/mugla" style="color: inherit; text-decoration: none;">Muğla
+                                    Bölgesi</a></h3>
                             <ul>
-                                <li>Fethiye <span class="region-tag">Villa Fotoğrafçılığı</span></li>
-                                <li>Ölüdeniz <span class="region-tag">Otel Fotoğrafçılığı</span></li>
-                                <li>Göcek <span class="region-tag">Yat ve Marina</span></li>
-                                <li>Dalaman <span class="region-tag">Emlak</span></li>
-                                <li>Marmaris <span class="region-tag">Otel ve Resort</span></li>
-                                <li>İçmeler <span class="region-tag">Tatil Köyü</span></li>
-                                <li>Datça <span class="region-tag">Butik Otel</span></li>
-                                <li>Bozburun <span class="region-tag">Pansiyon</span></li>
-                                <li>Akyaka <span class="region-tag">Restoran</span></li>
-                                <li>Bodrum <span class="region-tag">Lüks Villa</span></li>
-                                <li>Gümbet <span class="region-tag">Otel</span></li>
-                                <li>Turgutreis <span class="region-tag">Marina</span></li>
-                                <li>Yalıkavak <span class="region-tag">Lüks Konut</span></li>
-                                <li>Gündoğan <span class="region-tag">Villa</span></li>
-                                <li>Türkbükü <span class="region-tag">Ultra Lüks</span></li>
-                                <li>Gümüşlük <span class="region-tag">Restoran</span></li>
-                                <li>Milas <span class="region-tag">Konut</span></li>
+                                <li><a href="/locations/mugla/fethiye">Fethiye</a> <span class="region-tag"><a
+                                            href="/services/emlak-fotografciligi">Villa Fotoğrafçılığı</a></span></li>
+                                <li><a href="/locations/mugla/fethiye">Ölüdeniz</a> <span class="region-tag"><a
+                                            href="/services/otel-restoran-fotografciligi">Otel Fotoğrafçılığı</a></span>
+                                </li>
+                                <li><a href="/locations/mugla/fethiye">Göcek</a> <span class="region-tag"><a
+                                            href="/services/mimari-fotografcilik">Yat ve Marina</a></span></li>
+                                <li><a href="/locations/mugla/dalaman">Dalaman</a> <span class="region-tag"><a
+                                            href="/services/emlak-fotografciligi">Emlak</a></span></li>
+                                <li><a href="/locations/mugla/marmaris">Marmaris</a> <span class="region-tag"><a
+                                            href="/services/otel-restoran-fotografciligi">Otel ve Resort</a></span></li>
+                                <li><a href="/locations/mugla/marmaris">İçmeler</a> <span class="region-tag"><a
+                                            href="/services/otel-restoran-fotografciligi">Tatil Köyü</a></span></li>
+                                <li><a href="/locations/mugla/datca">Datça</a> <span class="region-tag"><a
+                                            href="/services/otel-restoran-fotografciligi">Butik Otel</a></span></li>
+                                <li><a href="/locations/mugla/datca">Bozburun</a> <span class="region-tag"><a
+                                            href="/services/otel-restoran-fotografciligi">Pansiyon</a></span></li>
+                                <li><a href="/locations/mugla/ula">Akyaka</a> <span class="region-tag"><a
+                                            href="/services/otel-restoran-fotografciligi">Restoran</a></span></li>
+                                <li><a href="/locations/mugla/bodrum">Bodrum</a> <span class="region-tag"><a
+                                            href="/services/emlak-fotografciligi">Lüks Villa</a></span></li>
+                                <li><a href="/locations/mugla/bodrum">Gümbet</a> <span class="region-tag"><a
+                                            href="/services/otel-restoran-fotografciligi">Otel</a></span></li>
+                                <li><a href="/locations/mugla/bodrum">Turgutreis</a> <span class="region-tag"><a
+                                            href="/services/mimari-fotografcilik">Marina</a></span></li>
+                                <li><a href="/locations/mugla/bodrum">Yalıkavak</a> <span class="region-tag"><a
+                                            href="/services/emlak-fotografciligi">Lüks Konut</a></span></li>
+                                <li><a href="/locations/mugla/bodrum">Gündoğan</a> <span class="region-tag"><a
+                                            href="/services/emlak-fotografciligi">Villa</a></span></li>
+                                <li><a href="/locations/mugla/bodrum">Türkbükü</a> <span class="region-tag"><a
+                                            href="/services/emlak-fotografciligi">Ultra Lüks</a></span></li>
+                                <li><a href="/locations/mugla/bodrum">Gümüşlük</a> <span class="region-tag"><a
+                                            href="/services/otel-restoran-fotografciligi">Restoran</a></span></li>
+                                <li><a href="/locations/mugla/milas">Milas</a> <span class="region-tag"><a
+                                            href="/services/emlak-fotografciligi">Konut</a></span></li>
                             </ul>
                         </div>
-                        
+
                         <div class="region-column">
                             <h3>Diğer Akdeniz Bölgeleri</h3>
                             <ul>
-                                <li>Mersin <span class="region-tag">İş Merkezi</span></li>
-                                <li>Adana <span class="region-tag">Ticari Alan</span></li>
-                                <li>Hatay <span class="region-tag">Tarihi Yapı</span></li>
-                                <li>Isparta <span class="region-tag">İç Mekan</span></li>
-                                <li>Burdur <span class="region-tag">Otel</span></li>
-                                <li>Denizli <span class="region-tag">Termal Tesis</span></li>
-                                <li>Aydın <span class="region-tag">Villa</span></li>
-                                <li>Kuşadası <span class="region-tag">Otel</span></li>
-                                <li>Didim <span class="region-tag">Emlak</span></li>
-                                <li>Marmaris <span class="region-tag">Otel</span></li>
-                                <li>Köyceğiz <span class="region-tag">Göl Evi</span></li>
-                                <li>Dalyan <span class="region-tag">Pansiyon</span></li>
-                                <li>Kıbrıs <span class="region-tag">Casino Otel</span></li>
-                                <li>Girne <span class="region-tag">Lüks Villa</span></li>
-                                <li>Lefkoşa <span class="region-tag">Ofis</span></li>
+                                <li><a href="/locations/mersin">Mersin</a> <span class="region-tag"><a
+                                            href="/services/ic-mekan-fotografciligi">İş Merkezi</a></span></li>
+                                <li><a href="/locations/adana">Adana</a> <span class="region-tag"><a
+                                            href="/services/ic-mekan-fotografciligi">Ticari Alan</a></span></li>
+                                <li><a href="/locations/hatay">Hatay</a> <span class="region-tag"><a
+                                            href="/services/mimari-fotografcilik">Tarihi Yapı</a></span></li>
+                                <li><a href="/locations/isparta">Isparta</a> <span class="region-tag"><a
+                                            href="/services/ic-mekan-fotografciligi">İç Mekan</a></span></li>
+                                <li><a href="/locations/burdur">Burdur</a> <span class="region-tag"><a
+                                            href="/services/otel-restoran-fotografciligi">Otel</a></span></li>
+                                <li><a href="/locations/denizli">Denizli</a> <span class="region-tag"><a
+                                            href="/services/otel-restoran-fotografciligi">Termal Tesis</a></span></li>
+                                <li><a href="/locations/aydin">Aydın</a> <span class="region-tag"><a
+                                            href="/services/emlak-fotografciligi">Villa</a></span></li>
+                                <li><a href="/locations/aydin">Kuşadası</a> <span class="region-tag"><a
+                                            href="/services/otel-restoran-fotografciligi">Otel</a></span></li>
+                                <li><a href="/locations/aydin">Didim</a> <span class="region-tag"><a
+                                            href="/services/emlak-fotografciligi">Emlak</a></span></li>
+                                <li><a href="/locations/mugla/koycegiz">Köyceğiz</a> <span class="region-tag"><a
+                                            href="/services/emlak-fotografciligi">Göl Evi</a></span></li>
+                                <li><a href="/locations/mugla/ortaca">Dalyan</a> <span class="region-tag"><a
+                                            href="/services/otel-restoran-fotografciligi">Pansiyon</a></span></li>
                             </ul>
                         </div>
                     </div>
-                    
+
                     <div class="region-cta">
                         <h3>Akdeniz Bölgesinde Mekan Fotoğrafçılığının Adresi</h3>
-                        <p>Antalya'dan Muğla'ya, Kaş'tan Bodrum'a kadar tüm Akdeniz ve Ege sahillerinde profesyonel fotoğrafçılık hizmetleri sunuyoruz. Bölgenin ışığını, dokusunu ve atmosferini en iyi şekilde yansıtan fotoğraflar için bizimle iletişime geçin.</p>
+                        <p>Antalya'dan Muğla'ya, Kaş'tan Bodrum'a kadar tüm Akdeniz ve Ege sahillerinde profesyonel
+                            fotoğrafçılık hizmetleri sunuyoruz. Bölgenin ışığını, dokusunu ve atmosferini en iyi şekilde
+                            yansıtan fotoğraflar için bizimle iletişime geçin.</p>
                         <a href="#iletisim" class="btn btn-primary">Teklif Al</a>
+                        <a href="/locations" class="btn btn-secondary" style="margin-left: 15px;">Tüm Lokasyonlar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="testimonials" class="section testimonials">
+        <div class="container">
+            <h2 class="section-title">Müşteri Yorumları</h2>
+            <p class="section-subtitle">Bizi tercih eden müşterilerimizin deneyimleri</p>
+
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"Kaş'taki villamızın çekimleri için Mekan Fotoğrafçısı ile çalıştık. Sonuçlar tek kelimeyle
+                            mükemmel. Evi o kadar güzel yansıtmışlar ki, kiralama taleplerimiz %40 arttı."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <h4>Ahmet Yılmaz</h4>
+                        <p>Villa Sahibi - Kaş</p>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"Fethiye'deki butik otelimizin iç mekan ve yemek çekimlerini gerçekleştirdiler. Profesyonel
+                            yaklaşımları ve ışık kullanımı gerçekten çok başarılı."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <h4>Ayşe Demir</h4>
+                        <p>Otel İşletmecisi - Fethiye</p>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"Kalkan'daki lüks projelerimiz için sürekli çalışıyoruz. Mimari detaylara verdikleri önem ve
+                            zamanında teslimat bizim için çok değerli."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <h4>Mehmet Kaya</h4>
+                        <p>Mimar - Kalkan</p>
                     </div>
                 </div>
             </div>
@@ -272,14 +498,18 @@
         <div class="container">
             <h2 class="section-title">İletişim</h2>
             <p class="section-subtitle">Antalya ve Muğla'daki projeleriniz için bize ulaşın</p>
-            
+
             <div class="contact-container">
                 <div class="contact-info">
                     <div class="info-item">
                         <div class="info-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
+                                </path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                             </svg>
                         </div>
                         <div>
@@ -287,11 +517,14 @@
                             <p>Kalkan Mah. Şehitler Cad. no 7 Kaş / Antalya</p>
                         </div>
                     </div>
-                    
+
                     <div class="info-item">
                         <div class="info-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z">
+                                </path>
                             </svg>
                         </div>
                         <div>
@@ -299,11 +532,14 @@
                             <p>+90 507 467 75 02</p>
                         </div>
                     </div>
-                    
+
                     <div class="info-item">
                         <div class="info-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                                </path>
                             </svg>
                         </div>
                         <div>
@@ -311,11 +547,13 @@
                             <p>info@mekanfotografcisi.tr</p>
                         </div>
                     </div>
-                    
+
                     <div class="info-item">
                         <div class="info-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
                         </div>
                         <div>
@@ -324,7 +562,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <form class="contact-form" action="save-form.php" method="post">
                     <div class="form-group">
                         <label for="name">Ad Soyad</label>
@@ -373,7 +611,7 @@
                     <p class="form-note">* Form verileriniz güvenli bir şekilde kaydedilecektir.</p>
                 </form>
             </div>
-            
+
             <div class="cta-banner">
                 <h3>Hemen Çekim Planlayın!</h3>
                 <p>Antalya ve Muğla'nın eşsiz mekanlarının profesyonel fotoğrafları için hemen iletişime geçin.</p>
@@ -392,7 +630,8 @@
                     <h3>Mekan Fotoğrafçısı</h3>
                     <p>Antalya ve Muğla'da Profesyonel Mimari ve İç Mekan Fotoğrafçılığı Hizmetleri</p>
                     <div class="footer-locations">
-                        <p><strong>Hizmet Verdiğimiz Bölgeler:</strong> Kaş, Kalkan, Fethiye, Ölüdeniz, Göcek, Marmaris, Bodrum, Datça, Kemer, Antalya Merkez, Muğla Merkez ve çevresi</p>
+                        <p><strong>Hizmet Verdiğimiz Bölgeler:</strong> Kaş, Kalkan, Fethiye, Ölüdeniz, Göcek, Marmaris,
+                            Bodrum, Datça, Kemer, Antalya Merkez, Muğla Merkez ve çevresi</p>
                     </div>
                 </div>
                 <div class="footer-links">
@@ -401,6 +640,7 @@
                         <li><a href="#hizmetler">Hizmetler</a></li>
                         <li><a href="#portfolio">Portfolyo</a></li>
                         <li><a href="#hakkimizda">Hakkımızda</a></li>
+                        <li><a href="#testimonials">Müşteri Yorumları</a></li>
                         <li><a href="#bolge-uzmanligi">Hizmet Bölgelerimiz</a></li>
                         <li><a href="#iletisim">İletişim</a></li>
                     </ul>
@@ -408,9 +648,25 @@
                 <div class="footer-social">
                     <h4>Sosyal Medya</h4>
                     <div class="social-icons">
-                        <a href="#" aria-label="Instagram"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg></a>
-                        <a href="#" aria-label="Facebook"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg></a>
-                        <a href="#" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a>
+                        <a href="#" aria-label="Instagram"><svg xmlns="http://www.w3.org/2000/svg" width="24"
+                                height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                            </svg></a>
+                        <a href="#" aria-label="Facebook"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                            </svg></a>
+                        <a href="#" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path
+                                    d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z">
+                                </path>
+                            </svg></a>
                     </div>
                 </div>
             </div>
@@ -421,5 +677,168 @@
     </footer>
 
     <script src="assets/js/main.js"></script>
+    <script>
+        // Services Carousel
+        (function () {
+            const track = document.querySelector('.services-carousel-track');
+            const cards = document.querySelectorAll('.services-carousel .service-card');
+            const prevBtn = document.querySelector('.carousel-btn-prev');
+            const nextBtn = document.querySelector('.carousel-btn-next');
+            const dotsContainer = document.querySelector('.carousel-dots');
+
+            if (!track || !cards.length) return;
+
+            let currentIndex = 0;
+            let cardsPerView = 3;
+            let totalSlides = Math.ceil(cards.length / cardsPerView);
+
+            // Update cards per view based on screen size
+            function updateCardsPerView() {
+                if (window.innerWidth <= 768) {
+                    cardsPerView = 1;
+                } else if (window.innerWidth <= 1024) {
+                    cardsPerView = 2;
+                } else {
+                    cardsPerView = 3;
+                }
+                totalSlides = Math.ceil(cards.length / cardsPerView);
+                updateCarousel();
+                updateDots();
+            }
+
+            // Create dots
+            function createDots() {
+                dotsContainer.innerHTML = '';
+                for (let i = 0; i < totalSlides; i++) {
+                    const dot = document.createElement('button');
+                    dot.className = 'carousel-dot';
+                    if (i === 0) dot.classList.add('active');
+                    dot.setAttribute('aria-label', `Slide ${i + 1}`);
+                    dot.addEventListener('click', () => goToSlide(i));
+                    dotsContainer.appendChild(dot);
+                }
+            }
+
+            function updateDots() {
+                const dots = dotsContainer.querySelectorAll('.carousel-dot');
+                dots.forEach((dot, index) => {
+                    dot.classList.toggle('active', index === currentIndex);
+                });
+            }
+
+            function updateCarousel() {
+                const cardWidth = track.offsetWidth / cardsPerView;
+                const offset = -currentIndex * (cardWidth + 30) * cardsPerView;
+                track.style.transform = `translateX(${offset}px)`;
+
+                // Remove disabled state for looping carousel
+                prevBtn.disabled = false;
+                nextBtn.disabled = false;
+                updateDots();
+            }
+
+            function goToSlide(index) {
+                if (index < 0 || index >= totalSlides) return;
+                currentIndex = index;
+                updateCarousel();
+            }
+
+            function nextSlide() {
+                if (currentIndex < totalSlides - 1) {
+                    currentIndex++;
+                } else {
+                    currentIndex = 0; // Loop back to start
+                }
+                updateCarousel();
+            }
+
+            function prevSlide() {
+                if (currentIndex > 0) {
+                    currentIndex--;
+                } else {
+                    currentIndex = totalSlides - 1; // Loop to end
+                }
+                updateCarousel();
+            }
+
+            // Auto-play functionality
+            let autoPlayInterval;
+            let isPaused = false;
+
+            function startAutoPlay() {
+                autoPlayInterval = setInterval(() => {
+                    if (!isPaused) {
+                        nextSlide();
+                    }
+                }, 4000); // Change slide every 4 seconds
+            }
+
+            function stopAutoPlay() {
+                clearInterval(autoPlayInterval);
+            }
+
+            function pauseAutoPlay() {
+                isPaused = true;
+            }
+
+            function resumeAutoPlay() {
+                isPaused = false;
+            }
+
+            // Pause on hover
+            track.parentElement.addEventListener('mouseenter', pauseAutoPlay);
+            track.parentElement.addEventListener('mouseleave', resumeAutoPlay);
+
+            // Touch/Swipe support
+            let startX = 0;
+            let isDragging = false;
+
+            track.addEventListener('touchstart', (e) => {
+                startX = e.touches[0].clientX;
+                isDragging = true;
+            });
+
+            track.addEventListener('touchmove', (e) => {
+                if (!isDragging) return;
+                e.preventDefault();
+            });
+
+            track.addEventListener('touchend', (e) => {
+                if (!isDragging) return;
+                isDragging = false;
+                const endX = e.changedTouches[0].clientX;
+                const diff = startX - endX;
+
+                if (Math.abs(diff) > 50) {
+                    if (diff > 0) {
+                        nextSlide();
+                    } else {
+                        prevSlide();
+                    }
+                }
+            });
+
+            prevBtn.addEventListener('click', prevSlide);
+            nextBtn.addEventListener('click', nextSlide);
+
+            window.addEventListener('resize', updateCardsPerView);
+
+            // Initialize
+            updateCardsPerView();
+            createDots();
+            updateCarousel();
+            startAutoPlay();
+
+            // Pause auto-play when window loses focus
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    pauseAutoPlay();
+                } else {
+                    resumeAutoPlay();
+                }
+            });
+        })();
+    </script>
 </body>
-</html> 
+
+</html>

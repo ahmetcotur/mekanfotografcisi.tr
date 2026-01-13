@@ -1,0 +1,25 @@
+User-agent: *
+Allow: /
+
+# Disallow admin and API directories
+Disallow: /admin/
+Disallow: /api/
+Disallow: /supabase/
+Disallow: /scripts/
+Disallow: /data/
+
+# Disallow form data files
+Disallow: /form_data_*.csv
+Disallow: /*.zip
+
+# Allow important assets
+Allow: /assets/
+Allow: /sitemap.php
+Allow: /sitemap.xml
+
+# Sitemap location
+Sitemap: https://mekanfotografcisi.tr/sitemap.php
+Sitemap: https://mekanfotografcisi.tr/sitemap.xml
+
+# Crawl delay for respectful crawling
+Crawl-delay: 1
