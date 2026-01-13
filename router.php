@@ -39,6 +39,14 @@ if (preg_match('/\.(css|js|jpg|jpeg|png|gif|svg|webp|ico|woff|woff2|ttf|eot|pdf|
 
 // Global Session (Ensures consistency across /login, /admin, and site)
 if (session_status() === PHP_SESSION_NONE) {
+    // CRITICAL: Set explicit session save path for nginx/PHP-FPM
+    $sessionPath = sys_get_temp_dir() . '/php_sessions';
+    if (!is_dir($sessionPath)) {
+        @mkdir($sessionPath, 0777, true);
+    }
+    ini_set('session.save_path', $sessionPath);
+    ini_set('session.gc_maxlifetime', '86400');
+
     // Production-safe session configuration
     ini_set('session.cookie_httponly', '1');
     ini_set('session.cookie_samesite', 'Lax');
@@ -57,21 +65,24 @@ if (session_status() === PHP_SESSION_NONE) {
     }
 }
 
-// Login Route
+// Login Route - MUST exit before template loader
 if ($requestPath === 'login') {
     if (isset($_SESSION['admin_user_id'])) {
         header('Location: /admin/');
         exit;
     }
+    ob_start(); // Prevent any output before login.php
     require_once __DIR__ . '/login.php';
-    exit;
+    ob_end_flush();
+    exit; // CRITICAL: Must exit to prevent template loader
 }
 
-// 1. Admin Panel Route
+// Admin Panel Route - MUST exit before template loader
 if ($requestPath === 'admin' || strpos($requestPath, 'admin/') === 0) {
-    // Serve the admin controller
+    ob_start(); // Prevent any output before admin
     require_once __DIR__ . '/admin/index.php';
-    exit;
+    ob_end_flush();
+    exit; // CRITICAL: Must exit to prevent template loader
 }
 
 // API endpoints

@@ -3,7 +3,7 @@
  * Auto-login Helper
  * Sets session variables to bypass admin login for testing.
  */
-session_start();
+// Session is now started globally in router.php
 
 require_once __DIR__ . '/includes/database.php';
 $db = new DatabaseClient();
