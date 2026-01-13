@@ -16,12 +16,14 @@ Bu kılavuz, mekanfotografcisi.tr projesini Supabase ile nasıl çalıştıraca�
 ## 3. Ortam Değişkenlerini Ayarlama (.env)
 1. Projenizdeki `.env.example` dosyasını kopyalayıp `.env` olarak adlandırın.
 2. Supabase panelinde **Project Settings > API** sekmesine gidin.
-3. Buradaki bilgileri `.env` dosyanıza işleyin:
-   - `SUPABASE_URL`: Project URL
-   - `SUPABASE_ANON_KEY`: anon public key
-   - `SUPABASE_SERVICE_KEY`: service_role key (sadece admin işlemleri için)
-4. Veritabanı bağlantısı için **Project Settings > Database** sekmesine gidin ve "Connection string (URI)" kısmından PostgreSQL bilgilerini alın:
-   - `DB_HOST`: db.xxxxxx.supabase.co
+3. Buradaki bilgileri `.env` dosyanıza işleyin (Kullanıcı tarafından sağlanan güncel bilgiler):
+   - `NEXT_PUBLIC_SUPABASE_URL`: `https://qmqbxmbfvdslgbbllfaf.supabase.co`
+   - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY`: `sb_publishable_54jL2LVYyF5CWBEEu1BUIw_3_SV4dK5`
+   - `SUPABASE_URL`: `https://qmqbxmbfvdslgbbllfaf.supabase.co`
+   - `SUPABASE_ANON_KEY`: `sb_publishable_54jL2LVYyF5CWBEEu1BUIw_3_SV4dK5`
+   - `SUPABASE_SERVICE_KEY`: service_role key (sadece admin/seed işlemleri için)
+4. Veritabanı bağlantısı için **Project Settings > Database** sekmesine gidin ve PostgreSQL bilgilerini alın:
+   - `DB_HOST`: `db.qmqbxmbfvdslgbbllfaf.supabase.co`
    - `DB_PORT`: 5432
    - `DB_NAME`: postgres
    - `DB_USER`: postgres

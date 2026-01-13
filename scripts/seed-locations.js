@@ -11,8 +11,8 @@ const fs = require('fs');
 const path = require('path');
 
 // Supabase configuration
-const SUPABASE_URL = process.env.SUPABASE_URL;
-const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY; // Service role key for admin operations
+const SUPABASE_URL = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY || process.env.NEXT_PUBLIC_SUPABASE_SERVICE_KEY; // Service role key for admin operations
 
 if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
     console.error('❌ Missing required environment variables:');
@@ -42,10 +42,10 @@ function createSlug(text) {
 
 async function seedProvinces(locationData) {
     console.log('🏛️  Seeding provinces...');
-    
+
     const provinces = [];
     const allProvinces = new Set();
-    
+
     // Collect all unique provinces from regions
     locationData.regions.forEach(region => {
         region.provinces.forEach(province => {
@@ -61,66 +61,66 @@ async function seedProvinces(locationData) {
             }
         });
     });
-    
+
     console.log(`   Found ${provinces.length} unique provinces`);
-    
+
     // Insert provinces in batches
     const batchSize = 50;
     let insertedCount = 0;
-    
+
     for (let i = 0; i < provinces.length; i += batchSize) {
         const batch = provinces.slice(i, i + batchSize);
-        
+
         const { data, error } = await supabase
             .from('locations_province')
-            .upsert(batch, { 
+            .upsert(batch, {
                 onConflict: 'slug',
-                ignoreDuplicates: false 
+                ignoreDuplicates: false
             })
             .select('id, name');
-        
+
         if (error) {
-            console.error(`❌ Error inserting province batch ${Math.floor(i/batchSize) + 1}:`, error);
+            console.error(`❌ Error inserting province batch ${Math.floor(i / batchSize) + 1}:`, error);
             continue;
         }
-        
+
         insertedCount += data.length;
-        console.log(`   ✅ Inserted batch ${Math.floor(i/batchSize) + 1}: ${data.length} provinces`);
+        console.log(`   ✅ Inserted batch ${Math.floor(i / batchSize) + 1}: ${data.length} provinces`);
     }
-    
+
     console.log(`✅ Successfully seeded ${insertedCount} provinces\n`);
     return provinces;
 }
 
 async function seedDistricts(locationData) {
     console.log('🏘️  Seeding districts...');
-    
+
     // First, get all province IDs
     const { data: provinces, error: provinceError } = await supabase
         .from('locations_province')
         .select('id, name, slug');
-    
+
     if (provinceError) {
         console.error('❌ Error fetching provinces:', provinceError);
         return;
     }
-    
+
     const provinceMap = {};
     provinces.forEach(province => {
         provinceMap[province.name] = province.id;
     });
-    
+
     const districts = [];
-    
+
     // Process districts from JSON data
     Object.entries(locationData.districts).forEach(([provinceName, districtList]) => {
         const provinceId = provinceMap[provinceName];
-        
+
         if (!provinceId) {
             console.warn(`⚠️  Province not found: ${provinceName}`);
             return;
         }
-        
+
         districtList.forEach(district => {
             districts.push({
                 province_id: provinceId,
@@ -131,40 +131,40 @@ async function seedDistricts(locationData) {
             });
         });
     });
-    
+
     console.log(`   Found ${districts.length} districts across ${Object.keys(locationData.districts).length} provinces`);
-    
+
     // Insert districts in batches
     const batchSize = 100;
     let insertedCount = 0;
-    
+
     for (let i = 0; i < districts.length; i += batchSize) {
         const batch = districts.slice(i, i + batchSize);
-        
+
         const { data, error } = await supabase
             .from('locations_district')
-            .upsert(batch, { 
+            .upsert(batch, {
                 onConflict: 'province_id,slug',
-                ignoreDuplicates: false 
+                ignoreDuplicates: false
             })
             .select('id, name');
-        
+
         if (error) {
-            console.error(`❌ Error inserting district batch ${Math.floor(i/batchSize) + 1}:`, error);
+            console.error(`❌ Error inserting district batch ${Math.floor(i / batchSize) + 1}:`, error);
             continue;
         }
-        
+
         insertedCount += data.length;
-        console.log(`   ✅ Inserted batch ${Math.floor(i/batchSize) + 1}: ${data.length} districts`);
+        console.log(`   ✅ Inserted batch ${Math.floor(i / batchSize) + 1}: ${data.length} districts`);
     }
-    
+
     console.log(`✅ Successfully seeded ${insertedCount} districts\n`);
     return districts;
 }
 
 async function seedServices() {
     console.log('🛠️  Seeding default services...');
-    
+
     const services = [
         {
             name: 'Mimari Fotoğrafçılık',
@@ -191,27 +191,27 @@ async function seedServices() {
             is_active: true
         }
     ];
-    
+
     const { data, error } = await supabase
         .from('services')
-        .upsert(services, { 
+        .upsert(services, {
             onConflict: 'slug',
-            ignoreDuplicates: false 
+            ignoreDuplicates: false
         })
         .select('id, name');
-    
+
     if (error) {
         console.error('❌ Error inserting services:', error);
         return;
     }
-    
+
     console.log(`✅ Successfully seeded ${data.length} services\n`);
     return data;
 }
 
 async function seedVariationBlocks() {
     console.log('📝 Seeding SEO variation blocks...');
-    
+
     const variationBlocks = [
         // Intro variations
         {
@@ -235,7 +235,7 @@ Akdeniz ve Ege bölgesinin eşsiz güzelliklerini mekanlarınızla harmanlayarak
 Her mekanın kendine özgü bir hikayesi vardır. Biz bu hikayeleri, profesyonel fotoğrafçılık teknikleri ve sanatsal bakış açımızla görselleştiriyoruz. Antalya ve Muğla'nın doğal ışığından faydalanarak, mekanlarınızı en iyi şekilde yansıtıyoruz.`,
             weight: 1
         },
-        
+
         // Process variations
         {
             block_type: 'process',
@@ -268,7 +268,7 @@ Detaylı çekim planımıza göre, mekanınızın her köşesini profesyonelce f
 Renk düzeltme, kontrast ayarları ve kalite kontrolü ile fotoğraflarınızı teslime hazırlıyoruz.`,
             weight: 1
         },
-        
+
         // Benefits variations
         {
             block_type: 'benefits',
@@ -292,7 +292,7 @@ Renk düzeltme, kontrast ayarları ve kalite kontrolü ile fotoğraflarınızı 
 ✓ **Teknik Destek**: Çekim sonrası danışmanlık hizmeti`,
             weight: 1
         },
-        
+
         // FAQ variations
         {
             block_type: 'faq',
@@ -308,7 +308,7 @@ Mekanınızın temiz ve düzenli olması yeterlidir. Gerekli tüm ekipmanları b
 Çekim bedeli ödendikten sonra tüm fotoğrafların kullanım hakkı size aittir.`,
             weight: 1
         },
-        
+
         // CTA variations
         {
             block_type: 'cta',
@@ -330,78 +330,78 @@ Hayalinizdeki fotoğraflar için hemen harekete geçin! Deneyimli ekibimiz ve pr
             weight: 1
         }
     ];
-    
+
     const { data, error } = await supabase
         .from('seo_variation_blocks')
-        .upsert(variationBlocks, { 
+        .upsert(variationBlocks, {
             onConflict: 'id',
-            ignoreDuplicates: false 
+            ignoreDuplicates: false
         })
         .select('id, block_type');
-    
+
     if (error) {
         console.error('❌ Error inserting variation blocks:', error);
         return;
     }
-    
+
     console.log(`✅ Successfully seeded ${data.length} variation blocks\n`);
     return data;
 }
 
 async function generateVerificationReport() {
     console.log('📊 Generating verification report...');
-    
+
     // Count provinces
     const { count: provinceCount, error: provinceError } = await supabase
         .from('locations_province')
         .select('*', { count: 'exact', head: true });
-    
+
     if (provinceError) {
         console.error('❌ Error counting provinces:', provinceError);
         return;
     }
-    
+
     // Count districts
     const { count: districtCount, error: districtError } = await supabase
         .from('locations_district')
         .select('*', { count: 'exact', head: true });
-    
+
     if (districtError) {
         console.error('❌ Error counting districts:', districtError);
         return;
     }
-    
+
     // Count services
     const { count: serviceCount, error: serviceError } = await supabase
         .from('services')
         .select('*', { count: 'exact', head: true });
-    
+
     if (serviceError) {
         console.error('❌ Error counting services:', serviceError);
         return;
     }
-    
+
     // Count variation blocks
     const { count: blockCount, error: blockError } = await supabase
         .from('seo_variation_blocks')
         .select('*', { count: 'exact', head: true });
-    
+
     if (blockError) {
         console.error('❌ Error counting variation blocks:', blockError);
         return;
     }
-    
+
     // Get sample data
     const { data: sampleProvinces } = await supabase
         .from('locations_province')
         .select('name, slug, region_name, plate_code')
         .limit(5);
-    
+
     const { data: sampleDistricts } = await supabase
         .from('locations_district')
         .select('name, slug, locations_province(name)')
         .limit(5);
-    
+
     console.log('\n📋 VERIFICATION REPORT');
     console.log('='.repeat(50));
     console.log(`Provinces seeded: ${provinceCount}/81`);
@@ -412,12 +412,12 @@ async function generateVerificationReport() {
     sampleProvinces?.forEach(p => {
         console.log(`   ${p.name} (${p.slug}) - ${p.region_name} - Plate: ${p.plate_code}`);
     });
-    
+
     console.log('\n🏘️  Sample Districts:');
     sampleDistricts?.forEach(d => {
         console.log(`   ${d.name} (${d.slug}) - ${d.locations_province?.name}`);
     });
-    
+
     console.log('\n✅ Seed operation completed successfully!');
     console.log('\n🔧 Next Steps:');
     console.log('1. Access admin panel to activate provinces/districts');
@@ -429,20 +429,20 @@ async function generateVerificationReport() {
 async function main() {
     try {
         console.log('🚀 Starting Turkey locations seed process...\n');
-        
+
         // Load location data
         const dataPath = path.join(__dirname, '..', 'data', 'turkey-locations.json');
         const locationData = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
-        
+
         // Seed data in order
         await seedProvinces(locationData);
         await seedDistricts(locationData);
         await seedServices();
         await seedVariationBlocks();
-        
+
         // Generate verification report
         await generateVerificationReport();
-        
+
     } catch (error) {
         console.error('❌ Fatal error during seed process:', error);
         process.exit(1);
