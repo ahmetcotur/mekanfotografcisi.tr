@@ -187,19 +187,23 @@
 
                         <div class="space-y-6">
                             <div>
-                                <label for="preferred_date" class="block text-sm font-medium text-slate-700 mb-1">Tercih Edilen Tarih</label>
-                                <input type="date" id="preferred_date" name="preferred_date" 
+                                <label for="preferred_date" class="block text-sm font-medium text-slate-700 mb-1">Tercih
+                                    Edilen Tarih</label>
+                                <input type="date" id="preferred_date" name="preferred_date"
                                     class="w-full rounded-xl border-slate-200 shadow-sm focus:border-brand-500 py-3 px-4">
                             </div>
 
                             <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-3">Tercih Edilen Zaman Aralığı</label>
+                                <label class="block text-sm font-medium text-slate-700 mb-3">Tercih Edilen Zaman
+                                    Aralığı</label>
                                 <div class="grid grid-cols-2 gap-3">
-                                    <label class="relative flex cursor-pointer rounded-xl border border-slate-200 p-3 hover:bg-slate-50 transition-all has-[:checked]:border-brand-500 has-[:checked]:bg-brand-50">
+                                    <label
+                                        class="relative flex cursor-pointer rounded-xl border border-slate-200 p-3 hover:bg-slate-50 transition-all has-[:checked]:border-brand-500 has-[:checked]:bg-brand-50">
                                         <input type="radio" name="preferred_time" value="sabah" class="sr-only">
                                         <span class="text-xs font-bold text-slate-600">Gündüz (Soft Işık)</span>
                                     </label>
-                                    <label class="relative flex cursor-pointer rounded-xl border border-slate-200 p-3 hover:bg-slate-50 transition-all has-[:checked]:border-brand-500 has-[:checked]:bg-brand-50">
+                                    <label
+                                        class="relative flex cursor-pointer rounded-xl border border-slate-200 p-3 hover:bg-slate-50 transition-all has-[:checked]:border-brand-500 has-[:checked]:bg-brand-50">
                                         <input type="radio" name="preferred_time" value="aksam" class="sr-only">
                                         <span class="text-xs font-bold text-slate-600">Gün Batımı / Akşam</span>
                                     </label>
@@ -211,15 +215,21 @@
                                 <div class="flex flex-wrap gap-2">
                                     <label class="cursor-pointer">
                                         <input type="radio" name="urgency" value="hemen" class="peer sr-only">
-                                        <span class="px-4 py-2 rounded-full border border-slate-200 text-xs font-bold text-slate-500 peer-checked:bg-brand-600 peer-checked:text-white peer-checked:border-brand-600 transition-all block">Hemen (1-3 Gün)</span>
+                                        <span
+                                            class="px-4 py-2 rounded-full border border-slate-200 text-xs font-bold text-slate-500 peer-checked:bg-brand-600 peer-checked:text-white peer-checked:border-brand-600 transition-all block">Hemen
+                                            (1-3 Gün)</span>
                                     </label>
                                     <label class="cursor-pointer">
                                         <input type="radio" name="urgency" value="normal" class="peer sr-only" checked>
-                                        <span class="px-4 py-2 rounded-full border border-slate-200 text-xs font-bold text-slate-500 peer-checked:bg-brand-600 peer-checked:text-white peer-checked:border-brand-600 transition-all block">Normal (1-2 Hafta)</span>
+                                        <span
+                                            class="px-4 py-2 rounded-full border border-slate-200 text-xs font-bold text-slate-500 peer-checked:bg-brand-600 peer-checked:text-white peer-checked:border-brand-600 transition-all block">Normal
+                                            (1-2 Hafta)</span>
                                     </label>
                                     <label class="cursor-pointer">
                                         <input type="radio" name="urgency" value="ileride" class="peer sr-only">
-                                        <span class="px-4 py-2 rounded-full border border-slate-200 text-xs font-bold text-slate-500 peer-checked:bg-brand-600 peer-checked:text-white peer-checked:border-brand-600 transition-all block">İleri Tarihli</span>
+                                        <span
+                                            class="px-4 py-2 rounded-full border border-slate-200 text-xs font-bold text-slate-500 peer-checked:bg-brand-600 peer-checked:text-white peer-checked:border-brand-600 transition-all block">İleri
+                                            Tarihli</span>
                                     </label>
                                 </div>
                             </div>
@@ -235,22 +245,26 @@
 
                         <div class="space-y-4">
                             <div>
-                                <label for="wizard_name" class="block text-sm font-medium text-slate-700">Ad Soyad</label>
+                                <label for="wizard_name" class="block text-sm font-medium text-slate-700">Ad
+                                    Soyad</label>
                                 <input type="text" name="name" id="wizard_name" required
                                     class="mt-1 block w-full rounded-xl border-slate-200 shadow-sm focus:border-brand-500 focus:ring-brand-500 py-3 px-4">
                             </div>
                             <div>
-                                <label for="wizard_email" class="block text-sm font-medium text-slate-700">E-posta Adresi</label>
+                                <label for="wizard_email" class="block text-sm font-medium text-slate-700">E-posta
+                                    Adresi</label>
                                 <input type="email" name="email" id="wizard_email" required
                                     class="mt-1 block w-full rounded-xl border-slate-200 shadow-sm focus:border-brand-500 focus:ring-brand-500 py-3 px-4">
                             </div>
                             <div>
-                                <label for="wizard_phone" class="block text-sm font-medium text-slate-700">Telefon Numarası</label>
+                                <label for="wizard_phone" class="block text-sm font-medium text-slate-700">Telefon
+                                    Numarası</label>
                                 <input type="tel" name="phone" id="wizard_phone" required
                                     class="mt-1 block w-full rounded-xl border-slate-200 shadow-sm focus:border-brand-500 focus:ring-brand-500 py-3 px-4">
                             </div>
                             <div>
-                                <label for="wizard_location" class="block text-sm font-medium text-slate-700">Proje Konumu (İl/İlçe)</label>
+                                <label for="wizard_location" class="block text-sm font-medium text-slate-700">Proje
+                                    Konumu (İl/İlçe)</label>
                                 <input type="text" name="location" id="wizard_location"
                                     class="mt-1 block w-full rounded-xl border-slate-200 shadow-sm focus:border-brand-500 focus:ring-brand-500 py-3 px-4">
                             </div>
@@ -278,4 +292,4 @@
     </div>
 </div>
 
-<script src="/assets/js/quote-wizard.js"></script>
+<script src="/assets/js/quote-wizard-v2.js?v=2.1.0"></script>

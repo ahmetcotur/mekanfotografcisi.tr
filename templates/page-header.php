@@ -60,7 +60,7 @@ $schema = [
         (function () {
             const originalWarn = console.warn;
             console.warn = function (...args) {
-                if (args[0] && typeof args[0] === 'string' && args[0].includes('cdn.tailwindcss.com should not be used in production')) return;
+                if (args[0] && typeof args[0] === 'string' && (args[0].includes('tailwindcss') || args[0].includes('production'))) return;
                 originalWarn.apply(console, args);
             };
         })();
@@ -220,8 +220,8 @@ $schema = [
 
     <?php if (isset($schemaMarkup)): ?>
         <script type="application/ld+json">
-                                    <?= json_encode($schemaMarkup, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>
-                                        </script>
+                                        <?= json_encode($schemaMarkup, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>
+                                            </script>
     <?php endif; ?>
 </head>
 

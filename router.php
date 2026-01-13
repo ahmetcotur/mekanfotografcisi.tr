@@ -34,8 +34,6 @@ $requestPath = trim($requestPath, '/');
 
 // Login Route
 if ($requestPath === 'login') {
-    // If already logged in, go to admin
-    session_start();
     if (isset($_SESSION['admin_user_id'])) {
         header('Location: /admin/');
         exit;
@@ -47,6 +45,11 @@ if ($requestPath === 'login') {
 // Static files - serve directly
 if (preg_match('/\.(css|js|jpg|jpeg|png|gif|svg|webp|ico|woff|woff2|ttf|eot|pdf|xml|txt)$/i', $requestPath)) {
     return false;
+}
+
+// Global Session (Ensures consistency across /login, /admin, and site)
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
 }
 
 // 1. Admin Panel Route

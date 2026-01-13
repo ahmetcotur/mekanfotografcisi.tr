@@ -5,7 +5,9 @@
 require_once __DIR__ . '/../includes/database.php';
 $db = new DatabaseClient();
 
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 if (!isset($_SESSION['admin_user_id'])) {
     header('Location: /login');
     exit;

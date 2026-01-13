@@ -4,6 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        (function () {
+            const originalWarn = console.warn;
+            console.warn = function (...args) {
+                if (args[0] && typeof args[0] === 'string' && (args[0].includes('tailwindcss') || args[0].includes('production'))) return;
+                originalWarn.apply(console, args);
+            };
+        })();
+    </script>
     <title>
         <?= $page_title ?> - Mekan Fotoğrafçısı Admin
     </title>
