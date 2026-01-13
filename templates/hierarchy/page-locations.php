@@ -1,34 +1,65 @@
 <?php
 /**
  * Locations Archive Template (Hierarchical)
- * Lists all available coverage areas Grouped by City -> District
+ * Lists all ACTIVE coverage areas Grouped by City -> District
  */
 include __DIR__ . '/../page-header.php';
 global $db;
 
-// Fetch all published SEO pages from 'posts' table
-$seoPages = $db->select('posts', ['post_type' => 'seo_page', 'post_status' => 'publish', 'limit' => 500, 'order' => 'title ASC']);
+// 1. Fetch Provinces
+// We fetch all and filter in PHP to be robust against IS_ACTIVE column type variations (bool/string/int)
+$allProvinces = $db->select('locations_province', ['limit' => 200, 'order' => 'name ASC']);
+$activeProvinces = [];
+$provinceMap = [];
 
-// Process hierarchy based on slugs or structure
-// Assuming slug format: locations/city/district
-$hierarchy = [];
-
-foreach ($seoPages as $page) {
-    // Add location_name dynamically for display
-    $page['location_name'] = str_replace([' Mekan Fotoğrafçısı', ' Fotoğrafçısı'], '', $page['title']);
-
-    // Ensure slug is clean
-    $cleanSlug = trim($page['slug'], '/');
-    $slugParts = explode('/', $cleanSlug);
-    // Parts: 0=>locations, 1=>city, 2=>district (optional)
-
-    if (count($slugParts) >= 3) {
-        $city = ucfirst($slugParts[1]);
-        $page['clean_slug'] = '/' . $cleanSlug; // Ensure absolute path
-        $hierarchy[$city][] = $page;
+foreach ($allProvinces as $p) {
+    // Robust active check
+    $isActive = $p['is_active'];
+    if ($isActive === true || $isActive === 't' || $isActive === 'true' || $isActive === 1 || $isActive === '1') {
+        $activeProvinces[$p['id']] = $p;
+        $provinceMap[$p['id']] = $p['name'];
     }
 }
-// Sort cities
+
+// 2. Fetch Districts for Active Provinces
+$hierarchy = [];
+if (!empty($activeProvinces)) {
+    // Determine IDs to fetch districts for
+    $provIds = array_keys($activeProvinces);
+
+    // Fetch all districts (optimization: could filter by province_id IN (...) but DatabaseClient might not support IN array easily)
+    // We'll fetch all districts and filter. The table has ~973 rows, which is manageable.
+    $allDistricts = $db->select('locations_district', ['limit' => 2000, 'order' => 'name ASC']);
+
+    foreach ($allDistricts as $d) {
+        // Check if district itself is active
+        $isDistActive = $d['is_active'];
+        $isActive = ($isDistActive === true || $isDistActive === 't' || $isDistActive === 'true' || $isDistActive === 1 || $isDistActive === '1');
+
+        if ($isActive && isset($activeProvinces[$d['province_id']])) {
+            $provName = $activeProvinces[$d['province_id']]['name'];
+
+            // Format data for display
+            $d['clean_slug'] = '/' . $d['slug'] . '-mekan-fotografcisi';
+            $d['location_name'] = $d['name'];
+
+            $hierarchy[$provName][] = $d;
+        }
+    }
+}
+
+// Also add provinces that have no active districts but are active themselves?
+// Usually if a province is active, we list it. If it has no districts, we might still want to show the province page.
+foreach ($activeProvinces as $p) {
+    if (!isset($hierarchy[$p['name']])) {
+        // Create an entry for the province itself if needed, or leave empty array if we only list districts under it.
+        // The UI loops: foreach ($hierarchy as $city => $districts).
+        // If $districts is empty, the card shows "0 Bölge".
+        $hierarchy[$p['name']] = [];
+    }
+}
+
+// Sort cities alphabetically
 ksort($hierarchy);
 
 $randomPhoto = get_random_pexels_photo();
@@ -69,7 +100,7 @@ $heroImage = $randomPhoto ? $randomPhoto['src'] : '/assets/images/hero-bg.jpg';
 
         <?php if (empty($hierarchy)): ?>
             <div class="text-center py-20 bg-white rounded-3xl border border-slate-100 shadow-sm">
-                <p class="text-slate-500 text-lg">Henüz bölge eklenmemiş.</p>
+                <p class="text-slate-500 text-lg">Henüz aktif bölge bulunmuyor.</p>
             </div>
         <?php else: ?>
 
@@ -95,26 +126,30 @@ $heroImage = $randomPhoto ? $randomPhoto['src'] : '/assets/images/hero-bg.jpg';
 
                         <!-- Districts List -->
                         <div class="p-8">
-                            <div class="grid sm:grid-cols-2 gap-4">
-                                <?php foreach ($districts as $page): ?>
-                                    <a href="<?= htmlspecialchars($page['clean_slug']) ?>"
-                                        class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors group/item">
-                                        <div
-                                            class="w-2 h-2 rounded-full bg-brand-200 group-hover/item:bg-brand-500 transition-colors">
-                                        </div>
-                                        <span class="font-medium text-slate-700 group-hover/item:text-brand-700 transition-colors">
-                                            <?= htmlspecialchars($page['location_name']) ?>
-                                        </span>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            class="ml-auto text-slate-300 opacity-0 group-hover/item:opacity-100 transition-all transform translate-x-3 group-hover/item:translate-x-0">
-                                            <path d="M5 12h14"></path>
-                                            <path d="m12 5 7 7-7 7"></path>
-                                        </svg>
-                                    </a>
-                                <?php endforeach; ?>
-                            </div>
+                            <?php if (empty($districts)): ?>
+                                <p class="text-sm text-slate-400 italic">Bu şehirde henüz aktif ilçe yok.</p>
+                            <?php else: ?>
+                                <div class="grid sm:grid-cols-2 gap-4">
+                                    <?php foreach ($districts as $page): ?>
+                                        <a href="<?= htmlspecialchars($page['clean_slug']) ?>"
+                                            class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors group/item">
+                                            <div
+                                                class="w-2 h-2 rounded-full bg-brand-200 group-hover/item:bg-brand-500 transition-colors">
+                                            </div>
+                                            <span class="font-medium text-slate-700 group-hover/item:text-brand-700 transition-colors">
+                                                <?= htmlspecialchars($page['location_name']) ?>
+                                            </span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                class="ml-auto text-slate-300 opacity-0 group-hover/item:opacity-100 transition-all transform translate-x-3 group-hover/item:translate-x-0">
+                                                <path d="M5 12h14"></path>
+                                                <path d="m12 5 7 7-7 7"></path>
+                                            </svg>
+                                        </a>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
                 <?php endforeach; ?>
