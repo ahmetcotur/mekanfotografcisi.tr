@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // For compatibility with some older parts of the code
                 $_SESSION['user_id'] = $user['id'];
 
-                header('Location: /admin/?page=dashboard');
+                header('Location: /admin/');
                 exit;
             } else {
                 $error = 'Hatalı e-posta veya şifre.';
