@@ -120,8 +120,12 @@ class DatabaseClient
                 continue;
             } else {
                 // Direct column = value
-                $conditions[] = $this->quoteIdentifier($key) . " = ?";
-                $values[] = $value;
+                if ($value === null) {
+                    $conditions[] = $this->quoteIdentifier($key) . " IS NULL";
+                } else {
+                    $conditions[] = $this->quoteIdentifier($key) . " = ?";
+                    $values[] = $value;
+                }
             }
         }
 
