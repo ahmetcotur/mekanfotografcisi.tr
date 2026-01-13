@@ -151,7 +151,7 @@
 </footer>
 
 <!-- JavaScript -->
-<script src="/assets/js/main.js?v=MF1.1"></script>
+<script src="/assets/js/main.js?v=<?= time() ?>"></script>
 
 <!-- SweetAlert2 for Frontend Modals -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -184,7 +184,7 @@
     </div>
 </div>
 
-<script src="/assets/js/quote-wizard-v2.js?v=2.0.0"></script>
+<script src="/assets/js/quote-wizard-v2.js?v=<?= time() ?>"></script>
 
 <script>
     function openInquiryModal() {

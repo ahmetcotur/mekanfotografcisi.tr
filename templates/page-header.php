@@ -216,12 +216,12 @@ $schema = [
     </style>
 
     <!-- Legacy Styles (keeping specific ones if needed, but prioritizing Tailwind) -->
-    <link rel="stylesheet" href="/assets/css/styles.css">
+    <link rel="stylesheet" href="/assets/css/styles.css?v=<?= time() ?>">
 
     <?php if (isset($schemaMarkup)): ?>
         <script type="application/ld+json">
-                                        <?= json_encode($schemaMarkup, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>
-                                            </script>
+                                            <?= json_encode($schemaMarkup, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>
+                                                </script>
     <?php endif; ?>
 </head>
 
