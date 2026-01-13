@@ -209,6 +209,49 @@ export default function Locations() {
         }
     };
 
+    const handleImportTowns = async () => {
+        if (!selectedDistrict || !selectedProvince) return;
+
+        try {
+            const response = await api.post('/admin-update.php', {
+                action: 'get-available-towns',
+                province: selectedProvince.name,
+                district: selectedDistrict.name
+            });
+
+            const availableTowns = response.data.data;
+
+            if (!availableTowns || availableTowns.length === 0) {
+                Swal.fire('Bilgi', 'Bu bölge için hazır mahalle bulunamadı. Lütfen manuel ekleyin.', 'info');
+                return;
+            }
+
+            const { value: selectedTowns } = await Swal.fire({
+                title: 'Kütüphaneden Seç',
+                input: 'select',
+                inputOptions: availableTowns.reduce((acc, curr) => ({ ...acc, [curr]: curr }), {}),
+                inputPlaceholder: 'Mahalle Seçiniz',
+                showCancelButton: true,
+                confirmButtonText: 'Ekle'
+            });
+
+            if (selectedTowns) {
+                await api.post('/admin-update.php', {
+                    action: 'save-location',
+                    table: 'locations_town',
+                    name: selectedTowns,
+                    district_id: selectedDistrict.id
+                });
+                loadTowns(selectedDistrict.id);
+                Swal.fire('Eklendi', '', 'success');
+            }
+
+        } catch (error) {
+            console.error(error);
+            Swal.fire('Hata', 'Liste alınamadı', 'error');
+        }
+    };
+
     if (loading) return <div className="text-center py-12">Yükleniyor...</div>;
 
     return (
@@ -306,9 +349,14 @@ export default function Locations() {
                         {selectedDistrict && <span className="text-[10px] text-gray-400 font-mono uppercase tracking-widest">{selectedDistrict.name}</span>}
                     </div>
                     {selectedDistrict && (
-                        <button onClick={handleAddTown} className="p-2 bg-white hover:bg-gray-50 border border-gray-200 text-blue-600 rounded-xl transition-all shadow-sm">
-                            + Ekle
-                        </button>
+                        <div className="flex gap-2">
+                            <button onClick={handleImportTowns} className="p-2 bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-600 rounded-xl transition-all shadow-sm" title="Kütüphaneden Aktar">
+                                📥
+                            </button>
+                            <button onClick={handleAddTown} className="p-2 bg-white hover:bg-gray-50 border border-gray-200 text-blue-600 rounded-xl transition-all shadow-sm">
+                                + Ekle
+                            </button>
+                        </div>
                     )}
                 </div>
                 <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden h-[calc(100vh-200px)] overflow-y-auto custom-scrollbar">

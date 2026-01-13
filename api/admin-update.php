@@ -233,10 +233,18 @@ try {
         echo json_encode(['success' => true, 'data' => $result]);
         exit;
 
-    }
+    } elseif ($action === 'get-available-towns') {
+        $province = $data['province'] ?? '';
+        $district = $data['district'] ?? '';
 
-    // Include previous specialized actions for compatibility
-    require_once __DIR__ . '/admin-update-specialized.php';
+        require_once __DIR__ . '/../includes/Core/TurkeyLocationService.php';
+        $locationService = new \Core\TurkeyLocationService();
+        $towns = $locationService->getTowns($province, $district);
+
+        echo json_encode(['success' => true, 'data' => $towns]);
+        exit;
+
+    }
 
 } catch (Exception $e) {
     http_response_code(400);
