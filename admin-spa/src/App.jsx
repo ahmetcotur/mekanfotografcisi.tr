@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
@@ -11,12 +12,17 @@ import ProtectedRoute from './components/ProtectedRoute';
 import useAuthStore from './store/authStore';
 
 function App() {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const { isAuthenticated, initialize } = useAuthStore();
+
+  // Initialize auth state from localStorage on app load
+  useEffect(() => {
+    initialize();
+  }, [initialize]);
 
   return (
     <BrowserRouter basename="/admin">
       <Routes>
-        <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login />} />
+        <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />} />
 
         <Route element={<ProtectedRoute />}>
           <Route element={<Layout />}>
@@ -28,6 +34,9 @@ function App() {
             <Route path="/settings" element={<Settings />} />
           </Route>
         </Route>
+
+        {/* Catch all - redirect to login */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );

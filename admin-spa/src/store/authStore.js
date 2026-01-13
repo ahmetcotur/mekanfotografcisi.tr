@@ -2,8 +2,18 @@ import { create } from 'zustand';
 
 const useAuthStore = create((set) => ({
     user: null,
-    token: localStorage.getItem('admin_token'),
-    isAuthenticated: !!localStorage.getItem('admin_token'),
+    token: null,
+    isAuthenticated: false,
+
+    // Initialize from localStorage
+    initialize: () => {
+        const token = localStorage.getItem('admin_token');
+        if (token) {
+            set({ token, isAuthenticated: true });
+        } else {
+            set({ token: null, user: null, isAuthenticated: false });
+        }
+    },
 
     login: (token, user) => {
         localStorage.setItem('admin_token', token);
