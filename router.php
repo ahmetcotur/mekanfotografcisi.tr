@@ -201,7 +201,7 @@ if ($post && $post->post_type === 'seo_page') {
         }
     }
 
-    // B. Check District Status (if applicable)
+    // B. Check District and Town Status (if applicable)
     // Legacy pages might not have district_id, need similar fallback if we had district pages.
     // For now, districts usually have province_id set if generated recently.
     if ($post) {
@@ -212,6 +212,19 @@ if ($post && $post->post_type === 'seo_page') {
                 $isActive = (string) $dist[0]['is_active'];
                 if ($isActive === 'false' || $isActive === '' || $isActive === '0') {
                     $post = null;
+                }
+            }
+        }
+
+        if ($post) {
+            $town_id = $post->getMeta('town_id');
+            if ($town_id) {
+                $town = $db->select('locations_town', ['id' => $town_id]);
+                if (!empty($town)) {
+                    $isActive = (string) $town[0]['is_active'];
+                    if ($isActive === 'false' || $isActive === '' || $isActive === '0') {
+                        $post = null;
+                    }
                 }
             }
         }

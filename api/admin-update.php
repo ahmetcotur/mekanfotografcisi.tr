@@ -209,6 +209,10 @@ try {
             $dbData['province_id'] = $data['province_id'];
         }
 
+        if ($table === 'locations_town') {
+            $dbData['district_id'] = $data['district_id'];
+        }
+
         if ($id) {
             $result = $db->update($table, $dbData, ['id' => $id]);
         } else {

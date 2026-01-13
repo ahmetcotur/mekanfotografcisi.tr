@@ -6,7 +6,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 export default function Locations() {
     const [provinces, setProvinces] = useState([]);
     const [districts, setDistricts] = useState([]);
+    const [towns, setTowns] = useState([]);
+
     const [selectedProvince, setSelectedProvince] = useState(null);
+    const [selectedDistrict, setSelectedDistrict] = useState(null);
+
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -38,9 +42,27 @@ export default function Locations() {
         }
     };
 
+    const loadTowns = async (districtId) => {
+        try {
+            const response = await api.get(`/admin-update.php?action=list&table=locations_town&district_id=${districtId}`);
+            if (response.data.success) {
+                setTowns(response.data.data || []);
+            }
+        } catch (error) {
+            console.error('Failed to load towns');
+        }
+    };
+
     const handleSelectProvince = (province) => {
         setSelectedProvince(province);
+        setSelectedDistrict(null); // Reset detail selection
+        setTowns([]); // Clear detail data
         loadDistricts(province.id);
+    };
+
+    const handleSelectDistrict = (district) => {
+        setSelectedDistrict(district);
+        loadTowns(district.id);
     };
 
     const toggleActive = async (id, isActive, table) => {
@@ -51,8 +73,11 @@ export default function Locations() {
                 id,
                 data: { is_active: !isActive }
             });
+
+            // Refresh logic
             if (table === 'locations_province') loadProvinces();
-            else loadDistricts(selectedProvince.id);
+            else if (table === 'locations_district') loadDistricts(selectedProvince.id);
+            else if (table === 'locations_town') loadTowns(selectedDistrict.id);
 
             Swal.fire({
                 title: 'Güncellendi',
@@ -70,7 +95,7 @@ export default function Locations() {
     const handleDelete = async (id, table) => {
         const result = await Swal.fire({
             title: 'Emin misiniz?',
-            text: 'Bu işlem geri alınamaz!',
+            text: 'Bu işlem ve altındaki tüm bağlı veriler silinecektir!',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Evet, sil!',
@@ -84,12 +109,20 @@ export default function Locations() {
         if (result.isConfirmed) {
             try {
                 await api.post('/admin-update.php', { action: 'delete', table, id });
+
                 if (table === 'locations_province') {
                     loadProvinces();
                     setSelectedProvince(null);
-                } else {
+                    setSelectedDistrict(null);
+                    setTowns([]);
+                } else if (table === 'locations_district') {
                     loadDistricts(selectedProvince.id);
+                    setSelectedDistrict(null);
+                    setTowns([]);
+                } else {
+                    loadTowns(selectedDistrict.id);
                 }
+
                 Swal.fire('Silindi', '', 'success');
             } catch (error) {
                 Swal.fire('Hata', 'Silme başarısız', 'error');
@@ -149,142 +182,167 @@ export default function Locations() {
         }
     };
 
+    const handleAddTown = async () => {
+        if (!selectedDistrict) return;
+        const { value: name } = await Swal.fire({
+            title: 'Yeni Mahalle/Belde Ekle',
+            input: 'text',
+            inputLabel: 'Mahalle/Belde Adı',
+            inputPlaceholder: 'Örn: Göcek, Kalkan, Bitez...',
+            showCancelButton: true,
+            confirmButtonText: 'Ekle',
+            cancelButtonText: 'İptal'
+        });
+
+        if (name) {
+            try {
+                await api.post('/admin-update.php', {
+                    action: 'save-location',
+                    table: 'locations_town',
+                    name,
+                    district_id: selectedDistrict.id
+                });
+                loadTowns(selectedDistrict.id);
+            } catch (error) {
+                Swal.fire('Hata', 'Eklenemedi', 'error');
+            }
+        }
+    };
+
     if (loading) return <div className="text-center py-12">Yükleniyor...</div>;
 
     return (
         <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="grid grid-cols-1 lg:grid-cols-2 gap-8"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
-            {/* Provinces Column */}
-            <div className="space-y-6">
-                <div className="flex justify-between items-center">
-                    <div>
-                        <h1 className="text-3xl font-bold text-gray-800 tracking-tight">İller</h1>
-                        <p className="text-gray-500 text-sm">Hizmet verdiğiniz ana bölgeler</p>
-                    </div>
-                    <button
-                        onClick={handleAddProvince}
-                        className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all flex items-center gap-2"
-                    >
-                        <span>+</span> Yeni İl
+            {/* 1. Column: Provinces */}
+            <div className="space-y-4">
+                <div className="flex justify-between items-center px-2">
+                    <h2 className="text-xl font-bold text-gray-800 tracking-tight">İller</h2>
+                    <button onClick={handleAddProvince} className="p-2 bg-white hover:bg-gray-50 border border-gray-200 text-blue-600 rounded-xl transition-all shadow-sm">
+                        + Ekle
                     </button>
                 </div>
+                <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden h-[calc(100vh-200px)] overflow-y-auto custom-scrollbar">
+                    {provinces.map((province) => (
+                        <div
+                            key={province.id}
+                            className={`p-4 border-b border-gray-50 cursor-pointer transition-all ${selectedProvince?.id === province.id ? 'bg-blue-50 border-l-4 border-l-blue-500' : 'hover:bg-gray-50'}`}
+                            onClick={() => handleSelectProvince(province)}
+                        >
+                            <div className="flex justify-between items-center">
+                                <span className="font-bold text-gray-700">{province.name}</span>
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={(e) => { e.stopPropagation(); toggleActive(province.id, province.is_active, 'locations_province'); }}
+                                        className={`w-2 h-2 rounded-full ${province.is_active ? 'bg-green-500' : 'bg-red-300'}`}
+                                        title={province.is_active ? 'Aktif' : 'Pasif'}
+                                    ></button>
+                                    <button onClick={(e) => { e.stopPropagation(); handleDelete(province.id, 'locations_province'); }} className="text-xs text-red-500 opacity-20 hover:opacity-100">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                    {provinces.length === 0 && <div className="p-8 text-center text-gray-400 text-sm">İl bulunamadı.</div>}
+                </div>
+            </div>
 
-                <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
-                    {provinces.length === 0 ? (
-                        <div className="p-12 text-center text-gray-400 italic">Henüz il eklenmemiş.</div>
+            {/* 2. Column: Districts */}
+            <div className="space-y-4">
+                <div className="flex justify-between items-center px-2">
+                    <div>
+                        <h2 className="text-xl font-bold text-gray-800 tracking-tight">İlçeler</h2>
+                        {selectedProvince && <span className="text-[10px] text-gray-400 font-mono uppercase tracking-widest">{selectedProvince.name}</span>}
+                    </div>
+
+                    {selectedProvince && (
+                        <button onClick={handleAddDistrict} className="p-2 bg-white hover:bg-gray-50 border border-gray-200 text-blue-600 rounded-xl transition-all shadow-sm">
+                            + Ekle
+                        </button>
+                    )}
+                </div>
+                <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden h-[calc(100vh-200px)] overflow-y-auto custom-scrollbar">
+                    {!selectedProvince ? (
+                        <div className="h-full flex flex-col items-center justify-center text-gray-300 p-8">
+                            <span className="text-3xl mb-2">👈</span>
+                            <span className="text-xs uppercase font-bold tracking-widest">İl Seçiniz</span>
+                        </div>
+                    ) : districts.length === 0 ? (
+                        <div className="h-full flex flex-col items-center justify-center text-gray-300 p-8">
+                            <span className="text-3xl mb-2">🏜️</span>
+                            <span className="text-xs uppercase font-bold tracking-widest">İlçe Yok</span>
+                        </div>
                     ) : (
-                        provinces.map((province) => (
-                            <motion.div
-                                layout
-                                key={province.id}
-                                className={`p-4 flex items-center justify-between border-b last:border-b-0 hover:bg-gray-50/50 transition-all cursor-pointer ${selectedProvince?.id === province.id ? 'bg-blue-50/50' : ''}`}
-                                onClick={() => handleSelectProvince(province)}
+                        districts.map((district) => (
+                            <div
+                                key={district.id}
+                                className={`p-4 border-b border-gray-50 cursor-pointer transition-all ${selectedDistrict?.id === district.id ? 'bg-blue-50 border-l-4 border-l-blue-500' : 'hover:bg-gray-50'}`}
+                                onClick={() => handleSelectDistrict(district)}
                             >
-                                <div className="flex items-center gap-4">
-                                    <div className={`w-10 h-10 rounded-2xl flex items-center justify-center text-lg shadow-sm ${selectedProvince?.id === province.id ? 'bg-blue-600 text-white' : 'bg-gray-50 text-gray-400'}`}>
-                                        📍
-                                    </div>
-                                    <div>
-                                        <h3 className="font-bold text-gray-800">{province.name}</h3>
-                                        <p className="text-[10px] text-gray-400 font-mono">/{province.slug}</p>
+                                <div className="flex justify-between items-center">
+                                    <span className="font-bold text-gray-700">{district.name}</span>
+                                    <div className="flex gap-2">
+                                        <button
+                                            onClick={(e) => { e.stopPropagation(); toggleActive(district.id, district.is_active, 'locations_district'); }}
+                                            className={`w-2 h-2 rounded-full ${district.is_active ? 'bg-green-500' : 'bg-red-300'}`}
+                                            title={district.is_active ? 'Aktif' : 'Pasif'}
+                                        ></button>
+                                        <button onClick={(e) => { e.stopPropagation(); handleDelete(district.id, 'locations_district'); }} className="text-xs text-red-500 opacity-20 hover:opacity-100">🗑️</button>
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-2" onClick={e => e.stopPropagation()}>
-                                    <button
-                                        onClick={() => toggleActive(province.id, province.is_active, 'locations_province')}
-                                        className={`px-3 py-1 rounded-full text-[10px] font-black tracking-widest transition-all ${province.is_active ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-amber-100 text-amber-700 hover:bg-amber-200'}`}
-                                    >
-                                        {province.is_active ? 'AKTİF' : 'PASİF'}
-                                    </button>
-                                    <button
-                                        onClick={() => handleDelete(province.id, 'locations_province')}
-                                        className="p-2 text-red-500 hover:bg-red-50 rounded-xl transition-colors"
-                                    >
-                                        🗑️
-                                    </button>
-                                </div>
-                            </motion.div>
+                            </div>
                         ))
                     )}
                 </div>
             </div>
 
-            {/* Districts Column */}
-            <div className="space-y-6">
-                <div className="flex justify-between items-center min-h-[60px]">
+            {/* 3. Column: Towns */}
+            <div className="space-y-4">
+                <div className="flex justify-between items-center px-2">
                     <div>
-                        <h2 className="text-3xl font-bold text-gray-800 tracking-tight">
-                            {selectedProvince ? `${selectedProvince.name} İlçeleri` : 'İl Seçiniz'}
-                        </h2>
-                        {selectedProvince && <p className="text-gray-500 text-sm">Bu il altındaki alt bölgeler</p>}
+                        <h2 className="text-xl font-bold text-gray-800 tracking-tight">Mahalleler</h2>
+                        {selectedDistrict && <span className="text-[10px] text-gray-400 font-mono uppercase tracking-widest">{selectedDistrict.name}</span>}
                     </div>
-                    {selectedProvince && (
-                        <button
-                            onClick={handleAddDistrict}
-                            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all flex items-center gap-2"
-                        >
-                            <span>+</span> Yeni İlçe
+                    {selectedDistrict && (
+                        <button onClick={handleAddTown} className="p-2 bg-white hover:bg-gray-50 border border-gray-200 text-blue-600 rounded-xl transition-all shadow-sm">
+                            + Ekle
                         </button>
                     )}
                 </div>
-
-                <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden min-h-[400px]">
-                    <AnimatePresence mode="wait">
-                        {!selectedProvince ? (
-                            <motion.div
-                                key="none"
-                                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                                className="p-20 text-center flex flex-col items-center justify-center text-gray-300"
+                <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden h-[calc(100vh-200px)] overflow-y-auto custom-scrollbar">
+                    {!selectedDistrict ? (
+                        <div className="h-full flex flex-col items-center justify-center text-gray-300 p-8">
+                            <span className="text-3xl mb-2">👈</span>
+                            <span className="text-xs uppercase font-bold tracking-widest">İlçe Seçiniz</span>
+                        </div>
+                    ) : towns.length === 0 ? (
+                        <div className="h-full flex flex-col items-center justify-center text-gray-300 p-8">
+                            <span className="text-3xl mb-2">🏘️</span>
+                            <span className="text-xs uppercase font-bold tracking-widest">Mahalle Yok</span>
+                        </div>
+                    ) : (
+                        towns.map((town) => (
+                            <div
+                                key={town.id}
+                                className="p-4 border-b border-gray-50 hover:bg-gray-50 transition-all group"
                             >
-                                <span className="text-5xl mb-4">👈</span>
-                                <p className="font-bold uppercase text-xs tracking-[0.2em] opacity-50">İlçeleri görmek için soldan bir il seçin</p>
-                            </motion.div>
-                        ) : districts.length === 0 ? (
-                            <motion.div
-                                key="empty"
-                                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                                className="p-20 text-center flex flex-col items-center justify-center text-gray-300"
-                            >
-                                <span className="text-5xl mb-4">🏜️</span>
-                                <p className="font-bold uppercase text-xs tracking-[0.2em] opacity-50">Bu il için henüz ilçe eklenmemiş</p>
-                            </motion.div>
-                        ) : (
-                            <motion.div
-                                key="list"
-                                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                                className="divide-y divide-gray-50"
-                            >
-                                {districts.map((district) => (
-                                    <div key={district.id} className="p-4 flex items-center justify-between hover:bg-gray-50/50 transition-all">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-8 h-8 rounded-xl bg-gray-50 flex items-center justify-center text-gray-400">🏙️</div>
-                                            <div>
-                                                <h3 className="font-bold text-gray-800">{district.name}</h3>
-                                                <p className="text-[10px] text-gray-400 font-mono">/{selectedProvince.slug}/{district.slug}</p>
-                                            </div>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                            <button
-                                                onClick={() => toggleActive(district.id, district.is_active, 'locations_district')}
-                                                className={`px-3 py-1 rounded-full text-[10px] font-black tracking-widest transition-all ${district.is_active ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-amber-100 text-amber-700 hover:bg-amber-200'}`}
-                                            >
-                                                {district.is_active ? 'AKTİF' : 'PASİF'}
-                                            </button>
-                                            <button
-                                                onClick={() => handleDelete(district.id, 'locations_district')}
-                                                className="p-2 text-red-500 hover:bg-red-50 rounded-xl transition-colors"
-                                            >
-                                                🗑️
-                                            </button>
-                                        </div>
+                                <div className="flex justify-between items-center">
+                                    <span className="font-bold text-gray-700">{town.name}</span>
+                                    <div className="flex gap-2">
+                                        <button
+                                            onClick={() => toggleActive(town.id, town.is_active, 'locations_town')}
+                                            className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold ${town.is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}
+                                        >
+                                            {town.is_active ? 'AKTİF' : 'PASİF'}
+                                        </button>
+                                        <button onClick={() => handleDelete(town.id, 'locations_town')} className="text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">🗑️</button>
                                     </div>
-                                ))}
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
+                                </div>
+                            </div>
+                        ))
+                    )}
                 </div>
             </div>
         </motion.div>
