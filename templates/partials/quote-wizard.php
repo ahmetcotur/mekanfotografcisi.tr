@@ -291,5 +291,3 @@
         </div>
     </div>
 </div>
-
-<script src="/assets/js/quote-wizard-v2.js?v=<?= time() ?>"></script>

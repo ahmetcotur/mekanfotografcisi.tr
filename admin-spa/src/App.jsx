@@ -6,6 +6,7 @@ import Locations from './pages/Locations';
 import Services from './pages/Services';
 import Quotes from './pages/Quotes';
 import Media from './pages/Media';
+import PostEditor from './pages/PostEditor';
 import Settings from './pages/Settings';
 import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -29,6 +30,8 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/locations" element={<Locations />} />
             <Route path="/services" element={<Services />} />
+            <Route path="/services/new" element={<PostEditor />} />
+            <Route path="/services/edit/:id" element={<PostEditor />} />
             <Route path="/quotes" element={<Quotes />} />
             <Route path="/media" element={<Media />} />
             <Route path="/settings" element={<Settings />} />
