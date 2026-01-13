@@ -105,22 +105,32 @@ Eğer build script'i gerekiyorsa, `package.json`'a ekleyin:
 }
 ```
 
-### 8. Nginx Configuration (Opsiyonel)
+### 8. Nginx Configuration (Zorunlu)
 
-Coolify'da custom Nginx config eklemek isterseniz:
+Coolify varsayılan olarak statik dosyaları arar. Projeyi lokaldeki gibi dinamik çalıştırmak için **Configuration > Custom Nginx Configuration** bölümüne şu ayarları eklemelisiniz:
 
 ```nginx
+# Tüm istekleri index.php'ye yönlendir (Dinamik Routing)
 location / {
     try_files $uri $uri/ /index.php?$query_string;
 }
 
+# PHP dosyalarını işle
 location ~ \.php$ {
-    fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+    fastcgi_pass unix:/var/run/php/php8.1-fpm.sock; # Coolify versiyonuna göre değişebilir
     fastcgi_index index.php;
     include fastcgi_params;
     fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
 }
+
+# Statik asset'leri doğrudan sun
+location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|webp)$ {
+    expires max;
+    log_not_found off;
+}
 ```
+
+**Not**: Eğer hala "Welcome to nginx" sayfasını görüyorsanız, Coolify panelinde **"Is it a static site?"** seçeneğinin kapalı olduğundan ve **"Base Directory"** ayarının doğru olduğundan emin olun.
 
 ### 9. Admin User Oluşturma
 
