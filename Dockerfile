@@ -1,5 +1,9 @@
 FROM webdevops/php-nginx:8.1-alpine
 
+# Install PostgreSQL extensions
+RUN apk add --no-cache postgresql-dev && \
+    docker-php-ext-install pdo_pgsql
+
 # Set working directory
 WORKDIR /app
 

@@ -68,6 +68,18 @@ if (preg_match('/\.php$/', $requestPath)) {
 // Global DB instance
 $db = new DatabaseClient();
 
+// Auto-seed for local environment if database is empty
+if (env('APP_ENV') === 'local' || env('APP_ENV') === 'development') {
+    try {
+        $check = $db->select('locations_province', ['limit' => 1]);
+        if (empty($check)) {
+            require_once __DIR__ . '/scripts/seed-locations.php';
+        }
+    } catch (Exception $e) {
+        error_log("Auto-seeding check failed: " . $e->getMessage());
+    }
+}
+
 // Dynamic Content Lookup
 $slug = trim($requestPath, '/');
 if ($slug === '') {

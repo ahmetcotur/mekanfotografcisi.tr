@@ -19,9 +19,7 @@
   ],
   "author": "Mekan Fotoğrafçısı",
   "license": "MIT",
-  "dependencies": {
-    "@supabase/supabase-js": "^2.38.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "dotenv": "^16.3.1"
   },

@@ -1,41 +1,20 @@
 # Coolify Deployment Guide - Mekan Fotoğrafçısı
 
-Bu dokümantasyon, mekanfotografcisi.tr projesini Coolify üzerinde Supabase ile deploy etmek için gerekli adımları içerir.
+Bu dokümantasyon, mekanfotografcisi.tr projesini Coolify üzerinde doğrudan PostgreSQL ile deploy etmek için gerekli adımları içerir.
 
 ## 📋 Önkoşullar
 
 1. **Coolify Hesabı**: Coolify instance'ınız hazır olmalı
-2. **Supabase Projesi**: Supabase projeniz oluşturulmuş ve migration'lar çalıştırılmış olmalı
-3. **Domain**: Projeniz için bir domain hazır olmalı (opsiyonel ama önerilir)
+2. **PostgreSQL**: Coolify içinde bir "Database" resource'u olarak veya harici (Supabase vb.) PostgreSQL hazır olmalı
+3. **Domain**: Projeniz için bir domain hazır olmalı
 
 ## 🚀 Deployment Adımları
 
-### 1. Supabase Migration'ları Çalıştırma
+### 1. Database Setup
 
-Supabase Dashboard > SQL Editor'da sırayla çalıştırın:
+PostgreSQL veritabanınıza `database_schema.sql` dosyasını import edin.
 
-```sql
--- 1. İlk schema
--- supabase/migrations/001_initial_schema.sql
-
--- 2. Row Level Security
--- supabase/migrations/002_row_level_security.sql
-
--- 3. Service content fields
--- supabase/migrations/003_add_service_content_fields.sql
-
--- 4. Location content fields
--- supabase/migrations/004_add_location_content_fields.sql
-```
-
-### 2. Supabase Storage Bucket Oluşturma
-
-Supabase Dashboard > Storage:
-
-1. **Bucket Oluştur**: `media` adında public bucket oluşturun
-2. **Policies Kontrol**: Storage policies migration'da otomatik oluşturulmuş olmalı
-
-### 3. Coolify'da Yeni Uygulama Oluşturma
+### 2. Coolify'da Yeni Uygulama Oluşturma
 
 1. Coolify Dashboard'a giriş yapın
 2. **New Resource** > **Application** seçin
@@ -43,69 +22,29 @@ Supabase Dashboard > Storage:
 4. **Build Pack**: **Dockerfile** seçin (Zorunlu)
 5. **Port**: **80** (Dockerfile içindeki internal port)
 
-### 4. Environment Variables Ayarlama
+### 3. Environment Variables Ayarlama
 
 Coolify'da uygulamanızın **Environment Variables** bölümüne şunları ekleyin:
 
 ```bash
-# Supabase Configuration
-SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_ANON_KEY=your-anon-key-here
-SUPABASE_SERVICE_KEY=your-service-role-key-here
+# Direct Database Connection
+DB_HOST=your-postgres-host
+DB_PORT=5432
+DB_NAME=postgres
+DB_USER=postgres
+DB_PASSWORD=your-database-password
 
 # Application
 NODE_ENV=production
 APP_ENV=production
-
-# Optional: Google Analytics
-GA4_MEASUREMENT_ID=G-XXXXXXXXXX
+DESTINATION_PORT=80
 ```
 
-**Önemli**: `SUPABASE_SERVICE_KEY` sadece backend işlemleri için kullanılmalı, asla frontend'de expose edilmemeli.
+### 4. Admin Panel Yapılandırması
 
-### 5. Admin Panel Configuration
+Uygulama zaten yerel session ve doğrudan Postgres kullandığı için admin panel otomatik olarak çalışacaktır. Herhangi bir JS configurasyonu gerekmez.
 
-Admin panel için iki seçenek var:
-
-#### Seçenek A: Environment Variables (Önerilen - Coolify için)
-
-Coolify otomatik olarak environment variable'ları `window.ENV` objesi olarak inject eder. Admin panel bunu otomatik kullanacak.
-
-#### Seçenek B: Config Dosyası (Local Development)
-
-Local development için `admin/config.js` dosyası oluşturun:
-
-```javascript
-window.supabaseConfig = {
-    SUPABASE_URL: 'https://your-project.supabase.co',
-    SUPABASE_ANON_KEY: 'your-anon-key-here'
-};
-```
-
-**Not**: Bu dosya `.gitignore`'a eklenmelidir.
-
-### 6. PHP Configuration
-
-Coolify'da PHP uygulaması için:
-
-1. **PHP Version**: 8.1+ seçin
-2. **Web Server**: Nginx veya Apache
-3. **Document Root**: `/public` veya root directory
-
-### 7. Build Script (Opsiyonel)
-
-Eğer build script'i gerekiyorsa, `package.json`'a ekleyin:
-
-```json
-{
-  "scripts": {
-    "build": "echo 'No build step required for PHP'",
-    "start": "php -S 0.0.0.0:8000 -t . router.php"
-  }
-}
-```
-
-### 8. Nginx Configuration (Zorunlu)
+### 5. Nginx Configuration (Zorunlu)
 
 Coolify varsayılan olarak statik dosyaları arar. Projeyi lokaldeki gibi dinamik çalıştırmak için **Configuration > Custom Nginx Configuration** bölümüne şu ayarları eklemelisiniz:
 
@@ -117,7 +56,7 @@ location / {
 
 # PHP dosyalarını işle
 location ~ \.php$ {
-    fastcgi_pass unix:/var/run/php/php8.1-fpm.sock; # Coolify versiyonuna göre değişebilir
+    fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
     fastcgi_index index.php;
     include fastcgi_params;
     fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
@@ -130,45 +69,15 @@ location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|webp)$ {
 }
 ```
 
-**Not**: Eğer hala "Welcome to nginx" sayfasını görüyorsanız, Coolify panelinde **"Is it a static site?"** seçeneğinin kapalı olduğundan ve **"Base Directory"** ayarının doğru olduğundan emin olun.
+### 6. İlk İçerik ve Seeding
 
-### 9. Admin User Oluşturma
+Deployment tamamlandıktan sonra Coolify terminali üzerinden veya scripti bir kez çalıştırarak verileri doldurabilirsiniz:
 
-Supabase Dashboard > Authentication:
-
-1. **New User** oluşturun
-2. **User Metadata**'ya ekleyin:
-   ```json
-   {
-     "role": "admin"
-   }
-   ```
-3. Kullanıcıya email ile şifre reset linki gönderin
-
-### 10. İlk İçerik Yükleme
-
-Admin panel'e giriş yaptıktan sonra:
-
-1. **Medya** tab'ından görseller yükleyin
-2. **Hizmetler** tab'ından hizmet içeriklerini düzenleyin
-3. **İller** ve **İlçeler** tab'ından lokasyon içeriklerini düzenleyin
-4. **SEO Sayfaları** tab'ından sayfaları oluşturun ve yayınlayın
-
-## 🔒 Güvenlik Notları
-
-1. **Service Key**: Asla frontend'de kullanmayın, sadece backend API'lerde
-2. **Admin Panel**: `/admin` route'u production'da IP whitelist ile korunabilir
-3. **CORS**: Supabase'de CORS ayarlarını production domain'inize göre yapılandırın
-4. **Rate Limiting**: Supabase'de rate limiting ayarlarını kontrol edin
+```bash
+php scripts/seed-locations.php
+```
 
 ## 📊 Monitoring
-
-### Supabase Dashboard
-
-- **Database**: Query performance ve connection pool
-- **Storage**: Bucket usage ve bandwidth
-- **Auth**: User activity ve login attempts
-- **Logs**: Real-time error logs
 
 ### Coolify Dashboard
 
@@ -181,64 +90,15 @@ Admin panel'e giriş yaptıktan sonra:
 1. Git repository'ye push yapın
 2. Coolify otomatik olarak yeni deployment başlatır
 3. Build tamamlandıktan sonra uygulama otomatik restart olur
-4. Migration'lar varsa Supabase Dashboard'dan manuel çalıştırın
 
 ## 🚨 KRİTİK: "Welcome to nginx" Hatası Alıyorsanız
 
-Eğer hala varsayılan Nginx sayfasını görüyorsanız, Coolify projenizi **Dockerfile** üzerinden değil, varsayılan bir imaj üzerinden çalıştırıyor demektir.
+Eğer hala varsayılan Nginx sayfasını görüyorsanız:
 
-### Kontrol Listesi:
-1. **Build Pack**: Uygulama ayarlarında "Build Pack" kısmının **Dockerfile** olduğundan %100 emin olun.
-2. **Port (Destination Port)**: Değerin **80** olduğundan emin olun.
-3. **Deployment**: Değişiklik yaptıktan sonra sağ üstteki **"Deploy"** butonuna basarak temiz bir kurulum başlatın.
-4. **Is it a static site?**: Bu seçeneğin **KAPALI** (No) olması gerekir.
+1. **Build Pack**: Uygulama ayarlarında "Build Pack" kısmının **Dockerfile** olduğundan emin olun.
+2. **Port**: Değerin **80** olduğundan emin olun.
+3. **Is it a static site?**: Bu seçeneğin **KAPALI** (No) olması gerekir.
 
-Eğer bu ayarlar doğruysa, Dockerfile projenizdeki `index.php`'yi otomatik olarak ana giriş noktası yapacaktır.
+---
 
-### Admin Panel'de Supabase Bağlantı Hatası
-
-1. Environment variable'ları kontrol edin
-2. Supabase URL ve key'lerin doğru olduğundan emin olun
-3. Browser console'da hata mesajlarını kontrol edin
-4. CORS ayarlarını kontrol edin
-
-### Görsel Yükleme Hatası
-
-1. Supabase Storage bucket'ının `media` adında olduğundan emin olun
-2. Storage policies'in doğru olduğunu kontrol edin
-3. File size limit'lerini kontrol edin (max 10MB)
-4. MIME type'ların doğru olduğunu kontrol edin
-
-### İçerik Düzenleme Kaydedilmiyor
-
-1. Database migration'larının çalıştırıldığından emin olun
-2. Row Level Security policies'lerin doğru olduğunu kontrol edin
-3. User'ın admin role'üne sahip olduğunu kontrol edin
-
-## 📝 Environment Variables Özeti
-
-| Variable | Açıklama | Gerekli |
-|----------|----------|---------|
-| `SUPABASE_URL` | Supabase project URL | ✅ |
-| `SUPABASE_ANON_KEY` | Supabase anonymous key | ✅ |
-| `SUPABASE_SERVICE_KEY` | Supabase service role key | ✅ (Backend) |
-| `NODE_ENV` | Environment (production) | ✅ |
-| `DESTINATION_PORT` | Uygulama Portu (80) | ✅ |
-| `GA4_MEASUREMENT_ID` | Google Analytics ID | ❌ |
-
-## 🎯 Sonraki Adımlar
-
-1. **SSL Certificate**: Coolify otomatik Let's Encrypt SSL sağlar
-2. **Domain Configuration**: Domain'i Coolify'a bağlayın
-3. **Backup Strategy**: Supabase'de otomatik backup'ları aktif edin
-4. **Monitoring**: Uptime monitoring servisi ekleyin
-5. **CDN**: Statik dosyalar için CDN kullanmayı düşünün
-
-## 📞 Destek
-
-Sorun yaşarsanız:
-- Coolify Documentation: https://coolify.io/docs
-- Supabase Documentation: https://supabase.com/docs
-- Project Issues: GitHub repository'de issue açın
-
-
+**Built with ❤️ for Turkish photography professionals**
