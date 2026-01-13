@@ -3,8 +3,7 @@
  * Settings API
  * Handles saving and retrieving system settings
  */
-
-session_start();
+// Session is now started globally in router.php
 header('Content-Type: application/json; charset=utf-8');
 
 // Check authentication - similar to other admin APIs

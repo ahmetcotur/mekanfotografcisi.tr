@@ -150,3 +150,68 @@ $recent_quotes = $db->query("SELECT * FROM quotes ORDER BY created_at DESC LIMIT
         }
     }
 </style>
+<!-- Pexels Image Management Section -->
+<div class="card mt-8">
+    <div class="card-header flex justify-between items-center bg-slate-50 border-b p-4">
+        <h2 class="font-bold text-slate-800 text-sm italic uppercase tracking-widest">Anasayfa Görselleri (Pexels)</h2>
+        <button onclick="addNewPexelsImage()" class="btn btn-sm btn-primary">
+            <i class="fas fa-plus"></i> Yeni Görsel Ekle
+        </button>
+    </div>
+    <div class="p-4">
+        <div id="pexels-images-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            <!-- Images will be loaded here -->
+        </div>
+    </div>
+</div>
+
+<script>
+let pexelsImages = [];
+document.addEventListener('DOMContentLoaded', () => { loadPexelsImages(); });
+
+function loadPexelsImages() {
+    fetch('/api/pexels-images.php')
+        .then(res => res.json())
+        .then(data => { if (data.success) { pexelsImages = data.images; renderPexelsImages(); } })
+        .catch(err => console.error('Failed to load Pexels images:', err));
+}
+
+function renderPexelsImages() {
+    const grid = document.getElementById('pexels-images-grid');
+    if (!pexelsImages || pexelsImages.length === 0) {
+        grid.innerHTML = '<p class="col-span-full text-center text-slate-400 py-8">Henüz görsel eklenmemiş.</p>';
+        return;
+    }
+    grid.innerHTML = pexelsImages.map(img => `
+        <div class="relative group border rounded-lg overflow-hidden ${img.is_visible ? 'border-green-500' : 'border-slate-200 opacity-50'}">
+            <img src="${img.image_url}" alt="Pexels" class="w-full h-32 object-cover">
+            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                <button onclick="togglePexelsVisibility(${img.id}, ${!img.is_visible})" class="btn btn-sm ${img.is_visible ? 'btn-warning' : 'btn-success'}">
+                    <i class="fas fa-eye${img.is_visible ? '-slash' : ''}"></i>
+                </button>
+                <button onclick="deletePexelsImage(${img.id})" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+            </div>
+            <div class="p-2 bg-white">
+                <p class="text-xs text-slate-600 truncate">${img.photographer || 'Unknown'}</p>
+                <span class="text-[10px] ${img.is_visible ? 'text-green-600' : 'text-slate-400'} font-bold">${img.is_visible ? 'Görünür' : 'Gizli'}</span>
+            </div>
+        </div>
+    `).join('');
+}
+
+function togglePexelsVisibility(id, isVisible) {
+    fetch('/api/pexels-images.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'toggle', id, is_visible: isVisible }) })
+        .then(res => res.json())
+        .then(data => { if (data.success) { loadPexelsImages(); Swal.fire({ icon: 'success', title: isVisible ? 'Görsel gösterilecek' : 'Görsel gizlendi', toast: true, position: 'top-end', showConfirmButton: false, timer: 2000 }); } });
+}
+
+function deletePexelsImage(id) {
+    Swal.fire({ title: 'Emin misiniz?', text: 'Bu görseli silmek istediğinizden emin misiniz?', icon: 'warning', showCancelButton: true, confirmButtonText: 'Evet, Sil', cancelButtonText: 'İptal' })
+        .then(result => { if (result.isConfirmed) { fetch('/api/pexels-images.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'delete', id }) }).then(res => res.json()).then(data => { if (data.success) { loadPexelsImages(); Swal.fire('Silindi!', 'Görsel başarıyla silindi.', 'success'); } }); } });
+}
+
+function addNewPexelsImage() {
+    Swal.fire({ title: 'Yeni Pexels Görseli Ekle', html: '<input id="pexels-url" class="swal2-input" placeholder="Görsel URL"><input id="pexels-photographer" class="swal2-input" placeholder="Fotoğrafçı (opsiyonel)">', showCancelButton: true, confirmButtonText: 'Ekle', cancelButtonText: 'İptal', preConfirm: () => { const url = document.getElementById('pexels-url').value; if (!url) { Swal.showValidationMessage('Lütfen bir URL girin'); return false; } return { url, photographer: document.getElementById('pexels-photographer').value }; } })
+        .then(result => { if (result.isConfirmed) { fetch('/api/pexels-images.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'add', image_url: result.value.url, photographer: result.value.photographer }) }).then(res => res.json()).then(data => { if (data.success) { loadPexelsImages(); Swal.fire('Eklendi!', 'Yeni görsel başarıyla eklendi.', 'success'); } }); } });
+}
+</script>
