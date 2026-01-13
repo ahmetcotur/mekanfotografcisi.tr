@@ -5,8 +5,10 @@ export default function Sidebar() {
 
     const menuItems = [
         { path: '/dashboard', icon: '📊', label: 'Dashboard' },
-        { path: '/locations', icon: '📍', label: 'Lokasyonlar' },
+        { path: '/pages', icon: '📄', label: 'Sayfalar' },
         { path: '/services', icon: '📷', label: 'Hizmetler' },
+        { path: '/locations', icon: '📍', label: 'Lokasyonlar' },
+        { path: '/seo-pages', icon: '🔍', label: 'SEO Sayfaları' },
         { path: '/quotes', icon: '✉️', label: 'Teklif Talepleri' },
         { path: '/media', icon: '🖼️', label: 'Medya' },
         { path: '/settings', icon: '⚙️', label: 'Ayarlar' }

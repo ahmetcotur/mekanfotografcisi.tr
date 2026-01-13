@@ -128,6 +128,7 @@ try {
             'title' => $title,
             'slug' => $slug,
             'content' => $content,
+            'excerpt' => $data['excerpt'] ?? '',
             'post_type' => $post_type,
             'post_status' => $post_status,
             'gallery_folder_id' => !empty($data['gallery_folder_id']) ? $data['gallery_folder_id'] : null,

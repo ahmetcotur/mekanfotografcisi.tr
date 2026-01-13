@@ -2,6 +2,7 @@ import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import useAuthStore from '../store/authStore';
 import api from '../api/client';
+import { motion } from 'framer-motion';
 
 export default function Layout() {
     const { user, logout } = useAuthStore();
@@ -36,9 +37,15 @@ export default function Layout() {
                     </div>
                 </header>
 
-                <main className="flex-1 p-6">
+                <motion.main
+                    key={window.location.pathname}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="flex-1 p-8"
+                >
                     <Outlet />
-                </main>
+                </motion.main>
             </div>
         </div>
     );

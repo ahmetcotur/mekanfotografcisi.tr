@@ -4,6 +4,8 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Locations from './pages/Locations';
 import Services from './pages/Services';
+import Pages from './pages/Pages';
+import SeoPages from './pages/SeoPages';
 import Quotes from './pages/Quotes';
 import Media from './pages/Media';
 import PostEditor from './pages/PostEditor';
@@ -28,10 +30,14 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route element={<Layout />}>
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/pages" element={<Pages />} />
+            <Route path="/pages/new" element={<PostEditor />} />
+            <Route path="/pages/edit/:id" element={<PostEditor />} />
             <Route path="/locations" element={<Locations />} />
             <Route path="/services" element={<Services />} />
             <Route path="/services/new" element={<PostEditor />} />
             <Route path="/services/edit/:id" element={<PostEditor />} />
+            <Route path="/seo-pages" element={<SeoPages />} />
             <Route path="/quotes" element={<Quotes />} />
             <Route path="/media" element={<Media />} />
             <Route path="/settings" element={<Settings />} />
