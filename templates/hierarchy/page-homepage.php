@@ -147,7 +147,7 @@ echo do_shortcode($content);
 <section class="py-32 bg-gradient-to-br from-slate-50 to-white relative overflow-hidden" id="freelancer-basvuru">
     <!-- Decorative Elements -->
     <div class="absolute top-0 right-0 w-96 h-96 bg-brand-100/30 rounded-full blur-3xl"></div>
-    <div class="absolute bottom-0 left-0 w-96 h-96 bg-cyan-100/30 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-0 left-0 w-96 h-96 bg-brand-200/30 rounded-full blur-3xl"></div>
 
     <div class="container mx-auto px-4 relative z-10">
         <div class="max-w-5xl mx-auto">
@@ -320,58 +320,58 @@ echo do_shortcode($content);
 </section>
 
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    const form = document.getElementById("freelancer-form");
-    const successMessage = document.getElementById("freelancer-success");
-    
-    if (form) {
-        form.addEventListener("submit", async function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(form);
-            const data = {
-                name: formData.get("name"),
-                email: formData.get("email"),
-                phone: formData.get("phone"),
-                city: formData.get("city"),
-                experience: formData.get("experience"),
-                specialization: formData.getAll("specialization[]"),
-                portfolio: formData.get("portfolio"),
-                message: formData.get("message"),
-                type: "freelancer_application"
-            };
-            
-            // Validate specialization
-            if (data.specialization.length === 0) {
-                alert("Lütfen en az bir uzmanlık alanı seçiniz.");
-                return;
-            }
-            
-            try {
-                const response = await fetch("/api/freelancer-application.php", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(data)
-                });
-                
-                if (response.ok) {
-                    form.style.display = "none";
-                    successMessage.classList.remove("hidden");
-                    
-                    // Scroll to success message
-                    successMessage.scrollIntoView({ behavior: "smooth", block: "center" });
-                } else {
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("freelancer-form");
+        const successMessage = document.getElementById("freelancer-success");
+
+        if (form) {
+            form.addEventListener("submit", async function (e) {
+                e.preventDefault();
+
+                const formData = new FormData(form);
+                const data = {
+                    name: formData.get("name"),
+                    email: formData.get("email"),
+                    phone: formData.get("phone"),
+                    city: formData.get("city"),
+                    experience: formData.get("experience"),
+                    specialization: formData.getAll("specialization[]"),
+                    portfolio: formData.get("portfolio"),
+                    message: formData.get("message"),
+                    type: "freelancer_application"
+                };
+
+                // Validate specialization
+                if (data.specialization.length === 0) {
+                    alert("Lütfen en az bir uzmanlık alanı seçiniz.");
+                    return;
+                }
+
+                try {
+                    const response = await fetch("/api/freelancer-application.php", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    if (response.ok) {
+                        form.style.display = "none";
+                        successMessage.classList.remove("hidden");
+
+                        // Scroll to success message
+                        successMessage.scrollIntoView({ behavior: "smooth", block: "center" });
+                    } else {
+                        alert("Bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.");
+                    }
+                } catch (error) {
+                    console.error("Form submission error:", error);
                     alert("Bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.");
                 }
-            } catch (error) {
-                console.error("Form submission error:", error);
-                alert("Bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.");
-            }
-        });
-    }
-});
+            });
+        }
+    });
 </script>
 
 <?php include __DIR__ . '/../page-footer.php'; ?>

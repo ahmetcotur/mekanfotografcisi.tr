@@ -24,7 +24,7 @@ UPDATE posts SET content = '<!-- Hero Section -->
             <h1 class="font-heading font-black text-5xl md:text-7xl lg:text-8xl text-white mb-16 leading-[1.1] tracking-tight drop-shadow-2xl overflow-visible">
                 <div class="flex flex-wrap items-center justify-center gap-x-12 gap-y-6 mb-8 overflow-visible">
                     <div id="prefix-morph" class="h-24 md:h-32 lg:h-40 min-w-[320px] md:min-w-[480px] lg:min-w-[650px] overflow-visible"></div>
-                    <div id="suffix-morph" class="h-24 md:h-32 lg:h-40 min-w-[220px] md:min-w-[380px] lg:min-w-[500px] text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-cyan-300 font-black italic overflow-visible"></div>
+                    <div id="suffix-morph" class="h-24 md:h-32 lg:h-40 min-w-[220px] md:min-w-[380px] lg:min-w-[500px] text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-brand-300 font-black italic overflow-visible"></div>
                 </div>
                 <div class="text-white mt-8 drop-shadow-2xl">Dönüştürüyoruz</div>
             </h1>
@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
         window.initGooeyText("#suffix-morph", ["Sanata", "Markaya", "Satışa", "Hikayeye", "Prestije"], { 
             morphTime: 2.0, 
             cooldownTime: 1.5, 
-            textClassName: "text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-cyan-300 font-black italic" 
+            textClassName: "text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-brand-300 font-black italic" 
         });
     }
 });

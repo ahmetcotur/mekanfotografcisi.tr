@@ -70,7 +70,7 @@ $totalDistricts = array_sum(array_map('count', $hierarchy));
         <h1
             class="font-heading font-black text-5xl md:text-7xl lg:text-8xl text-white mb-8 tracking-tight drop-shadow-2xl">
             Nerede Olursanız Olun,<br>
-            <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-cyan-300">Yanınızdayız</span>
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-brand-300">Yanınızdayız</span>
         </h1>
 
         <p class="text-xl md:text-2xl text-slate-200 max-w-4xl mx-auto font-light leading-relaxed mb-12">
