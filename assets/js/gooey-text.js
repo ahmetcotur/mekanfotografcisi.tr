@@ -44,14 +44,14 @@ class GooeyText {
 
         // Create Text Elements
         const wrapper = document.createElement('div');
-        wrapper.className = "flex items-center justify-center relative";
+        wrapper.className = "flex items-center justify-center relative w-full h-full";
         wrapper.style.filter = "url(#gooey-threshold)";
 
         this.text1 = document.createElement('span');
-        this.text1.className = `absolute inline-block select-none text-center ${this.textClassName}`;
+        this.text1.className = `absolute inset-0 flex items-center justify-center select-none text-center whitespace-nowrap ${this.textClassName}`;
 
         this.text2 = document.createElement('span');
-        this.text2.className = `absolute inline-block select-none text-center ${this.textClassName}`;
+        this.text2.className = `absolute inset-0 flex items-center justify-center select-none text-center whitespace-nowrap ${this.textClassName}`;
 
         wrapper.appendChild(this.text1);
         wrapper.appendChild(this.text2);
