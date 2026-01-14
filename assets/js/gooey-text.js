@@ -28,7 +28,7 @@ class GooeyText {
         svg.setAttribute("focusable", "false");
         svg.innerHTML = `
             <defs>
-                <filter id="gooey-threshold" x="-50%" y="-50%" width="200%" height="200%">
+                <filter id="gooey-threshold" x="-100%" y="-100%" width="300%" height="300%">
                     <feColorMatrix
                         in="SourceGraphic"
                         type="matrix"
@@ -44,17 +44,17 @@ class GooeyText {
 
         // Create Text Elements
         const wrapper = document.createElement('div');
-        wrapper.className = "flex items-center justify-center relative w-full h-full py-4 px-8 overflow-visible";
+        wrapper.className = "flex items-center justify-center relative w-full h-full py-10 px-12 overflow-visible";
         wrapper.style.filter = "url(#gooey-threshold)";
 
         this.text1 = document.createElement('span');
-        this.text1.className = `absolute inset-0 flex items-center justify-center select-none text-center whitespace-nowrap ${this.textClassName}`;
-
         this.text2 = document.createElement('span');
-        this.text2.className = `absolute inset-0 flex items-center justify-center select-none text-center whitespace-nowrap ${this.textClassName}`;
 
-        wrapper.appendChild(this.text1);
-        wrapper.appendChild(this.text2);
+        [this.text1, this.text2].forEach(span => {
+            span.className = `absolute inset-0 flex items-center justify-center select-none text-center whitespace-nowrap overflow-visible ${this.textClassName}`;
+            wrapper.appendChild(span);
+        });
+
         this.container.appendChild(wrapper);
 
         this.animate();

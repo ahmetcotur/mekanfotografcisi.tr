@@ -226,8 +226,8 @@ $schema = [
 
     <?php if (isset($schemaMarkup)): ?>
         <script type="application/ld+json">
-                                                        <?= json_encode($schemaMarkup, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>
-                                                                </script>
+                                                            <?= json_encode($schemaMarkup, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>
+                                                                    </script>
     <?php endif; ?>
 </head>
 
@@ -341,12 +341,11 @@ $schema = [
                         class="text-sm font-medium text-slate-600 hover:text-brand-600 transition-colors">Bölgeler</a>
                 </nav>
 
-                <!-- CTA Button -->
                 <div class="hidden md:flex items-center gap-4">
-                    <a href="/#iletisim"
+                    <button onclick="openQuoteWizard()"
                         class="inline-flex h-10 items-center justify-center rounded-lg bg-brand-600 px-6 text-sm font-semibold text-white shadow-lg shadow-brand-500/20 transition-all hover:bg-brand-700 hover:scale-105 hover:shadow-brand-500/40 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2">
                         Teklif Al
-                    </a>
+                    </button>
                 </div>
 
                 <!-- Mobile Menu Button -->
@@ -375,9 +374,9 @@ $schema = [
                     class="block px-4 py-3 text-base font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-600 rounded-lg">Portfolyo</a>
                 <a href="/hizmet-bolgeleri"
                     class="block px-4 py-3 text-base font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-600 rounded-lg">Bölgeler</a>
-                <a href="/#iletisim"
-                    class="block px-4 py-3 text-base font-medium text-brand-600 bg-brand-50 rounded-lg mt-4 text-center">İletişime
-                    Geç</a>
+                <button onclick="openQuoteWizard()"
+                    class="w-full block px-4 py-3 text-base font-medium text-brand-600 bg-brand-50 rounded-lg mt-4 text-center">Teklif
+                    Al</button>
             </div>
         </div>
     </header>

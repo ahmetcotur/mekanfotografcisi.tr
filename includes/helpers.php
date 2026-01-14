@@ -387,11 +387,39 @@ function render_media_gallery($folder_id, $title = '')
  */
 function do_shortcode($content)
 {
-    // [gallery id="uuid" title="Optional"]
+    global $db;
+    if (!$db)
+        $db = new DatabaseClient();
+
+    // 1. [gallery id="uuid" title="Optional"]
     $content = preg_replace_callback('/\[gallery\s+id="([^"]+)"(?:\s+title="([^"]+)")?\s*\]/', function ($matches) {
         $folder_id = $matches[1];
         $title = $matches[2] ?? '';
         return render_media_gallery($folder_id, $title);
+    }, $content);
+
+    // 2. Statistics Shortcodes
+    // [stat_services] - Total active services
+    $content = preg_replace_callback('/\[stat_services\]/', function () use ($db) {
+        $count = $db->query("SELECT count(*) as total FROM services WHERE is_active = true")[0]['total'] ?? 0;
+        return $count;
+    }, $content);
+
+    // [stat_provinces] - Total active provinces
+    $content = preg_replace_callback('/\[stat_provinces\]/', function () use ($db) {
+        $count = $db->query("SELECT count(*) as total FROM locations_province WHERE is_active = true OR is_active = 'true'")[0]['total'] ?? 0;
+        return $count;
+    }, $content);
+
+    // [stat_districts] - Total active districts
+    $content = preg_replace_callback('/\[stat_districts\]/', function () use ($db) {
+        $count = $db->query("SELECT count(*) as total FROM locations_district WHERE is_active = true OR is_active = 'true'")[0]['total'] ?? 0;
+        return $count;
+    }, $content);
+
+    // [stat_projects] - Project count from settings
+    $content = preg_replace_callback('/\[stat_projects\]/', function () {
+        return get_setting('stat_projects', '1000+');
     }, $content);
 
     return $content;

@@ -41,9 +41,9 @@ function run_migrations()
             $sqlContent = file_get_contents($file);
 
             try {
-                // Split by custom marker -- STATEMENT
+                // Split by custom marker -- STATEMENT (case insensitive)
                 // This is the most reliable way when dealing with HTML/JS content
-                $statements = preg_split('/-- STATEMENT/i', $sqlContent);
+                $statements = preg_split('/^\s*--\s*STATEMENT\s*$/im', $sqlContent);
 
                 foreach ($statements as $statement) {
                     $statement = trim($statement);

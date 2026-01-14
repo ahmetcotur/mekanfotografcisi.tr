@@ -40,7 +40,7 @@ if (!empty($activeProvinces)) {
             $provName = $activeProvinces[$d['province_id']]['name'];
 
             // Format data for display
-            $d['clean_slug'] = '/' . $d['slug'] . '-mekan-fotografcisi';
+            $d['clean_slug'] = '/hizmet-bolgeleri/' . $activeProvinces[$d['province_id']]['slug'] . '/' . $d['slug'];
             $d['location_name'] = $d['name'];
 
             $hierarchy[$provName][] = $d;

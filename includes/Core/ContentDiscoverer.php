@@ -38,30 +38,49 @@ class ContentDiscoverer
         }
 
         // 2. Check for simple Location pattern: {location}-mekan-fotografcisi
-
-        // A. Check Town
         if (preg_match('/^([a-z0-9-]+)-mekan-fotografcisi$/', $slug, $matches)) {
             $locationSlug = $matches[1];
 
-            // Town Check
+            // A. Town Check
             $town = $this->db->select('locations_town', ['slug' => $locationSlug, 'is_active' => 'true']);
             if (!empty($town)) {
-                // Get Parent Info for better content
                 $district = $this->db->select('locations_district', ['id' => $town[0]['district_id']]);
                 return $this->generateTownPage($town[0], $district[0] ?? null, $slug);
             }
 
-            // District Check
+            // B. District Check
             $district = $this->db->select('locations_district', ['slug' => $locationSlug, 'is_active' => 'true']);
             if (!empty($district)) {
                 $province = $this->db->select('locations_province', ['id' => $district[0]['province_id']]);
                 return $this->generateDistrictPage($district[0], $province[0] ?? null, $slug);
             }
 
-            // Province Check (Existing)
+            // C. Province Check
             $province = $this->db->select('locations_province', ['slug' => $locationSlug, 'is_active' => 'true']);
             if (!empty($province)) {
                 return $this->generateLocationPage($province[0], $slug);
+            }
+        }
+
+        // 3. Multilevel Location structure: hizmet-bolgeleri/{province}/{district}
+        if (preg_match('/^hizmet-bolgeleri\/([a-z0-9-]+)(\/([a-z0-9-]+))?$/', $slug, $matches)) {
+            $provSlug = $matches[1];
+            $distSlug = $matches[3] ?? null;
+
+            $province = $this->db->select('locations_province', ['slug' => $provSlug, 'is_active' => 'true']);
+            if (!empty($province)) {
+                if ($distSlug) {
+                    $district = $this->db->select('locations_district', [
+                        'slug' => $distSlug,
+                        'province_id' => $province[0]['id'],
+                        'is_active' => 'true'
+                    ]);
+                    if (!empty($district)) {
+                        return $this->generateDistrictPage($district[0], $province[0], $slug);
+                    }
+                } else {
+                    return $this->generateLocationPage($province[0], $slug);
+                }
             }
         }
 

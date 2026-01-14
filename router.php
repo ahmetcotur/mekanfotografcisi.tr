@@ -197,19 +197,20 @@ if ($post && $post->post_type === 'seo_page') {
         $prov = $db->select('locations_province', ['id' => $province_id]);
         $province = $prov[0] ?? null;
     } else {
-        // Method 2: Fallback to Slug derivation (e.g. hizmet-bolgeleri/adana)
-        if (preg_match('/^(locations|hizmet-bolgeleri)\/([a-z0-9-]+)$/', $post->slug, $matches)) {
+        // Method 2: Fallback to Slug derivation (e.g. hizmet-bolgeleri/adana or hizmet-bolgeleri/antalya/muratpasa)
+        if (preg_match('/^(locations|hizmet-bolgeleri)\/([a-z0-9-]+)(\/([a-z0-9-]+))?$/', $post->slug, $matches)) {
             $provSlug = $matches[2];
+            $distSlug = $matches[4] ?? null;
+
             $prov = $db->select('locations_province', ['slug' => $provSlug]);
             $province = $prov[0] ?? null;
-        }
 
-        // Method 3: Fallback to location_name meta
-        if (!$province) {
-            $locName = $post->getMeta('location_name'); // Returns string if single=true
-            if ($locName) {
-                $prov = $db->select('locations_province', ['name' => $locName]);
-                $province = $prov[0] ?? null;
+            if ($distSlug && $province) {
+                $dist = $db->select('locations_district', [
+                    'slug' => $distSlug,
+                    'province_id' => $province['id']
+                ]);
+                $district = $dist[0] ?? null;
             }
         }
     }
