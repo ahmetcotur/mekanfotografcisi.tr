@@ -11,6 +11,25 @@ $user = requireAuth();
 
 $db = new DatabaseClient();
 
+// Ensure pexels_images table exists (Auto-Migration for Production)
+try {
+    $db->getConnection()->exec("
+        CREATE TABLE IF NOT EXISTS pexels_images (
+            id SERIAL PRIMARY KEY,
+            image_url TEXT NOT NULL,
+            photographer VARCHAR(255),
+            is_visible BOOLEAN DEFAULT TRUE,
+            display_order INTEGER DEFAULT 0,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+        CREATE INDEX IF NOT EXISTS idx_pexels_visible ON pexels_images(is_visible);
+    ");
+} catch (Exception $e) {
+    // Silent fail if table already exists or other safe issues
+    error_log("Pexels Auto-Migration Error: " . $e->getMessage());
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // Get all Pexels images
     try {
