@@ -31,6 +31,23 @@ $requestPath = parse_url($requestUri, PHP_URL_PATH) ?: '/';
 // Force cleanup of common prefixes that cause 404s
 $requestPath = str_replace('/index.php', '', $requestPath);
 $requestPath = trim($requestPath, '/');
+// 301 Redirects for Legacy URLs
+$redirects = [
+    'locations' => 'hizmet-bolgeleri',
+    'services' => 'hizmetlerimiz'
+];
+
+if (isset($redirects[$requestPath])) {
+    header("Location: /" . $redirects[$requestPath], true, 301);
+    exit;
+}
+
+// Redirect services/* to hizmetlerimiz/*
+if (strpos($requestPath, 'services/') === 0) {
+    $newPath = str_replace('services/', 'hizmetlerimiz/', $requestPath);
+    header("Location: /" . $newPath, true, 301);
+    exit;
+}
 
 // CRITICAL: Static files MUST be checked BEFORE session starts
 if (preg_match('/\.(css|js|jpg|jpeg|png|gif|svg|webp|ico|woff|woff2|ttf|eot|pdf|xml|txt)$/i', $requestPath)) {
@@ -175,9 +192,9 @@ if ($post && $post->post_type === 'seo_page') {
         $prov = $db->select('locations_province', ['id' => $province_id]);
         $province = $prov[0] ?? null;
     } else {
-        // Method 2: Fallback to Slug derivation (e.g. locations/adana)
-        if (preg_match('/^locations\/([a-z0-9-]+)$/', $post->slug, $matches)) {
-            $provSlug = $matches[1];
+        // Method 2: Fallback to Slug derivation (e.g. hizmet-bolgeleri/adana)
+        if (preg_match('/^(locations|hizmet-bolgeleri)\/([a-z0-9-]+)$/', $post->slug, $matches)) {
+            $provSlug = $matches[2];
             $prov = $db->select('locations_province', ['slug' => $provSlug]);
             $province = $prov[0] ?? null;
         }

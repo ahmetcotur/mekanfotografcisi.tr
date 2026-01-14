@@ -85,15 +85,15 @@
             <div class="lg:col-span-2 space-y-6">
                 <h4 class="text-white font-semibold text-sm uppercase tracking-wider">Hizmetler</h4>
                 <ul class="space-y-3">
-                    <li><a href="/services/mimari-fotografcilik"
+                    <li><a href="/hizmetlerimiz/mimari-fotografcilik"
                             class="text-sm hover:text-brand-400 transition-colors">Mimari Çekimler</a></li>
-                    <li><a href="/services/ic-mekan-fotografciligi"
+                    <li><a href="/hizmetlerimiz/ic-mekan-fotografciligi"
                             class="text-sm hover:text-brand-400 transition-colors">İç Mekan</a></li>
-                    <li><a href="/services/otel-fotografciligi"
+                    <li><a href="/hizmetlerimiz/otel-fotografciligi"
                             class="text-sm hover:text-brand-400 transition-colors">Otel & Tatil Köyü</a></li>
-                    <li><a href="/services/emlak-fotografciligi"
+                    <li><a href="/hizmetlerimiz/emlak-fotografciligi"
                             class="text-sm hover:text-brand-400 transition-colors">Emlak & Villa</a></li>
-                    <li><a href="/services"
+                    <li><a href="/hizmetlerimiz"
                             class="text-sm hover:text-brand-400 transition-colors flex items-center gap-1 text-brand-400">Tüm
                             Hizmetler <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -108,7 +108,8 @@
                 <h4 class="text-white font-semibold text-sm uppercase tracking-wider">Kurumsal</h4>
                 <ul class="space-y-3">
                     <li><a href="/portfolio" class="text-sm hover:text-brand-400 transition-colors">Portfolyo</a></li>
-                    <li><a href="/locations" class="text-sm hover:text-brand-400 transition-colors">Hizmet Bölgeleri</a>
+                    <li><a href="/hizmet-bolgeleri" class="text-sm hover:text-brand-400 transition-colors">Hizmet
+                            Bölgeleri</a>
                     </li>
                     <li><a href="/#hakkimizda" class="text-sm hover:text-brand-400 transition-colors">Hakkımızda</a>
                     </li>

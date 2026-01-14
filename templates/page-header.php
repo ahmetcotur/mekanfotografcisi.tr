@@ -221,8 +221,8 @@ $schema = [
 
     <?php if (isset($schemaMarkup)): ?>
         <script type="application/ld+json">
-                                                <?= json_encode($schemaMarkup, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>
-                                                    </script>
+                                                    <?= json_encode($schemaMarkup, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>
+                                                        </script>
     <?php endif; ?>
 </head>
 
@@ -315,7 +315,7 @@ $schema = [
                                         </div>
                                     </a>
                                 <?php endforeach; ?>
-                                <a href="/services"
+                                <a href="/hizmetlerimiz"
                                     class="col-span-2 flex items-center justify-between p-3 rounded-xl bg-slate-50 hover:bg-slate-100 transition-colors group/link mt-2">
                                     <span class="text-sm font-medium text-slate-700 group-hover/link:text-slate-900">Tüm
                                         Hizmetleri Görüntüle</span>
@@ -332,7 +332,7 @@ $schema = [
 
                     <a href="/portfolio"
                         class="text-sm font-medium text-slate-600 hover:text-brand-600 transition-colors">Portfolyo</a>
-                    <a href="/locations"
+                    <a href="/hizmet-bolgeleri"
                         class="text-sm font-medium text-slate-600 hover:text-brand-600 transition-colors">Bölgeler</a>
                 </nav>
 
@@ -364,11 +364,11 @@ $schema = [
                 <a href="/"
                     class="block px-4 py-3 text-base font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-600 rounded-lg">Ana
                     Sayfa</a>
-                <a href="/services"
+                <a href="/hizmetlerimiz"
                     class="block px-4 py-3 text-base font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-600 rounded-lg">Hizmetler</a>
                 <a href="/portfolio"
                     class="block px-4 py-3 text-base font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-600 rounded-lg">Portfolyo</a>
-                <a href="/locations"
+                <a href="/hizmet-bolgeleri"
                     class="block px-4 py-3 text-base font-medium text-slate-600 hover:bg-slate-50 hover:text-brand-600 rounded-lg">Bölgeler</a>
                 <a href="/#iletisim"
                     class="block px-4 py-3 text-base font-medium text-brand-600 bg-brand-50 rounded-lg mt-4 text-center">İletişime
