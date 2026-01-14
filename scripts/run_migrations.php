@@ -36,7 +36,8 @@ function run_migrations()
         $check = $db->query("SELECT id FROM migrations WHERE filename = ?", [$filename]);
 
         if (empty($check)) {
-            echo "Executing migration: $filename...\n";
+            if (php_sapi_name() === 'cli')
+                echo "Executing migration: $filename...\n";
             $sqlContent = file_get_contents($file);
 
             try {
@@ -53,9 +54,11 @@ function run_migrations()
 
                 // 4. Mark as executed
                 $db->insert('migrations', ['filename' => $filename]);
-                echo "Migration $filename successfully executed.\n";
+                if (php_sapi_name() === 'cli')
+                    echo "Migration $filename successfully executed.\n";
             } catch (Exception $e) {
-                echo "ERROR in migration $filename: " . $e->getMessage() . "\n";
+                if (php_sapi_name() === 'cli')
+                    echo "ERROR in migration $filename: " . $e->getMessage() . "\n";
                 error_log("Migration error ($filename): " . $e->getMessage());
                 break;
             }

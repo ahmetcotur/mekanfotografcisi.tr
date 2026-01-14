@@ -35,6 +35,12 @@ $requestPath = parse_url($requestUri, PHP_URL_PATH) ?: '/';
 // Force cleanup of common prefixes that cause 404s
 $requestPath = str_replace('/index.php', '', $requestPath);
 $requestPath = trim($requestPath, '/');
+
+// CRITICAL: Static files MUST be handled BEFORE anything else
+if (preg_match('/\.(css|js|jpg|jpeg|png|gif|svg|webp|ico|woff|woff2|ttf|eot|pdf|xml|txt)$/i', $requestPath)) {
+    return false;
+}
+
 // 301 Redirects for Legacy URLs
 $redirects = [
     'locations' => 'hizmet-bolgeleri',
@@ -51,11 +57,6 @@ if (strpos($requestPath, 'services/') === 0) {
     $newPath = str_replace('services/', 'hizmetlerimiz/', $requestPath);
     header("Location: /" . $newPath, true, 301);
     exit;
-}
-
-// CRITICAL: Static files MUST be checked BEFORE session starts
-if (preg_match('/\.(css|js|jpg|jpeg|png|gif|svg|webp|ico|woff|woff2|ttf|eot|pdf|xml|txt)$/i', $requestPath)) {
-    return false;
 }
 
 // Global Session (Ensures consistency across /login, /admin, and site)
