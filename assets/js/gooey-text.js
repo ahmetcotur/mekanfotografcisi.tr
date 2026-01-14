@@ -28,7 +28,7 @@ class GooeyText {
         svg.setAttribute("focusable", "false");
         svg.innerHTML = `
             <defs>
-                <filter id="gooey-threshold">
+                <filter id="gooey-threshold" x="-50%" y="-50%" width="200%" height="200%">
                     <feColorMatrix
                         in="SourceGraphic"
                         type="matrix"
@@ -44,7 +44,7 @@ class GooeyText {
 
         // Create Text Elements
         const wrapper = document.createElement('div');
-        wrapper.className = "flex items-center justify-center relative w-full h-full";
+        wrapper.className = "flex items-center justify-center relative w-full h-full py-4";
         wrapper.style.filter = "url(#gooey-threshold)";
 
         this.text1 = document.createElement('span');
