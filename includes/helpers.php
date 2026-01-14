@@ -91,7 +91,16 @@ function get_random_pexels_photo()
     if ($pexelsService === null) {
         $pexelsService = new \Core\PexelsService();
     }
-    return $pexelsService->getRandomPhoto();
+    $photo = $pexelsService->getRandomPhoto();
+
+    // Sanitize for template compatibility (ensure src is a string)
+    if ($photo && isset($photo['src'])) {
+        if (is_array($photo['src'])) {
+            $photo['src'] = $photo['src']['large'] ?? $photo['src']['original'] ?? '';
+        }
+    }
+
+    return $photo;
 }
 
 /**
@@ -103,7 +112,18 @@ function get_random_pexels_photos($count = 3)
     if ($pexelsService === null) {
         $pexelsService = new \Core\PexelsService();
     }
-    return $pexelsService->getRandomPhotosBatch($count);
+    $photos = $pexelsService->getRandomPhotosBatch($count);
+
+    // Sanitize for template compatibility
+    if (!empty($photos)) {
+        foreach ($photos as &$photo) {
+            if (isset($photo['src']) && is_array($photo['src'])) {
+                $photo['src'] = $photo['src']['large'] ?? $photo['src']['original'] ?? '';
+            }
+        }
+    }
+
+    return $photos;
 }
 
 /**

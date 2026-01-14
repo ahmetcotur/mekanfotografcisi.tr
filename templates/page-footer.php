@@ -123,7 +123,7 @@
                     <h4 class="text-white font-semibold text-sm uppercase tracking-wider">Günün Karesi</h4>
                     <a href="<?= e($pexelsPhoto['url']) ?>" target="_blank" rel="noopener"
                         class="block group relative aspect-video rounded-xl overflow-hidden border border-slate-700">
-                        <img src="<?= e($pexelsPhoto['src']['large'] ?? $pexelsPhoto['thumbnail']) ?>"
+                        <img src="<?= e($pexelsPhoto['src']['large'] ?? $pexelsPhoto['thumbnail'] ?? $pexelsPhoto['src']) ?>"
                             alt="<?= e($pexelsPhoto['alt']) ?>"
                             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                             loading="lazy">

@@ -53,6 +53,7 @@ class PexelsService
                 $photos[] = [
                     'id' => $row['id'],
                     'src' => $row['image_url'],
+                    'thumbnail' => $row['image_url'], // Added for compatibility
                     'url' => $row['image_url'],
                     'photographer' => $row['photographer'],
                     'alt' => $row['photographer'] . ' - Mekan Fotoğrafçısı'
