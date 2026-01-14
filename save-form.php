@@ -124,29 +124,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // E-posta bildirimini gönder
-    $to = "info@mekanfotografcisi.tr";
-    $isWizard = !empty($data['wizard_details']);
-    $subject = $isWizard ? "Yeni Teklif İstemi (Sihirbaz) - " . $name : "Yeni İletişim Formu Mesajı - " . $name;
+    try {
+        require_once __DIR__ . '/vendor/autoload.php';
+        $mailService = new \Core\MailService();
 
-    // Turkish characters fix for subject
-    $subject = '=?UTF-8?B?' . base64_encode($subject) . '?=';
+        $to = "info@mekanfotografcisi.tr";
+        $isWizard = !empty($data['wizard_details']);
+        $subject = $isWizard ? "Yeni Teklif İstemi (Sihirbaz) - " . $name : "Yeni İletişim Formu Mesajı - " . $name;
 
-    $emailContent = "Merhaba,\n\nWeb sitenizden yeni bir form gönderildi.\n\n";
-    $emailContent .= "Tarih: " . $date . "\n";
-    $emailContent .= "Ad Soyad: " . $name . "\n";
-    $emailContent .= "E-posta: " . $email . "\n";
-    $emailContent .= "Telefon: " . $phone . "\n";
-    $emailContent .= "Hizmet: " . $service . "\n";
-    $emailContent .= "Lokasyon: " . $location . "\n";
-    $emailContent .= "Mesaj: " . $message . "\n";
-    $emailContent .= "IP Adresi: " . $ipAddress . "\n";
+        $emailContent = "Merhaba,\n\nWeb sitenizden yeni bir form gönderildi.\n\n";
+        $emailContent .= "Tarih: " . $date . "\n";
+        $emailContent .= "Ad Soyad: " . $name . "\n";
+        $emailContent .= "E-posta: " . $email . "\n";
+        $emailContent .= "Telefon: " . $phone . "\n";
+        $emailContent .= "Hizmet: " . $service . "\n";
+        $emailContent .= "Lokasyon: " . $location . "\n";
+        $emailContent .= "Mesaj: " . $message . "\n";
+        $emailContent .= "IP Adresi: " . $ipAddress . "\n";
 
-    $headers = "From: Mekan Fotografcisi <info@mekanfotografcisi.tr>\r\n";
-    $headers .= "Reply-To: " . $email . "\r\n";
-    $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
-
-    // PHP mail function
-    @mail($to, $subject, $emailContent, $headers);
+        $mailService->send($to, $subject, $emailContent, $email);
+    } catch (Exception $e) {
+        error_log("Email sending failed: " . $e->getMessage());
+    }
 
     // Başarılı yanıt döndür
     echo json_encode([
