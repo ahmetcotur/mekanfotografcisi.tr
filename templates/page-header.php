@@ -119,10 +119,14 @@ $schema = [
                         brand: {
                             50: '#f0f9ff',
                             100: '#e0f2fe',
+                            400: '#38bdf8', // Added to fix invisible text
                             500: '<?= $primaryColor ?>',
                             600: '<?= $secondaryColor ?>',
                             700: '<?= $secondaryColor ?>', // Fallback
                             900: '#0c4a6e',
+                        },
+                        cyan: {
+                            300: '#67e8f9', // Added for gradients
                         },
                         dark: {
                             900: '#0f172a',
@@ -218,11 +222,12 @@ $schema = [
 
     <!-- Legacy Styles (keeping specific ones if needed, but prioritizing Tailwind) -->
     <link rel="stylesheet" href="/assets/css/styles.css?v=<?= time() ?>">
+    <script src="/assets/js/gooey-text.js?v=<?= time() ?>"></script>
 
     <?php if (isset($schemaMarkup)): ?>
         <script type="application/ld+json">
-                                                    <?= json_encode($schemaMarkup, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>
-                                                        </script>
+                                                        <?= json_encode($schemaMarkup, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>
+                                                                </script>
     <?php endif; ?>
 </head>
 
