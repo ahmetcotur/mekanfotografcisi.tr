@@ -18,7 +18,6 @@ function run_migrations()
             )
         ");
     } catch (Exception $e) {
-        // Table might exist or error, log but continue
         error_log("Migrations table create error: " . $e->getMessage());
     }
 
@@ -28,7 +27,7 @@ function run_migrations()
         return;
 
     $files = glob($migrationDir . '/*.sql');
-    sort($files); // Run in order
+    sort($files);
 
     foreach ($files as $file) {
         $filename = basename($file);
@@ -38,12 +37,19 @@ function run_migrations()
 
         if (empty($check)) {
             echo "Executing migration: $filename...\n";
-            $sql = file_get_contents($file);
+            $sqlContent = file_get_contents($file);
 
             try {
-                // Split multi-statement SQL files simple way
-                // In production with complex SQL, this might need better parsing
-                $db->query($sql);
+                // Split by custom marker -- STATEMENT
+                // This is the most reliable way when dealing with HTML/JS content
+                $statements = preg_split('/-- STATEMENT/i', $sqlContent);
+
+                foreach ($statements as $statement) {
+                    $statement = trim($statement);
+                    if (!empty($statement)) {
+                        $db->query($statement);
+                    }
+                }
 
                 // 4. Mark as executed
                 $db->insert('migrations', ['filename' => $filename]);
@@ -51,14 +57,12 @@ function run_migrations()
             } catch (Exception $e) {
                 echo "ERROR in migration $filename: " . $e->getMessage() . "\n";
                 error_log("Migration error ($filename): " . $e->getMessage());
-                // Stop to prevent further data issues
                 break;
             }
         }
     }
 }
 
-// Only if run directly from CLI
 if (php_sapi_name() === 'cli' && basename(__FILE__) === basename($_SERVER['PHP_SELF'])) {
     run_migrations();
 }

@@ -3,8 +3,11 @@
 
 -- 1. URL and Slug Updates
 UPDATE posts SET slug = 'hizmet-bolgeleri' WHERE slug = 'locations';
+-- STATEMENT
 UPDATE posts SET slug = 'hizmetlerimiz' WHERE slug = 'services';
+-- STATEMENT
 UPDATE posts SET slug = REPLACE(slug, 'services/', 'hizmetlerimiz/') WHERE slug LIKE 'services/%';
+-- STATEMENT
 
 -- 2. New Premium Hero Design and Gooey Animation
 UPDATE posts SET content = '<!-- Hero Section -->
@@ -49,12 +52,11 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 </script>' || split_part(content, '<!-- Stats Section -->', 2) 
 WHERE slug = 'homepage';
-
--- 3. Meta Data Link Synchronization
--- Uses type casting for JSONB compliance
+-- STATEMENT
 UPDATE post_meta SET meta_value = REPLACE(meta_value::text, '/services/', '/hizmetlerimiz/')::jsonb;
-
--- 4. Content link sync (header/footer scripts/internal links in content)
+-- STATEMENT
 UPDATE posts SET content = REPLACE(content, '/services/', '/hizmetlerimiz/');
+-- STATEMENT
 UPDATE posts SET content = REPLACE(content, '/services"', '/hizmetlerimiz"');
+-- STATEMENT
 UPDATE posts SET content = REPLACE(content, '/locations', '/hizmet-bolgeleri');
