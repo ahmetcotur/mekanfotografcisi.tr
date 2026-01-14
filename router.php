@@ -21,6 +21,10 @@ spl_autoload_register(function ($class) {
 
 require_once __DIR__ . '/includes/database.php';
 require_once __DIR__ . '/includes/helpers.php';
+require_once __DIR__ . '/scripts/run_migrations.php';
+
+// Sync Database Migrations (Low overhead check)
+run_migrations();
 
 use Core\Post;
 use Core\TemplateLoader;
