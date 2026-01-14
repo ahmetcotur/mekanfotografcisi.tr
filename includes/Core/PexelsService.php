@@ -31,31 +31,37 @@ class PexelsService
      */
     public function getActivePhotos()
     {
-        if (!$this->db)
-            return [];
+        if (!$this->db) {
+            // Self-initialize if possible
+            if (class_exists('\\DatabaseClient')) {
+                $this->db = new \DatabaseClient();
+            } else {
+                return [];
+            }
+        }
 
         try {
-            // Check if table exists first to avoid fatal errors during early setup
-            // PostgreSQL specific check
-            $tableExists = $this->db->query("SELECT to_regclass('public.pexels_images')");
-            if (empty($tableExists) || empty($tableExists[0]['to_regclass'])) {
+            // Simplified query, will catch error if table missing
+            $rows = $this->db->query("SELECT * FROM pexels_images WHERE is_visible = true ORDER BY display_order ASC");
+
+            if (empty($rows)) {
                 return [];
             }
 
-            $rows = $this->db->query("SELECT * FROM pexels_images WHERE is_visible = true ORDER BY display_order ASC");
             $photos = [];
             foreach ($rows as $row) {
-                // Map DB columns to Service format
                 $photos[] = [
                     'id' => $row['id'],
                     'src' => $row['image_url'],
-                    'url' => $row['image_url'], // Fallback
+                    'url' => $row['image_url'],
                     'photographer' => $row['photographer'],
                     'alt' => $row['photographer'] . ' - Mekan Fotoğrafçısı'
                 ];
             }
             return $photos;
-        } catch (\Exception $e) {
+        } catch (\Throwable $t) {
+            // Log error for debugging but return empty to trigger fallback
+            error_log("PexelsService::getActivePhotos Database Error: " . $t->getMessage());
             return [];
         }
     }
@@ -68,7 +74,7 @@ class PexelsService
         // Try DB first
         $photos = $this->getActivePhotos();
 
-        // Fallback to API/Cache if DB is empty
+        // Fallback to API/Cache ONLY if DB is empty or fails
         if (empty($photos)) {
             $photos = $this->getPhotos();
         }
@@ -88,7 +94,7 @@ class PexelsService
         // Try DB first
         $photos = $this->getActivePhotos();
 
-        // Fallback to API/Cache if DB is empty
+        // Fallback to API/Cache ONLY if DB is empty or fails
         if (empty($photos)) {
             $photos = $this->getPhotos();
         }

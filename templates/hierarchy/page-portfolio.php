@@ -4,7 +4,20 @@
  * Redesigned with Tailwind CSS
  */
 $pexelsService = new \Core\PexelsService();
-$allPhotos = $pexelsService->getPhotos();
+$allPhotos = $pexelsService->getActivePhotos();
+
+// Only fallback to raw Pexels cache if the database lookup returned absolutely nothing 
+// (which usually means the table is empty or doesn't exist yet)
+if (empty($allPhotos)) {
+    // Check if table is truly empty or doesn't exist
+    $db = new \DatabaseClient();
+    $dbCount = $db->query("SELECT count(*) as total FROM pexels_images");
+    $totalInDb = $dbCount[0]['total'] ?? 0;
+
+    if ($totalInDb == 0) {
+        $allPhotos = $pexelsService->getPhotos();
+    }
+}
 
 // Get a random photo for hero background
 $heroPhoto = get_random_pexels_photo();
