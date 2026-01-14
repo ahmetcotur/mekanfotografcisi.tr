@@ -68,7 +68,7 @@ $heroImage = $randomPhoto ? $randomPhoto['src'] : '/assets/images/hero-bg.jpg';
 
 <!-- Locations Hero -->
 <section
-    class="relative h-[50vh] min-h-[400px] flex items-center justify-center overflow-hidden bg-slate-900 border-b-4 border-brand-500">
+    class="relative h-[60vh] min-h-[500px] flex items-center justify-center overflow-hidden bg-slate-900 border-b-4 border-brand-500">
     <div class="absolute inset-0 z-0">
         <img src="<?= htmlspecialchars($heroImage) ?>" alt="Locations Map"
             class="w-full h-full object-cover opacity-40">
@@ -76,15 +76,28 @@ $heroImage = $randomPhoto ? $randomPhoto['src'] : '/assets/images/hero-bg.jpg';
     </div>
     <div class="relative z-10 container mx-auto px-4 text-center">
         <span
-            class="inline-block py-1 px-3 rounded-full bg-brand-500/20 text-brand-300 text-sm font-semibold mb-4 backdrop-blur-md border border-brand-500/30">
+            class="inline-block py-2 px-5 rounded-full bg-brand-600/90 border-2 border-brand-400 text-white text-sm font-black tracking-widest uppercase mb-6 backdrop-blur-xl shadow-2xl shadow-brand-500/50">
             Kapsama Alanımız
         </span>
-        <h1 class="font-heading font-extrabold text-5xl md:text-6xl text-white mb-6 tracking-tight drop-shadow-2xl">
+        <h1 class="font-heading font-extrabold text-5xl md:text-7xl text-white mb-6 tracking-tight drop-shadow-2xl">
             Hizmet Bölgelerimiz
         </h1>
-        <p class="text-xl text-slate-200 max-w-2xl mx-auto font-light leading-relaxed">
+        <p class="text-xl md:text-2xl text-slate-200 max-w-3xl mx-auto font-light leading-relaxed mb-12">
             Türkiye'nin dört bir yanında, mekanınıza değer katmak için oradayız.
         </p>
+
+        <!-- Quick Stats -->
+        <div class="flex flex-wrap justify-center gap-8 mt-12">
+            <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl px-8 py-4">
+                <div class="text-4xl font-black text-brand-400 mb-1"><?= count($activeProvinces) ?></div>
+                <div class="text-white text-sm font-semibold uppercase tracking-wider">Aktif İl</div>
+            </div>
+            <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl px-8 py-4">
+                <div class="text-4xl font-black text-brand-400 mb-1"><?= array_sum(array_map('count', $hierarchy)) ?>
+                </div>
+                <div class="text-white text-sm font-semibold uppercase tracking-wider">Aktif İlçe</div>
+            </div>
+        </div>
     </div>
 </section>
 
