@@ -10,6 +10,8 @@ class PexelsService
     private $seedsFile;
     private $cacheDuration = 86400; // 24 hours
 
+    private $db;
+
     public function __construct()
     {
         $this->apiKey = $_ENV['PEXELS_API_KEY'] ?? '';
@@ -17,6 +19,45 @@ class PexelsService
         $this->profileName = $_ENV['PEXELS_PROFILE_NAME'] ?? '776571149';
         $this->cacheFile = __DIR__ . '/../../data/pexels_cache.json';
         $this->seedsFile = __DIR__ . '/../../data/pexels_seeds.json';
+
+        // Initialize Database Client
+        if (class_exists('\\DatabaseClient')) {
+            $this->db = new \DatabaseClient();
+        }
+    }
+
+    /**
+     * Get active photos from Database
+     */
+    public function getActivePhotos()
+    {
+        if (!$this->db)
+            return [];
+
+        try {
+            // Check if table exists first to avoid fatal errors during early setup
+            // PostgreSQL specific check
+            $tableExists = $this->db->query("SELECT to_regclass('public.pexels_images')");
+            if (empty($tableExists) || empty($tableExists[0]['to_regclass'])) {
+                return [];
+            }
+
+            $rows = $this->db->query("SELECT * FROM pexels_images WHERE is_visible = true ORDER BY display_order ASC");
+            $photos = [];
+            foreach ($rows as $row) {
+                // Map DB columns to Service format
+                $photos[] = [
+                    'id' => $row['id'],
+                    'src' => $row['image_url'],
+                    'url' => $row['image_url'], // Fallback
+                    'photographer' => $row['photographer'],
+                    'alt' => $row['photographer'] . ' - Mekan Fotoğrafçısı'
+                ];
+            }
+            return $photos;
+        } catch (\Exception $e) {
+            return [];
+        }
     }
 
     /**
@@ -24,7 +65,14 @@ class PexelsService
      */
     public function getRandomPhoto()
     {
-        $photos = $this->getPhotos();
+        // Try DB first
+        $photos = $this->getActivePhotos();
+
+        // Fallback to API/Cache if DB is empty
+        if (empty($photos)) {
+            $photos = $this->getPhotos();
+        }
+
         if (empty($photos)) {
             return null;
         }
@@ -37,7 +85,14 @@ class PexelsService
      */
     public function getRandomPhotosBatch($count = 3)
     {
-        $photos = $this->getPhotos();
+        // Try DB first
+        $photos = $this->getActivePhotos();
+
+        // Fallback to API/Cache if DB is empty
+        if (empty($photos)) {
+            $photos = $this->getPhotos();
+        }
+
         if (empty($photos)) {
             return [];
         }
