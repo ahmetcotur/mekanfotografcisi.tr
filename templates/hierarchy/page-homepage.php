@@ -120,6 +120,9 @@ $content = preg_replace($heroPattern, '$1<div id="hero-effect-root" class="overf
 $content = str_replace('text-brand-300', 'text-brand-500 font-bold', $content);
 $content = str_replace('text-brand-400', 'text-brand-500 font-bold', $content);
 
+// Feature: Rounder Hero Buttons
+$content = str_replace('rounded-2xl', 'rounded-full', $content);
+
 // Force button shadows to be premium brand shadows
 $content = str_replace('shadow-[0_20px_50px_rgba(14,165,233,0.4)]', 'shadow-2xl shadow-brand-500/50', $content);
 
@@ -127,7 +130,7 @@ $content = str_replace('shadow-[0_20px_50px_rgba(14,165,233,0.4)]', 'shadow-2xl 
 // identifying class: "relative z-10 container mx-auto px-4 overflow-visible"
 $content = str_replace(
     'class="relative z-10 container mx-auto px-4 overflow-visible"',
-    'class="relative z-10 container mx-auto px-4 overflow-visible pt-40 md:pt-0"',
+    'class="relative z-10 container mx-auto px-4 overflow-visible pt-40 pb-20 md:pt-0 md:pb-0"',
     $content
 );
 
