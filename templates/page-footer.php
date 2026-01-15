@@ -18,7 +18,7 @@
                     ?>
                     <?php if ($logoUrl): ?>
                         <img src="<?= e($logoUrl) ?>" alt="<?= e($siteName) ?>"
-                            class="h-10 w-auto object-contain transition-transform group-hover:scale-105">
+                            class="h-10 w-auto object-contain transition-transform group-hover:scale-105 brightness-0 invert">
                     <?php else: ?>
                         <div
                             class="w-10 h-10 bg-brand-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-brand-500/20 transition-all group-hover:scale-110 group-hover:rotate-6">
@@ -140,11 +140,15 @@
             <p class="text-xs font-bold text-slate-600 uppercase tracking-widest">&copy; <?= date('Y') ?> Mekan
                 Fotoğrafçısı. Crafted with passion.</p>
             <div class="flex gap-8 text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">
-                <a href="#" class="hover:text-brand-400 transition-colors">Gizlilik</a>
-                <a href="#" class="hover:text-brand-400 transition-colors">Şartlar</a>
+                <a href="/gizlilik-politikasi" class="hover:text-brand-400 transition-colors">Gizlilik</a>
+                <a href="/kullanim-sartlari" class="hover:text-brand-400 transition-colors">Şartlar</a>
+                <a href="/cerez-politikasi" class="hover:text-brand-400 transition-colors">Çerez Politikası</a>
             </div>
         </div>
     </div>
+
+    <!-- Cookie Consent Partial -->
+    <?php include __DIR__ . '/partials/cookie-consent.php'; ?>
 </footer>
 
 <!-- JavaScript -->

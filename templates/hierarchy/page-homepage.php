@@ -59,7 +59,7 @@ foreach ($services as $service) {
     // Replace service card glass styling
     $servicesHtml .= <<<HTML
             <!-- Service: {$serviceName} -->
-            <div class="group relative bg-slate-900 rounded-5xl h-[500px] overflow-hidden shadow-2xl hover-lift">
+            <div class="group relative bg-slate-900 rounded-5xl h-[500px] overflow-hidden shadow-2xl hover-lift min-w-[85vw] md:min-w-[350px] snap-center shrink-0">
                 <img src="{$serviceImage}" alt="{$serviceName}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-60">
                 <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/40 to-transparent"></div>
                 
@@ -96,7 +96,7 @@ $replacement = <<<HTML
             <p class="text-slate-500 text-xl lg:text-2xl font-light leading-relaxed">Her mekanın kendine has bir dili vardır. Biz o dili görselleştiriyoruz.</p>
         </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+        <div class="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-8 hide-scrollbar -mx-4 px-4 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-10 md:overflow-visible md:pb-0 md:mx-0 md:px-0">
 {$servicesHtml}        </div>
     </div>
 </section>
@@ -111,12 +111,10 @@ if ($newContent !== null) {
 $content = preg_replace('/<section[^>]*id="freelancer-basvuru"[^>]*>.*?<\/section>/s', '', $content);
 $content = preg_replace('/<section[^>]*class="[^"]*bg-gradient-to-br from-slate-50 to-white[^"]*"[^>]*>.*?<\/section>/s', '', $content);
 
-// Replace the Hero morph divs with the React mount point
-$heroPattern = '/<div class="flex flex-wrap items-center justify-center gap-x-12 gap-y-6 mb-8 overflow-visible">.*?<div class="text-white mt-8 drop-shadow-2xl">Dönüştürüyoruz<\/div>/s';
-$newContent = preg_replace($heroPattern, '<div id="hero-effect-root" class="overflow-visible min-h-[300px] flex items-center justify-center"></div><div class="text-white mt-8 drop-shadow-2xl">Dönüştürüyoruz</div>', $content);
-if ($newContent !== null) {
-    $content = $newContent;
-}
+// Replace the entire H1 content with the React mount point for a unified experience
+// This refined pattern removes any static "Dönüştürüyoruz" or other content inside the H1
+$heroPattern = '/(<h1[^>]*>).*?(<\/h1>)/s';
+$content = preg_replace($heroPattern, '$1<div id="hero-effect-root" class="overflow-visible flex items-center justify-center"></div>$2', $content);
 
 // Force sub-header text to be solid brand color and bold
 $content = str_replace('text-brand-300', 'text-brand-500 font-bold', $content);
@@ -125,11 +123,33 @@ $content = str_replace('text-brand-400', 'text-brand-500 font-bold', $content);
 // Force button shadows to be premium brand shadows
 $content = str_replace('shadow-[0_20px_50px_rgba(14,165,233,0.4)]', 'shadow-2xl shadow-brand-500/50', $content);
 
+// FIX: Add top padding to Hero container on mobile to prevent overlap with fixed header
+// identifying class: "relative z-10 container mx-auto px-4 overflow-visible"
+$content = str_replace(
+    'class="relative z-10 container mx-auto px-4 overflow-visible"',
+    'class="relative z-10 container mx-auto px-4 overflow-visible pt-40 md:pt-0"',
+    $content
+);
+
 // Remove the old GooeyText script from content
 $newContent = preg_replace('/<script>.*?window\.initGooeyText.*?<\/script>/s', '', $content);
 if ($newContent !== null) {
     $content = $newContent;
 }
+
+// Feature: Convert Process Section to Horizontal Scroll on Mobile
+// Container
+$content = str_replace(
+    'class="grid md:grid-cols-4 gap-16 relative"',
+    'class="flex md:grid md:grid-cols-4 overflow-x-auto snap-x gap-6 md:gap-16 pb-8 md:pb-0 relative -mx-4 px-4 md:mx-0 md:px-0"',
+    $content
+);
+// Items
+$content = str_replace(
+    'class="relative z-10 text-center group"',
+    'class="relative z-10 text-center group min-w-[280px] md:min-w-0 snap-center shrink-0"',
+    $content
+);
 
 echo do_shortcode($content);
 ?>
@@ -179,8 +199,8 @@ echo do_shortcode($content);
 // Only include the freelancer section if it is NOT already in the content
 if (strpos($content, 'freelancer-basvuru') === false):
     ?>
-    <!-- Freelancer Application Section -->
-    <section class="py-32 bg-slate-50 relative overflow-hidden" id="freelancer-basvuru">
+    <!-- Freelancer CTA Section -->
+    <section class="py-24 bg-slate-50 relative overflow-hidden" id="freelancer-basvuru">
         <!-- Decorative Elements -->
         <div
             class="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-200/20 rounded-full blur-[120px] -mr-64 -mt-64 animate-pulse-subtle">
@@ -189,72 +209,105 @@ if (strpos($content, 'freelancer-basvuru') === false):
             style="animation-delay: 2s"></div>
 
         <div class="container mx-auto px-4 relative z-10">
-            <div class="max-w-6xl mx-auto">
-                <!-- Header -->
-                <div class="text-center mb-20 animate-slide-up">
-                    <span
-                        class="inline-block px-4 py-1.5 rounded-full bg-brand-50 text-brand-600 font-black tracking-[0.2em] uppercase text-[10px] mb-6 border border-brand-100">Ekibimize
-                        Katıl</span>
-                    <h2 class="font-heading font-black text-4xl md:text-7xl text-slate-900 mb-8 tracking-tight">Freelancer
-                        Olarak <br><span class="text-gradient">Sisteme Katıl</span></h2>
-                    <p class="text-slate-500 text-xl lg:text-2xl font-light leading-relaxed max-w-3xl mx-auto">
-                        Profesyonel mekan fotoğrafçısı mısınız? Ekibimize katılın ve Türkiye'nin dört bir yanındaki
-                        projelerde çözüm ortağımız olun.
-                    </p>
+            <div class="max-w-4xl mx-auto text-center">
+                <span
+                    class="inline-block px-4 py-1.5 rounded-full bg-brand-50 text-brand-600 font-black tracking-[0.2em] uppercase text-[10px] mb-6 border border-brand-100">Ekibimize
+                    Katıl</span>
+                <h2 class="font-heading font-black text-4xl md:text-6xl text-slate-900 mb-8 tracking-tight">Freelancer
+                    Olarak <span class="text-gradient">Sisteme Katıl</span></h2>
+                <p class="text-slate-500 text-xl font-light leading-relaxed max-w-2xl mx-auto mb-12">
+                    Profesyonel mekan fotoğrafçısı mısınız? Ekibimize katılın ve Türkiye'nin dört bir yanındaki projelerde
+                    çözüm ortağımız olun.
+                </p>
+
+                <button onclick="openFreelancerModal()"
+                    class="group relative px-12 py-5 bg-brand-600 hover:bg-brand-500 text-white rounded-full font-black text-lg shadow-xl shadow-brand-500/30 transition-all hover:scale-105 active:scale-95 overflow-hidden">
+                    <span class="relative z-10 flex items-center gap-3">
+                        Başvuru Formunu Aç
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                            class="group-hover:translate-x-1 transition-transform">
+                            <path d="M5 12h14" />
+                            <path d="m12 5 7 7-7 7" />
+                        </svg>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Freelancer Modal -->
+    <div id="freelancer-modal" class="fixed inset-0 z-[200] hidden opacity-0 transition-opacity duration-300"
+        aria-modal="true">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-slate-950/60 backdrop-blur-sm" onclick="closeFreelancerModal()"></div>
+
+        <!-- Modal Content -->
+        <div
+            class="absolute inset-x-0 bottom-0 md:inset-0 md:flex md:items-center md:justify-center pointer-events-none p-4 md:p-6">
+            <div class="bg-white w-full max-w-5xl max-h-[90vh] md:max-h-[85vh] rounded-t-4xl md:rounded-4xl shadow-2xl overflow-hidden pointer-events-auto transform translate-y-full md:translate-y-10 scale-95 transition-all duration-300 flex flex-col"
+                id="freelancer-modal-content">
+
+                <!-- Modal Header -->
+                <div
+                    class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-white/80 backdrop-blur-md z-10">
+                    <h3 class="font-heading font-black text-xl text-slate-900">Freelancer Başvurusu</h3>
+                    <button onclick="closeFreelancerModal()"
+                        class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-slate-900 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 6 6 18" />
+                            <path d="m6 6 18 18" />
+                        </svg>
+                    </button>
                 </div>
 
-                <!-- Form -->
-                <div class="bg-white rounded-5xl shadow-[0_32px_80px_-20px_rgba(0,0,0,0.08)] p-8 md:p-16 border border-slate-100 animate-slide-up"
-                    style="animation-delay: 0.2s">
+                <!-- Modal Body (Scrollable) -->
+                <div class="flex-1 overflow-y-auto p-6 md:p-10">
                     <form id="freelancer-form" class="space-y-8">
                         <!-- Name and Email Row -->
-                        <div class="grid md:grid-cols-2 gap-10">
-                            <div class="space-y-3">
-                                <label for="freelancer-name" class="block text-sm font-bold text-slate-700 ml-2">
-                                    Ad Soyad <span class="text-brand-500">*</span>
-                                </label>
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div class="space-y-2">
+                                <label for="freelancer-name" class="block text-sm font-bold text-slate-700 ml-1">Ad Soyad
+                                    <span class="text-brand-500">*</span></label>
                                 <input type="text" id="freelancer-name" name="name" required
-                                    class="w-full px-8 py-5 rounded-3xl border-2 border-slate-100 bg-slate-50/50 focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition-all outline-none text-slate-900 font-medium placeholder:text-slate-400"
-                                    placeholder="Adınız ve soyadınız">
+                                    class="w-full px-6 py-4 rounded-2xl border-2 border-slate-100 bg-slate-50/50 focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition-all outline-none font-medium text-slate-900"
+                                    placeholder="Adınız Soyadınız">
                             </div>
-                            <div class="space-y-3">
-                                <label for="freelancer-email" class="block text-sm font-bold text-slate-700 ml-2">
-                                    E-posta <span class="text-brand-500">*</span>
-                                </label>
+                            <div class="space-y-2">
+                                <label for="freelancer-email" class="block text-sm font-bold text-slate-700 ml-1">E-posta
+                                    <span class="text-brand-500">*</span></label>
                                 <input type="email" id="freelancer-email" name="email" required
-                                    class="w-full px-8 py-5 rounded-3xl border-2 border-slate-100 bg-slate-50/50 focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition-all outline-none text-slate-900 font-medium placeholder:text-slate-400"
+                                    class="w-full px-6 py-4 rounded-2xl border-2 border-slate-100 bg-slate-50/50 focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition-all outline-none font-medium text-slate-900"
                                     placeholder="ornek@email.com">
                             </div>
                         </div>
 
                         <!-- Phone and City Row -->
-                        <div class="grid md:grid-cols-2 gap-10">
-                            <div class="space-y-3">
-                                <label for="freelancer-phone" class="block text-sm font-bold text-slate-700 ml-2">
-                                    Telefon <span class="text-brand-500">*</span>
-                                </label>
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div class="space-y-2">
+                                <label for="freelancer-phone" class="block text-sm font-bold text-slate-700 ml-1">Telefon
+                                    <span class="text-brand-500">*</span></label>
                                 <input type="tel" id="freelancer-phone" name="phone" required
-                                    class="w-full px-8 py-5 rounded-3xl border-2 border-slate-100 bg-slate-50/50 focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition-all outline-none text-slate-900 font-medium placeholder:text-slate-400"
+                                    class="w-full px-6 py-4 rounded-2xl border-2 border-slate-100 bg-slate-50/50 focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition-all outline-none font-medium text-slate-900"
                                     placeholder="0555 123 45 67">
                             </div>
-                            <div class="space-y-3">
-                                <label for="freelancer-city" class="block text-sm font-bold text-slate-700 ml-2">
-                                    Bulunduğunuz Şehir <span class="text-brand-500">*</span>
-                                </label>
+                            <div class="space-y-2">
+                                <label for="freelancer-city" class="block text-sm font-bold text-slate-700 ml-1">Şehir <span
+                                        class="text-brand-500">*</span></label>
                                 <input type="text" id="freelancer-city" name="city" required
-                                    class="w-full px-8 py-5 rounded-3xl border-2 border-slate-100 bg-slate-50/50 focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition-all outline-none text-slate-900 font-medium placeholder:text-slate-400"
-                                    placeholder="Örn: Antalya">
+                                    class="w-full px-6 py-4 rounded-2xl border-2 border-slate-100 bg-slate-50/50 focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition-all outline-none font-medium text-slate-900"
+                                    placeholder="Bulunduğunuz Şehir">
                             </div>
                         </div>
 
                         <!-- Experience -->
-                        <div class="space-y-3">
-                            <label for="freelancer-experience" class="block text-sm font-bold text-slate-700 ml-2">
-                                Deneyim Yılı <span class="text-brand-500">*</span>
-                            </label>
+                        <div class="space-y-2">
+                            <label for="freelancer-experience" class="block text-sm font-bold text-slate-700 ml-1">Deneyim
+                                Yılı <span class="text-brand-500">*</span></label>
                             <div class="relative">
                                 <select id="freelancer-experience" name="experience" required
-                                    class="w-full px-8 py-5 rounded-3xl border-2 border-slate-100 bg-slate-50/50 focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition-all outline-none text-slate-900 font-medium appearance-none">
+                                    class="w-full px-6 py-4 rounded-2xl border-2 border-slate-100 bg-slate-50/50 focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition-all outline-none font-medium text-slate-900 appearance-none">
                                     <option value="">Seçiniz...</option>
                                     <option value="0-1">0-1 yıl</option>
                                     <option value="1-3">1-3 yıl</option>
@@ -262,39 +315,29 @@ if (strpos($content, 'freelancer-basvuru') === false):
                                     <option value="5-10">5-10 yıl</option>
                                     <option value="10+">10+ yıl</option>
                                 </select>
-                                <div class="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round">
-                                        <path d="m6 9 6 6 6-6" />
-                                    </svg>
-                                </div>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    class="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+                                    <path d="m6 9 6 6 6-6" />
+                                </svg>
                             </div>
                         </div>
 
                         <!-- Specialization -->
-                        <div class="space-y-4">
-                            <label class="block text-sm font-bold text-slate-700 ml-2">
-                                Uzmanlık Alanlarınız <span class="text-brand-500">*</span>
-                            </label>
-                            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <div class="space-y-3">
+                            <label class="block text-sm font-bold text-slate-700 ml-1">Uzmanlık Alanlarınız <span
+                                    class="text-brand-500">*</span></label>
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
                                 <?php
-                                $specialties = [
-                                    'mimari' => 'Mimari',
-                                    'ic-mekan' => 'İç Mekan',
-                                    'otel' => 'Otel',
-                                    'emlak' => 'Emlak',
-                                    'yemek' => 'Yemek',
-                                    'drone' => 'Drone'
-                                ];
-                                foreach ($specialties as $val => $label):
-                                    ?>
+                                $specialties = ['mimari' => 'Mimari', 'ic-mekan' => 'İç Mekan', 'otel' => 'Otel', 'emlak' => 'Emlak', 'yemek' => 'Yemek', 'drone' => 'Drone'];
+                                foreach ($specialties as $val => $label): ?>
                                     <label
-                                        class="group flex items-center gap-4 p-5 rounded-3xl border-2 border-slate-100 bg-slate-50/30 hover:bg-white hover:border-brand-200 cursor-pointer transition-all active:scale-95">
+                                        class="group flex items-center gap-3 p-4 rounded-xl border-2 border-slate-100 bg-slate-50/30 hover:bg-white hover:border-brand-200 cursor-pointer transition-all active:scale-95">
                                         <div class="relative flex items-center justify-center">
                                             <input type="checkbox" name="specialization[]" value="<?= $val ?>"
-                                                class="peer appearance-none w-6 h-6 rounded-lg border-2 border-slate-200 checked:bg-brand-500 checked:border-brand-500 transition-all">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                                class="peer appearance-none w-5 h-5 rounded-md border-2 border-slate-200 checked:bg-brand-500 checked:border-brand-500 transition-all">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
                                                 fill="none" stroke="white" stroke-width="4" stroke-linecap="round"
                                                 stroke-linejoin="round"
                                                 class="absolute opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none">
@@ -302,65 +345,87 @@ if (strpos($content, 'freelancer-basvuru') === false):
                                             </svg>
                                         </div>
                                         <span
-                                            class="text-slate-600 font-bold group-hover:text-slate-900 transition-colors"><?= $label ?></span>
+                                            class="text-sm font-bold text-slate-600 group-hover:text-slate-900"><?= $label ?></span>
                                     </label>
                                 <?php endforeach; ?>
                             </div>
                         </div>
 
                         <!-- Portfolio URL -->
-                        <div class="space-y-3">
-                            <label for="freelancer-portfolio" class="block text-sm font-bold text-slate-700 ml-2">
-                                Portfolio / Instagram Linki
-                            </label>
+                        <div class="space-y-2">
+                            <label for="freelancer-portfolio" class="block text-sm font-bold text-slate-700 ml-1">Portfolio
+                                / Instagram</label>
                             <input type="url" id="freelancer-portfolio" name="portfolio"
-                                class="w-full px-8 py-5 rounded-3xl border-2 border-slate-100 bg-slate-50/50 focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition-all outline-none text-slate-900 font-medium placeholder:text-slate-400"
-                                placeholder="https://instagram.com/kullaniciadi veya portfolio linki">
+                                class="w-full px-6 py-4 rounded-2xl border-2 border-slate-100 bg-slate-50/50 focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition-all outline-none font-medium text-slate-900 placeholder:text-slate-400"
+                                placeholder="https://...">
                         </div>
 
                         <!-- Message -->
-                        <div class="space-y-3">
-                            <label for="freelancer-message" class="block text-sm font-bold text-slate-700 ml-2">
-                                Kendinizden Bahsedin
-                            </label>
-                            <textarea id="freelancer-message" name="message" rows="5"
-                                class="w-full px-8 py-5 rounded-3xl border-2 border-slate-100 bg-slate-50/50 focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition-all outline-none text-slate-900 font-medium resize-none placeholder:text-slate-400"
-                                placeholder="Deneyimleriniz, ekipmanlarınız ve neden ekibimize katılmak istediğiniz hakkında kısaca bilgi verin..."></textarea>
+                        <div class="space-y-2">
+                            <label for="freelancer-message"
+                                class="block text-sm font-bold text-slate-700 ml-1">Hakkınızda</label>
+                            <textarea id="freelancer-message" name="message" rows="4"
+                                class="w-full px-6 py-4 rounded-2xl border-2 border-slate-100 bg-slate-50/50 focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition-all outline-none font-medium text-slate-900 resize-none placeholder:text-slate-400"
+                                placeholder="Kısaca kendinizden bahsedin..."></textarea>
                         </div>
 
-                        <!-- Submit Button -->
-                        <div class="text-center pt-8">
+                        <!-- Submit -->
+                        <div class="pt-4">
                             <button type="submit"
-                                class="group relative px-16 py-6 bg-brand-600 hover:bg-brand-500 text-white rounded-3xl font-black text-xl shadow-[0_20px_50px_rgba(14,165,233,0.3)] transition-all hover:scale-105 active:scale-95 overflow-hidden">
-                                <span class="relative z-10">Başvurumu Gönder</span>
-                                <div
-                                    class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000">
-                                </div>
-                            </button>
-                            <p class="text-sm font-medium text-slate-400 mt-8">
-                                Başvurunuz en kısa sürede değerlendirilecek ve size dönüş yapılacaktır.
-                            </p>
+                                class="w-full py-5 bg-brand-600 hover:bg-brand-500 text-white rounded-2xl font-black text-lg shadow-xl shadow-brand-500/20 transition-all hover:scale-[1.02] active:scale-[0.98]">Başvuruyu
+                                Gönder</button>
                         </div>
                     </form>
 
-                    <!-- Success Message (Hidden by default) -->
-                    <div id="freelancer-success" class="hidden text-center py-12">
-                        <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none"
+                    <!-- Success Message -->
+                    <div id="freelancer-success"
+                        class="hidden flex-col items-center justify-center text-center py-10 h-full">
+                        <div
+                            class="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mb-6 animate-bounce">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"
                                 class="text-green-600">
                                 <polyline points="20 6 9 17 4 12"></polyline>
                             </svg>
                         </div>
-                        <h3 class="text-3xl font-black text-slate-900 mb-4">Başvurunuz Alındı!</h3>
-                        <p class="text-slate-600 text-lg">Teşekkür ederiz. En kısa sürede sizinle iletişime geçeceğiz.</p>
+                        <h3 class="text-3xl font-black text-slate-900 mb-2">Başvurunuz Alındı!</h3>
+                        <p class="text-slate-500 text-lg max-w-md">Teşekkürler. Başvurunuz ekibimiz tarafından incelenip en
+                            kısa sürede dönüş yapılacaktır.</p>
+                        <button onclick="closeFreelancerModal()"
+                            class="mt-8 px-8 py-3 bg-slate-100 text-slate-700 font-bold rounded-full hover:bg-slate-200 transition-colors">Kapat</button>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 
     <script>
+        // Modal Logic
+        const modal = document.getElementById('freelancer-modal');
+        const modalContent = document.getElementById('freelancer-modal-content');
+
+        function openFreelancerModal() {
+            modal.classList.remove('hidden');
+            // Small delay to allow display:block to apply before opacity transition
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modalContent.classList.remove('translate-y-full', 'scale-95');
+                modalContent.classList.add('md:translate-y-0', 'scale-100');
+            }, 10);
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeFreelancerModal() {
+            modal.classList.add('opacity-0');
+            modalContent.classList.add('translate-y-full', 'scale-95');
+            modalContent.classList.remove('md:translate-y-0', 'scale-100');
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                document.body.style.overflow = '';
+            }, 300);
+        }
+
         document.addEventListener("DOMContentLoaded", function () {
             const form = document.getElementById("freelancer-form");
             const successMessage = document.getElementById("freelancer-success");
@@ -368,7 +433,7 @@ if (strpos($content, 'freelancer-basvuru') === false):
             if (form) {
                 form.addEventListener("submit", async function (e) {
                     e.preventDefault();
-
+                    // Original submission logic...
                     const formData = new FormData(form);
                     const data = {
                         name: formData.get("name"),
@@ -382,7 +447,6 @@ if (strpos($content, 'freelancer-basvuru') === false):
                         type: "freelancer_application"
                     };
 
-                    // Validate specialization
                     if (data.specialization.length === 0) {
                         alert("Lütfen en az bir uzmanlık alanı seçiniz.");
                         return;
@@ -391,29 +455,25 @@ if (strpos($content, 'freelancer-basvuru') === false):
                     try {
                         const response = await fetch("/api/freelancer-application.php", {
                             method: "POST",
-                            headers: {
-                                "Content-Type": "application/json"
-                            },
+                            headers: { "Content-Type": "application/json" },
                             body: JSON.stringify(data)
                         });
 
                         if (response.ok) {
                             form.style.display = "none";
                             successMessage.classList.remove("hidden");
-
-                            // Scroll to success message
-                            successMessage.scrollIntoView({ behavior: "smooth", block: "center" });
+                            successMessage.classList.add("flex");
                         } else {
-                            alert("Bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.");
+                            alert("Bir hata oluştu.");
                         }
                     } catch (error) {
-                        console.error("Form submission error:", error);
-                        alert("Bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.");
+                        console.error(error);
+                        alert("Bir hata oluştu.");
                     }
                 });
             }
         });
     </script>
-
 <?php endif; ?>
+
 <?php include __DIR__ . '/../page-footer.php'; ?>

@@ -259,8 +259,8 @@ $schema = [
 
     <?php if (isset($schemaMarkup)): ?>
         <script type="application/ld+json">
-                                                                                <?= json_encode($schemaMarkup, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>
-                                                                                        </script>
+                                                                                            <?= json_encode($schemaMarkup, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>
+                                                                                                    </script>
     <?php endif; ?>
 </head>
 
@@ -278,16 +278,16 @@ $schema = [
     <!-- Navigation -->
     <header class="fixed w-full top-0 z-[100] transition-all duration-500" id="main-header">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
-            <div class="glass-panel rounded-3xl px-6 md:px-10 h-20 flex justify-between items-center transition-all duration-500 border-white/40 shadow-xl shadow-slate-900/5"
+            <div class="relative glass-panel rounded-3xl px-6 md:px-10 h-20 flex justify-between items-center transition-all duration-500 border-white/40 shadow-xl shadow-slate-900/5"
                 id="header-inner">
 
                 <!-- Logo -->
-                <div class="flex-shrink-0">
+                <div class="flex-shrink-0 absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0 md:left-auto">
                     <a href="/" class="group flex items-center gap-3">
                         <?php $logoUrl = get_setting('logo_url'); ?>
                         <?php if ($logoUrl): ?>
                             <img src="<?= e($logoUrl) ?>" alt="<?= e($siteName) ?>"
-                                class="h-10 w-auto object-contain transition-transform group-hover:scale-105">
+                                class="h-12 md:h-10 w-auto object-contain transition-transform group-hover:scale-105">
                         <?php else: ?>
                             <div
                                 class="w-10 h-10 bg-brand-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-brand-500/30 transition-all group-hover:scale-110 group-hover:rotate-6">
@@ -386,7 +386,7 @@ $schema = [
 
                 <!-- Mobile Menu Button -->
                 <button id="mobile-menu-btn"
-                    class="md:hidden w-12 h-12 flex items-center justify-center bg-slate-50 text-slate-600 rounded-2xl transition-all active:scale-90 shadow-sm border border-slate-100">
+                    class="md:hidden ml-auto w-12 h-12 flex items-center justify-center bg-slate-50 text-slate-600 rounded-2xl transition-all active:scale-90 shadow-sm border border-slate-100 hover:bg-brand-50 hover:text-brand-600">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="4" x2="20" y1="12" y2="12" />
@@ -400,19 +400,61 @@ $schema = [
         <!-- Mobile Menu -->
         <div id="mobile-menu"
             class="hidden md:hidden absolute top-[calc(100%-1rem)] left-4 right-4 bg-white/95 backdrop-blur-xl rounded-4xl shadow-2xl border border-slate-100 p-4 transition-all duration-300 origin-top animate-slide-up">
-            <div class="space-y-1">
+            <div class="space-y-2">
                 <a href="/"
-                    class="block px-6 py-4 text-sm font-bold text-slate-600 hover:bg-brand-50 hover:text-brand-600 rounded-2xl transition-all">Ana
-                    Sayfa</a>
+                    class="flex items-center gap-4 px-6 py-4 text-base font-bold text-slate-700 hover:bg-brand-50 hover:text-brand-600 rounded-3xl transition-all group">
+                    <div
+                        class="w-10 h-10 rounded-2xl bg-slate-50 text-slate-400 flex items-center justify-center group-hover:bg-brand-200/50 group-hover:text-brand-600 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                            <polyline points="9 22 9 12 15 12 15 22" />
+                        </svg>
+                    </div>
+                    Ana Sayfa
+                </a>
                 <a href="/hizmetlerimiz"
-                    class="block px-6 py-4 text-sm font-bold text-slate-600 hover:bg-brand-50 hover:text-brand-600 rounded-2xl transition-all">Hizmetlerimiz</a>
+                    class="flex items-center gap-4 px-6 py-4 text-base font-bold text-slate-700 hover:bg-brand-50 hover:text-brand-600 rounded-3xl transition-all group">
+                    <div
+                        class="w-10 h-10 rounded-2xl bg-slate-50 text-slate-400 flex items-center justify-center group-hover:bg-brand-200/50 group-hover:text-brand-600 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="7" height="7" x="3" y="3" rx="1" />
+                            <rect width="7" height="7" x="14" y="3" rx="1" />
+                            <rect width="7" height="7" x="14" y="14" rx="1" />
+                            <rect width="7" height="7" x="3" y="14" rx="1" />
+                        </svg>
+                    </div>
+                    Hizmetlerimiz
+                </a>
                 <a href="/portfolio"
-                    class="block px-6 py-4 text-sm font-bold text-slate-600 hover:bg-brand-50 hover:text-brand-600 rounded-2xl transition-all">Portfolyo</a>
+                    class="flex items-center gap-4 px-6 py-4 text-base font-bold text-slate-700 hover:bg-brand-50 hover:text-brand-600 rounded-3xl transition-all group">
+                    <div
+                        class="w-10 h-10 rounded-2xl bg-slate-50 text-slate-400 flex items-center justify-center group-hover:bg-brand-200/50 group-hover:text-brand-600 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
+                            <circle cx="8.5" cy="8.5" r="1.5" />
+                            <polyline points="21 15 16 10 5 21" />
+                        </svg>
+                    </div>
+                    Portfolyo
+                </a>
                 <a href="/hizmet-bolgeleri"
-                    class="block px-6 py-4 text-sm font-bold text-slate-600 hover:bg-brand-50 hover:text-brand-600 rounded-2xl transition-all">Bölgeler</a>
-                <div class="pt-4 px-2">
+                    class="flex items-center gap-4 px-6 py-4 text-base font-bold text-slate-700 hover:bg-brand-50 hover:text-brand-600 rounded-3xl transition-all group">
+                    <div
+                        class="w-10 h-10 rounded-2xl bg-slate-50 text-slate-400 flex items-center justify-center group-hover:bg-brand-200/50 group-hover:text-brand-600 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="10" r="3" />
+                            <path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z" />
+                        </svg>
+                    </div>
+                    Bölgeler
+                </a>
+                <div class="pt-6 px-2">
                     <button onclick="openQuoteWizard()"
-                        class="w-full py-5 text-sm font-black uppercase tracking-widest text-brand-600 bg-brand-50 rounded-3xl text-center active:scale-95 transition-all">Teklif
+                        class="w-full py-5 text-sm font-black uppercase tracking-widest text-white bg-brand-600 rounded-3xl text-center active:scale-95 transition-all shadow-xl shadow-brand-500/30 hover:bg-brand-700">Teklif
                         Al</button>
                 </div>
             </div>
@@ -427,11 +469,13 @@ $schema = [
             if (window.scrollY > 20) {
                 inner.classList.remove('rounded-3xl', 'mt-4');
                 inner.classList.add('rounded-none', 'md:rounded-full', 'mt-0', 'shadow-2xl');
-                header.querySelector('.max-w-7xl').classList.remove('mt-4');
+                header.querySelector('.max-w-7xl').classList.remove('mt-4', 'px-4');
+                header.querySelector('.max-w-7xl').classList.add('px-0');
             } else {
                 inner.classList.add('rounded-3xl');
                 inner.classList.remove('rounded-none', 'md:rounded-full', 'shadow-2xl');
-                header.querySelector('.max-w-7xl').classList.add('mt-4');
+                header.querySelector('.max-w-7xl').classList.add('mt-4', 'px-4');
+                header.querySelector('.max-w-7xl').classList.remove('px-0');
             }
         });
     </script>
@@ -447,4 +491,8 @@ $schema = [
 
         // Close menu when clicking outside
         document.addEventListener('click', (e) => {
+            if (!btn.contains(e.target) && !menu.contains(e.target)) {
+                menu.classList.add('hidden');
+            }
+        });
     </script>
