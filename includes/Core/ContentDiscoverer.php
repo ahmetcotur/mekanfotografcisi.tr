@@ -89,7 +89,28 @@ class ContentDiscoverer
             }
         }
 
+        // 4. Check for Static Template Page: page-{slug}.php
+        $staticTemplate = __DIR__ . '/../../templates/hierarchy/page-' . $slug . '.php';
+        if (file_exists($staticTemplate)) {
+            return $this->generateStaticPage($slug);
+        }
+
         return null;
+    }
+
+    /**
+     * Generate a post record for a static template page
+     */
+    private function generateStaticPage($slug)
+    {
+        $title = ucwords(str_replace('-', ' ', $slug));
+        return $this->createPostRecord([
+            'title' => $title,
+            'slug' => $slug,
+            'content' => '',
+            'post_type' => 'page',
+            'post_status' => 'publish'
+        ], []);
     }
 
     /**
