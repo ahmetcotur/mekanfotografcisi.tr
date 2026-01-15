@@ -184,8 +184,11 @@ if ($slug === '') {
 
     // 2. Enforce Service Base Prefix
     if ($post && $post->post_type === 'service') {
+        // Remove prefix if it already exists in the post slug to avoid doubling
+        $cleanSlug = preg_replace('/^' . preg_quote($serviceBase, '/') . '\//', '', $post->slug);
+
         // Correct path should be {serviceBase}/{slug_without_base}
-        $expectedPath = $serviceBase . '/' . $post->slug;
+        $expectedPath = $serviceBase . '/' . $cleanSlug;
         if ($slug !== $expectedPath) {
             header("Location: /" . $expectedPath, true, 301);
             exit;

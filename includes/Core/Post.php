@@ -57,8 +57,17 @@ class Post
 
         // 3. Smart handle for prefixes
         if (empty($results)) {
-            // If searching for hizmetlerimiz/slug or services/slug, try finding just slug
-            $cleanSlug = preg_replace('/^(hizmetlerimiz\/|services\/)/', '', $slug);
+            // Get dynamic service base
+            $serviceBase = 'hizmetlerimiz';
+            try {
+                $setting = $db->select('settings', ['key' => 'seo_service_base']);
+                if (!empty($setting))
+                    $serviceBase = $setting[0]['value'];
+            } catch (\Exception $e) {
+            }
+
+            // Clean the slug: remove the dynamic prefix or legacy 'services/'
+            $cleanSlug = preg_replace('/^(' . preg_quote($serviceBase, '/') . '\/|services\/)/', '', $slug);
             if ($cleanSlug !== $slug) {
                 $results = $db->select('posts', [
                     'slug' => $cleanSlug,
