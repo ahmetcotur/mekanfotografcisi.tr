@@ -1,14 +1,15 @@
 /**
- * Gooey Text Morphing - Vanilla JS Implementation
- * Ported from React component for Mekan Fotoğrafçısı
+ * Simple Text Switcher - Clean Fade Implementation
+ * Replaces the complex Gooey Text to fix cropping and UI clutter
  */
-class GooeyText {
+class TextSwitcher {
     constructor(options) {
         this.container = options.container;
         this.texts = options.texts;
-        this.morphTime = options.morphTime || 1;
-        this.cooldownTime = options.cooldownTime || 0.25;
+        this.morphTime = options.morphTime || 0.5;
+        this.cooldownTime = options.cooldownTime || 2.0;
         this.textClassName = options.textClassName || '';
+        this.textStyle = options.textStyle || '';
 
         this.textIndex = this.texts.length - 1;
         this.time = new Date();
@@ -21,66 +22,51 @@ class GooeyText {
     init() {
         if (!this.container) return;
 
-        // Create SVG Filter
-        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        svg.setAttribute("class", "absolute h-0 w-0");
-        svg.setAttribute("aria-hidden", "true");
-        svg.setAttribute("focusable", "false");
-        svg.innerHTML = `
-            <defs>
-                <filter id="gooey-threshold" x="-100%" y="-100%" width="300%" height="300%">
-                    <feColorMatrix
-                        in="SourceGraphic"
-                        type="matrix"
-                        values="1 0 0 0 0
-                                0 1 0 0 0
-                                0 0 1 0 0
-                                0 0 0 255 -140"
-                    />
-                </filter>
-            </defs>
-        `;
-        document.body.appendChild(svg);
+        // Container should not have any cropping filters
+        this.container.style.filter = "none";
+        this.container.classList.add('flex', 'items-center', 'justify-center', 'relative', 'overflow-visible');
 
-        // Create Text Elements
         const wrapper = document.createElement('div');
-        wrapper.className = "flex items-center justify-center relative w-full h-full py-10 px-12 overflow-visible";
-        wrapper.style.filter = "url(#gooey-threshold)";
+        wrapper.className = "relative flex items-center justify-center w-full h-full overflow-visible";
 
         this.text1 = document.createElement('span');
         this.text2 = document.createElement('span');
 
         [this.text1, this.text2].forEach(span => {
-            span.className = `absolute inset-0 flex items-center justify-center select-none text-center whitespace-nowrap overflow-visible ${this.textClassName}`;
+            // Use absolute positioning to overlay text during fade
+            span.className = `absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-max h-max flex items-center justify-center select-none text-center whitespace-nowrap transition-opacity duration-500 ${this.textClassName}`;
+            if (this.textStyle) span.style.cssText += this.textStyle;
             wrapper.appendChild(span);
         });
 
+        this.container.innerHTML = '';
         this.container.appendChild(wrapper);
 
         this.animate();
     }
 
     setMorph(fraction) {
-        this.text2.style.filter = `blur(${Math.min(8 / fraction - 8, 100)}px)`;
-        this.text2.style.opacity = `${Math.pow(fraction, 0.4) * 100}%`;
+        // Simple opacity fade
+        this.text2.style.opacity = fraction;
+        this.text1.style.opacity = 1 - fraction;
 
-        fraction = 1 - fraction;
-        this.text1.style.filter = `blur(${Math.min(8 / fraction - 8, 100)}px)`;
-        this.text1.style.opacity = `${Math.pow(fraction, 0.4) * 100}%`;
+        // Ensure they are visible or hidden completely
+        this.text1.style.visibility = (1 - fraction) < 0.01 ? "hidden" : "visible";
+        this.text2.style.visibility = fraction < 0.01 ? "hidden" : "visible";
     }
 
     doCooldown() {
         this.morph = 0;
-        this.text2.style.filter = "";
-        this.text2.style.opacity = "100%";
-        this.text1.style.filter = "";
-        this.text1.style.opacity = "0%";
+        this.text2.style.opacity = "1";
+        this.text1.style.opacity = "0";
+        this.text1.style.visibility = "hidden";
+        this.text2.style.visibility = "visible";
     }
 
     doMorph() {
         this.morph -= this.cooldown;
         this.cooldown = 0;
-        let fraction = this.morph / this.morphTime;
+        let fraction = (this.morph + this.cooldownTime) / this.morphTime;
 
         if (fraction > 1) {
             this.cooldown = this.cooldownTime;
@@ -103,8 +89,9 @@ class GooeyText {
         if (this.cooldown <= 0) {
             if (shouldIncrementIndex) {
                 this.textIndex = (this.textIndex + 1) % this.texts.length;
-                this.text1.textContent = this.texts[this.textIndex % this.texts.length];
-                this.text2.textContent = this.texts[(this.textIndex + 1) % this.texts.length];
+                // CRITICAL FIX: Use innerHTML to render span tags
+                this.text1.innerHTML = this.texts[this.textIndex % this.texts.length];
+                this.text2.innerHTML = this.texts[(this.textIndex + 1) % this.texts.length];
             }
             this.doMorph();
         } else {
@@ -113,11 +100,11 @@ class GooeyText {
     }
 }
 
-// Global initialization helper
+// Global initialization helper (compatible with old name for easy transition)
 window.initGooeyText = (selector, texts, options = {}) => {
     const el = document.querySelector(selector);
     if (el) {
-        new GooeyText({
+        new TextSwitcher({
             container: el,
             texts: texts,
             ...options

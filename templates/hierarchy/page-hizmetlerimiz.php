@@ -27,24 +27,30 @@ $heroImage = $randomPhoto ? $randomPhoto['src'] : '/assets/images/hero-bg.jpg';
 ?>
 
 <!-- Hero Section -->
-<section
-    class="relative h-[50vh] min-h-[400px] flex items-center justify-center overflow-hidden bg-slate-900 border-b-4 border-brand-500">
+<section class="relative h-[60vh] min-h-[500px] flex items-center justify-center overflow-hidden bg-slate-950">
     <div class="absolute inset-0 z-0">
         <img src="<?= htmlspecialchars($heroImage) ?>" alt="Hizmetlerimiz"
-            class="w-full h-full object-cover opacity-40">
-        <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent"></div>
+            class="w-full h-full object-cover opacity-30 animate-pulse-subtle">
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+        <div
+            class="absolute inset-0 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:40px_40px] opacity-10">
+        </div>
     </div>
+
     <div class="relative z-10 container mx-auto px-4 text-center">
-        <span
-            class="inline-block py-2 px-5 rounded-full bg-brand-600/90 border-2 border-brand-400 text-white text-sm font-black tracking-widest uppercase mb-6 backdrop-blur-xl shadow-2xl shadow-brand-500/50">
-            Profesyonel Hizmetler
-        </span>
-        <h1 class="font-heading font-extrabold text-5xl md:text-6xl text-white mb-6 tracking-tight drop-shadow-2xl">
-            Hizmetlerimiz
-        </h1>
-        <p class="text-xl text-slate-200 max-w-2xl mx-auto font-light leading-relaxed">
-            Her mekan türü için özel çözümler sunuyoruz. İşletmenize değer katan profesyonel fotoğrafçılık hizmetleri.
-        </p>
+        <div class="animate-slide-up">
+            <span
+                class="inline-block px-4 py-1.5 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-400 text-[10px] font-black tracking-[0.2em] uppercase mb-8 backdrop-blur-xl">
+                Profesyonel Çözümler
+            </span>
+            <h1 class="font-heading font-black text-5xl md:text-8xl text-white mb-8 tracking-tighter drop-shadow-2xl">
+                Hizmetlerimiz
+            </h1>
+            <p class="text-xl md:text-2xl text-slate-400 max-w-2xl mx-auto font-light leading-relaxed">
+                Her mekanın kendine has bir dili vardır. <span class="text-white font-medium">Biz o dili
+                    görselleştiriyoruz.</span>
+            </p>
+        </div>
     </div>
 </section>
 
@@ -66,34 +72,33 @@ $heroImage = $randomPhoto ? $randomPhoto['src'] : '/assets/images/hero-bg.jpg';
                     $serviceImage = $serviceImages[$serviceSlug] ?? $defaultImage;
                     ?>
                     <!-- Service Card -->
-                    <div
-                        class="group relative bg-slate-900 rounded-[2.5rem] h-[500px] overflow-hidden shadow-2xl hover:shadow-brand-500/20 transition-all duration-500">
+                    <div class="group relative bg-slate-900 rounded-5xl h-[500px] overflow-hidden shadow-2xl hover-lift">
                         <img src="<?= $serviceImage ?>" alt="<?= $serviceName ?>"
-                            class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-70">
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent"></div>
+                            class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-60">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/40 to-transparent"></div>
+
                         <div
-                            class="absolute bottom-0 left-0 w-full p-10 transform translate-y-6 group-hover:translate-y-0 transition-transform duration-500">
-                            <div class="w-12 h-1 bg-brand-500 mb-6 rounded-full overflow-hidden">
-                                <div
-                                    class="w-full h-full bg-white -translate-x-full group-hover:translate-x-0 transition-transform duration-700">
+                            class="absolute inset-0 p-10 flex flex-col justify-end transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500">
+                            <div class="glass-panel p-8 rounded-4xl border-white/10 backdrop-blur-md">
+                                <div class="w-12 h-1 bg-brand-500 mb-6 rounded-full overflow-hidden">
+                                    <div
+                                        class="w-full h-full bg-white -translate-x-full group-hover:translate-x-0 transition-transform duration-700">
+                                    </div>
                                 </div>
+                                <h3 class="text-3xl font-black text-white mb-4 tracking-tight"><?= $serviceName ?></h3>
+                                <p
+                                    class="text-slate-200 text-sm font-medium leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
+                                    <?= $serviceIntro ?></p>
+                                <a href="/hizmetlerimiz/<?= $serviceSlug ?>"
+                                    class="mt-8 inline-flex items-center gap-2 text-white font-bold text-xs uppercase tracking-widest group/btn border border-white/20 px-6 py-3 rounded-full hover:bg-white hover:text-brand-900 transition-all">
+                                    Detaylar <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                                        stroke-linejoin="round" class="group-hover/btn:translate-x-2 transition-transform">
+                                        <path d="M5 12h14" />
+                                        <path d="m12 5 7 7-7 7" />
+                                    </svg>
+                                </a>
                             </div>
-                            <h3 class="text-3xl font-black text-white mb-4 tracking-tight">
-                                <?= $serviceName ?>
-                            </h3>
-                            <p
-                                class="text-slate-300 text-sm font-medium leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
-                                <?= $serviceIntro ?>
-                            </p>
-                            <a href="/hizmetlerimiz/<?= $serviceSlug ?>"
-                                class="mt-8 inline-flex items-center gap-2 text-white font-bold text-xs uppercase tracking-widest group/btn">
-                                Detaylar <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
-                                    stroke-linejoin="round" class="group-hover/btn:translate-x-2 transition-transform">
-                                    <path d="M5 12h14" />
-                                    <path d="m12 5 7 7-7 7" />
-                                </svg>
-                            </a>
                         </div>
                     </div>
                 <?php endforeach; ?>
@@ -103,18 +108,35 @@ $heroImage = $randomPhoto ? $randomPhoto['src'] : '/assets/images/hero-bg.jpg';
 
         <!-- CTA Section -->
         <div
-            class="mt-24 bg-gradient-to-r from-brand-900 to-slate-900 rounded-3xl p-12 text-center text-white relative overflow-hidden shadow-2xl">
-            <div class="absolute inset-0 bg-[url('/assets/images/pattern.svg')] opacity-10"></div>
+            class="mt-24 bg-slate-900 rounded-5xl p-12 md:p-20 text-center text-white relative overflow-hidden shadow-2xl group animate-slide-up">
+            <div class="absolute inset-0 z-0 opacity-40">
+                <img src="https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg" alt="CTA BG"
+                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[2s]">
+                <div class="absolute inset-0 bg-gradient-to-br from-brand-900/80 to-slate-900/90 backdrop-blur-sm">
+                </div>
+            </div>
             <div class="relative z-10">
-                <h2 class="font-heading font-bold text-3xl md:text-4xl mb-6">Hangi Hizmet Size Uygun?</h2>
-                <p class="text-brand-100 mb-10 text-xl font-light max-w-2xl mx-auto leading-relaxed">
-                    Projeniz için en uygun çözümü birlikte belirleyelim. Ücretsiz danışmanlık için hemen iletişime
-                    geçin.
+                <h2 class="font-heading font-black text-4xl md:text-6xl mb-8 tracking-tight">Hangi Hizmet Size Uygun?
+                </h2>
+                <p class="text-brand-100 mb-12 text-xl md:text-2xl font-light max-w-3xl mx-auto leading-relaxed">
+                    Projeniz için en uygun çözümü birlikte belirleyelim. <span class="text-white font-bold">Ücretsiz
+                        danışmanlık</span> için hemen iletişime geçin.
                 </p>
-                <button onclick="openQuoteWizard()"
-                    class="inline-flex items-center justify-center px-10 py-4 bg-brand-500 text-white rounded-xl font-bold hover:bg-brand-400 transition-all shadow-lg hover:scale-105">
-                    Hemen Teklif Al
-                </button>
+                <div class="flex flex-col sm:flex-row gap-6 justify-center">
+                    <button onclick="openQuoteWizard()"
+                        class="px-12 py-6 bg-white text-slate-900 rounded-3xl font-black text-xl hover:bg-brand-50 transition-all hover:scale-105 active:scale-95 shadow-2xl">
+                        Hemen Teklif Al
+                    </button>
+                    <a href="tel:<?= get_setting('phone_url') ?>"
+                        class="px-12 py-6 bg-brand-600/20 backdrop-blur-md border border-brand-500/30 text-white rounded-3xl font-black text-xl hover:bg-brand-600/40 transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                        </svg>
+                        Bizi Arayın
+                    </a>
+                </div>
             </div>
         </div>
 

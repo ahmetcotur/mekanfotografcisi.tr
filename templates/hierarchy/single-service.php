@@ -24,18 +24,25 @@ if ($isRichContent) {
         $heroImage = $randomPhoto ? $randomPhoto['src'] : '/assets/images/hero-bg.jpg';
     }
     ?>
-    <section class="relative py-32 bg-slate-900 flex items-center justify-center overflow-hidden">
+    <section class="relative h-[60vh] min-h-[500px] flex items-center justify-center overflow-hidden bg-slate-950">
         <div class="absolute inset-0 z-0">
-            <img src="<?= htmlspecialchars($heroImage) ?>" class="w-full h-full object-cover opacity-40">
+            <img src="<?= htmlspecialchars($heroImage) ?>"
+                class="w-full h-full object-cover opacity-30 animate-pulse-subtle">
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+            <div
+                class="absolute inset-0 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:40px_40px] opacity-10">
+            </div>
         </div>
         <div class="relative z-10 container mx-auto px-4 text-center">
-            <span
-                class="inline-block py-1 px-3 rounded-full bg-blue-500/20 text-blue-100 text-sm font-semibold mb-4 backdrop-blur-sm border border-blue-500/30">
-                <?= htmlspecialchars($post->title) ?>
-            </span>
-            <h1 class="text-4xl md:text-6xl font-bold text-white mb-6 tracking-tight">
-                <?= htmlspecialchars($post->title) ?> Hizmeti
-            </h1>
+            <div class="animate-slide-up">
+                <span
+                    class="inline-block px-4 py-1.5 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-400 text-[10px] font-black tracking-[0.2em] uppercase mb-8 backdrop-blur-xl">
+                    <?= htmlspecialchars($post->title) ?>
+                </span>
+                <h1 class="font-heading font-black text-5xl md:text-8xl text-white mb-8 tracking-tighter drop-shadow-2xl">
+                    <?= htmlspecialchars($post->title) ?> <span class="text-gradient">Hizmeti</span>
+                </h1>
+            </div>
         </div>
     </section>
 

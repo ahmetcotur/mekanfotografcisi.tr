@@ -2,138 +2,133 @@
 <!-- Quote Wizard Modal -->
 <?php include __DIR__ . '/partials/quote-wizard.php'; ?>
 
-<footer class="site-footer bg-slate-900 border-t border-slate-800 text-slate-300 mt-20">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8 mb-16">
+<footer class="site-footer bg-slate-950 border-t border-white/5 text-slate-400 mt-32 relative overflow-hidden">
+    <!-- Subtle glow effect -->
+    <div class="absolute top-0 left-1/4 w-96 h-96 bg-brand-500/10 rounded-full blur-[120px] -mt-48"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12 relative z-10">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-16 mb-24">
 
             <!-- Brand Section -->
-            <div class="lg:col-span-4 space-y-6">
-                <a href="/" class="flex items-center gap-2 group">
+            <div class="lg:col-span-4 space-y-8">
+                <a href="/" class="flex items-center gap-3 group">
                     <?php
                     $logoUrl = get_setting('logo_url');
                     $siteName = get_setting('site_title', 'Mekan Fotoğrafçısı');
                     ?>
                     <?php if ($logoUrl): ?>
                         <img src="<?= e($logoUrl) ?>" alt="<?= e($siteName) ?>"
-                            class="h-12 w-auto object-contain transition-transform group-hover:scale-105">
+                            class="h-10 w-auto object-contain transition-transform group-hover:scale-105">
                     <?php else: ?>
                         <div
-                            class="w-10 h-10 bg-brand-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-brand-500/20 transition-transform group-hover:scale-105 group-hover:rotate-3">
+                            class="w-10 h-10 bg-brand-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-brand-500/20 transition-all group-hover:scale-110 group-hover:rotate-6">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                 <path
                                     d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
                                 <circle cx="12" cy="13" r="3" />
                             </svg>
                         </div>
                         <div class="flex flex-col">
-                            <span class="font-heading font-bold text-xl tracking-tight text-white leading-none">Mekan</span>
-                            <span class="font-heading font-medium text-sm tracking-wide text-slate-400">Fotoğrafçısı</span>
+                            <span
+                                class="font-heading font-black text-xl tracking-tight text-white leading-none">Mekan</span>
+                            <span
+                                class="font-heading font-bold text-[10px] uppercase tracking-widest text-slate-500">Fotoğrafçısı</span>
                         </div>
                     <?php endif; ?>
                 </a>
 
-                <p class="text-slate-400 leading-relaxed max-w-sm">
+                <p class="text-slate-500 leading-relaxed text-sm max-w-sm">
                     Antalya ve Muğla bölgesinde mimari, iç mekan ve otel fotoğrafçılığında uzmanlaşmış ekibimizle
-                    mekanlarınızın hikayesini en iyi şekilde anlatıyoruz.
+                    mekanlarınızın hikayesini en vizyoner bakış açısıyla anlatıyoruz.
                 </p>
 
                 <!-- Social Links -->
                 <div class="flex items-center gap-4">
-                    <a href="<?= e(get_setting('social_instagram', '#')) ?>"
-                        class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-brand-600 hover:text-white transition-all hover:-translate-y-1"
-                        aria-label="Instagram">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
-                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-                            <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
-                        </svg>
-                    </a>
-                    <a href="<?= e(get_setting('social_facebook', '#')) ?>"
-                        class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-brand-600 hover:text-white transition-all hover:-translate-y-1"
-                        aria-label="Facebook">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-                        </svg>
-                    </a>
-                    <a href="mailto:<?= e(get_setting('email', 'info@mekanfotografcisi.tr')) ?>"
-                        class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-brand-600 hover:text-white transition-all hover:-translate-y-1"
-                        aria-label="Email">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect width="20" height="16" x="2" y="4" rx="2" />
-                            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-                        </svg>
-                    </a>
-                </div>
-
-                <div class="flex flex-wrap gap-4 pt-4">
-                    <button onclick="openQuoteWizard()"
-                        class="bg-brand-600 hover:bg-brand-700 text-white px-6 py-3 rounded-xl font-bold text-sm transition-all shadow-lg shadow-brand-600/20">
-                        Hemen Teklif Al
-                    </button>
-                    <button onclick="openInquiryModal()"
-                        class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-6 py-3 rounded-xl font-bold text-sm transition-all border border-slate-700">
-                        Teklif Sorgula
-                    </button>
+                    <?php
+                    $socials = [
+                        ['id' => 'instagram', 'url' => get_setting('social_instagram', '#'), 'icon' => '<rect width="20" height="20" x="2" y="2" rx="5" ry="5" /><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" /><line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />'],
+                        ['id' => 'facebook', 'url' => get_setting('social_facebook', '#'), 'icon' => '<path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />'],
+                        ['id' => 'email', 'url' => 'mailto:' . get_setting('email', 'info@mekanfotografcisi.tr'), 'icon' => '<rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />']
+                    ];
+                    foreach ($socials as $social):
+                        ?>
+                        <a href="<?= e($social['url']) ?>"
+                            class="w-12 h-12 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center text-slate-400 hover:bg-brand-600 hover:text-white hover:border-brand-500 transition-all hover:-translate-y-2 group shadow-lg"
+                            aria-label="<?= ucfirst($social['id']) ?>">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="group-hover:scale-110 transition-transform">
+                                <?= $social['icon'] ?>
+                            </svg>
+                        </a>
+                    <?php endforeach; ?>
                 </div>
             </div>
 
             <!-- Quick Links -->
-            <div class="lg:col-span-2 space-y-6">
-                <h4 class="text-white font-semibold text-sm uppercase tracking-wider">Hizmetler</h4>
-                <ul class="space-y-3">
+            <div class="lg:col-span-2 space-y-8">
+                <h4 class="text-white font-black text-xs uppercase tracking-[0.2em]">Hizmetler</h4>
+                <ul class="space-y-4">
                     <li><a href="/hizmetlerimiz/mimari-fotografcilik"
-                            class="text-sm hover:text-brand-400 transition-colors">Mimari Çekimler</a></li>
+                            class="text-sm font-medium hover:text-brand-400 transition-colors flex items-center gap-2 group"><span
+                                class="w-1 h-1 bg-brand-500 rounded-full group-hover:scale-150 transition-transform"></span>
+                            Mimari Çekimler</a></li>
                     <li><a href="/hizmetlerimiz/ic-mekan-fotografciligi"
-                            class="text-sm hover:text-brand-400 transition-colors">İç Mekan</a></li>
+                            class="text-sm font-medium hover:text-brand-400 transition-colors flex items-center gap-2 group"><span
+                                class="w-1 h-1 bg-brand-500 rounded-full group-hover:scale-150 transition-transform"></span>
+                            İç Mekan</a></li>
                     <li><a href="/hizmetlerimiz/otel-fotografciligi"
-                            class="text-sm hover:text-brand-400 transition-colors">Otel & Tatil Köyü</a></li>
+                            class="text-sm font-medium hover:text-brand-400 transition-colors flex items-center gap-2 group"><span
+                                class="w-1 h-1 bg-brand-500 rounded-full group-hover:scale-150 transition-transform"></span>
+                            Otel & Tatil Köyü</a></li>
                     <li><a href="/hizmetlerimiz/emlak-fotografciligi"
-                            class="text-sm hover:text-brand-400 transition-colors">Emlak & Villa</a></li>
+                            class="text-sm font-medium hover:text-brand-400 transition-colors flex items-center gap-2 group"><span
+                                class="w-1 h-1 bg-brand-500 rounded-full group-hover:scale-150 transition-transform"></span>
+                            Emlak & Villa</a></li>
                     <li><a href="/hizmetlerimiz"
-                            class="text-sm hover:text-brand-400 transition-colors flex items-center gap-1 text-brand-400">Tüm
-                            Hizmetler <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round">
+                            class="text-sm font-black text-brand-400 hover:text-brand-300 transition-colors flex items-center gap-2 group">Tümünü
+                            Keşfet <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                                stroke-linejoin="round" class="group-hover:translate-x-1 transition-transform">
                                 <path d="m9 18 6-6-6-6" />
                             </svg></a></li>
                 </ul>
             </div>
 
             <!-- Corporate -->
-            <div class="lg:col-span-2 space-y-6">
-                <h4 class="text-white font-semibold text-sm uppercase tracking-wider">Kurumsal</h4>
-                <ul class="space-y-3">
-                    <li><a href="/portfolio" class="text-sm hover:text-brand-400 transition-colors">Portfolyo</a></li>
-                    <li><a href="/hizmet-bolgeleri" class="text-sm hover:text-brand-400 transition-colors">Hizmet
-                            Bölgeleri</a>
-                    </li>
-                    <li><a href="/#hakkimizda" class="text-sm hover:text-brand-400 transition-colors">Hakkımızda</a>
-                    </li>
-                    <li><a href="/#iletisim" class="text-sm hover:text-brand-400 transition-colors">İletişim</a></li>
+            <div class="lg:col-span-2 space-y-8">
+                <h4 class="text-white font-black text-xs uppercase tracking-[0.2em]">Kurumsal</h4>
+                <ul class="space-y-4">
+                    <li><a href="/portfolio"
+                            class="text-sm font-medium hover:text-brand-400 transition-colors">Portfolyo</a></li>
+                    <li><a href="/hizmet-bolgeleri"
+                            class="text-sm font-medium hover:text-brand-400 transition-colors">Bölgeler</a></li>
+                    <li><a href="/#hakkimizda"
+                            class="text-sm font-medium hover:text-brand-400 transition-colors">Hakkımızda</a></li>
+                    <li><a href="/#iletisim"
+                            class="text-sm font-medium hover:text-brand-400 transition-colors">İletişim</a></li>
                 </ul>
             </div>
 
             <!-- Pexels Integration -->
             <?php $pexelsPhoto = get_random_pexels_photo(); ?>
             <?php if ($pexelsPhoto): ?>
-                <div class="lg:col-span-4 space-y-6">
-                    <h4 class="text-white font-semibold text-sm uppercase tracking-wider">Günün Karesi</h4>
+                <div class="lg:col-span-4 space-y-8">
+                    <h4 class="text-white font-black text-xs uppercase tracking-[0.2em]">Günün İzleyici</h4>
                     <a href="<?= e($pexelsPhoto['url']) ?>" target="_blank" rel="noopener"
-                        class="block group relative aspect-video rounded-xl overflow-hidden border border-slate-700">
+                        class="block group relative aspect-video rounded-3xl overflow-hidden border border-white/5 shadow-2xl">
                         <img src="<?= e($pexelsPhoto['src']['large'] ?? $pexelsPhoto['thumbnail'] ?? $pexelsPhoto['src']) ?>"
                             alt="<?= e($pexelsPhoto['alt']) ?>"
-                            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                            class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-80"
                             loading="lazy">
-                        <div class="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
-                            <div class="flex items-center gap-2">
-                                <span class="text-xs font-medium text-white/90">Fotoğraf:
-                                    <?= e($pexelsPhoto['photographer']) ?></span>
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent"></div>
+                        <div class="absolute inset-x-0 bottom-0 p-5">
+                            <div class="flex items-center justify-between">
                                 <span
-                                    class="text-[10px] px-1.5 py-0.5 rounded bg-white/20 text-white backdrop-blur-sm">Pexels</span>
+                                    class="text-[10px] font-black uppercase tracking-widest text-white/70"><?= e($pexelsPhoto['photographer']) ?></span>
+                                <span
+                                    class="text-[9px] px-2 py-0.5 rounded-full bg-white/10 text-white/90 backdrop-blur-md border border-white/5 font-bold uppercase tracking-widest">Pexels</span>
                             </div>
                         </div>
                     </a>
@@ -141,11 +136,12 @@
             <?php endif; ?>
         </div>
 
-        <div class="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p class="text-sm text-slate-500">&copy; <?= date('Y') ?> Mekan Fotoğrafçısı. Tüm hakları saklıdır.</p>
-            <div class="flex gap-6 text-sm text-slate-500">
-                <a href="#" class="hover:text-white transition-colors">Gizlilik Politikası</a>
-                <a href="#" class="hover:text-white transition-colors">Kullanım Şartları</a>
+        <div class="border-t border-white/5 pt-12 flex flex-col md:flex-row justify-between items-center gap-6">
+            <p class="text-xs font-bold text-slate-600 uppercase tracking-widest">&copy; <?= date('Y') ?> Mekan
+                Fotoğrafçısı. Crafted with passion.</p>
+            <div class="flex gap-8 text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">
+                <a href="#" class="hover:text-brand-400 transition-colors">Gizlilik</a>
+                <a href="#" class="hover:text-brand-400 transition-colors">Şartlar</a>
             </div>
         </div>
     </div>
