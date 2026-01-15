@@ -2,8 +2,30 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../api/client';
 import Swal from 'sweetalert2';
-import ReactQuill from 'react-quill-new';
-import 'react-quill-new/dist/quill.snow.css';
+import { Editor } from '@tinymce/tinymce-react';
+import 'tinymce/tinymce';
+import 'tinymce/icons/default';
+import 'tinymce/themes/silver';
+import 'tinymce/models/dom';
+import 'tinymce/skins/ui/oxide/skin.min.css';
+// Import plugins
+import 'tinymce/plugins/advlist';
+import 'tinymce/plugins/autolink';
+import 'tinymce/plugins/lists';
+import 'tinymce/plugins/link';
+import 'tinymce/plugins/image';
+import 'tinymce/plugins/charmap';
+import 'tinymce/plugins/preview';
+import 'tinymce/plugins/anchor';
+import 'tinymce/plugins/searchreplace';
+import 'tinymce/plugins/visualblocks';
+import 'tinymce/plugins/code';
+import 'tinymce/plugins/fullscreen';
+import 'tinymce/plugins/insertdatetime';
+import 'tinymce/plugins/media';
+import 'tinymce/plugins/table';
+import 'tinymce/plugins/help';
+import 'tinymce/plugins/wordcount';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function PostEditor() {
@@ -23,16 +45,9 @@ export default function PostEditor() {
     const [folders, setFolders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('content');
+    const [generating, setGenerating] = useState(false);
 
-    const modules = {
-        toolbar: [
-            [{ 'header': [1, 2, 3, false] }],
-            ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-            ['link', 'image', 'code-block'],
-            ['clean']
-        ],
-    };
+    // TinyMCE configuration is handled in the component
 
     useEffect(() => {
         loadFolders();
@@ -91,6 +106,46 @@ export default function PostEditor() {
             }
         } catch (error) {
             Swal.fire('Hata', error.response?.data?.error || 'Kaydedilemedi', 'error');
+        }
+    };
+
+    const handleAiGenerate = async () => {
+        if (!post.title) {
+            Swal.fire('Eksik Bilgi', 'Lütfen önce bir sayfa başlığı girin.', 'warning');
+            return;
+        }
+
+        const { value: keywords } = await Swal.fire({
+            title: 'AI İçerik Oluştur',
+            input: 'text',
+            inputLabel: 'Odaklanılacak Anahtar Kelimeler (opsiyonel)',
+            inputPlaceholder: 'otel çekimi, mimari fotoğrafçılık...',
+            showCancelButton: true,
+            confirmButtonText: 'Üret',
+            cancelButtonText: 'İptal',
+            icon: 'info'
+        });
+
+        if (keywords === undefined) return;
+
+        setGenerating(true);
+        try {
+            const response = await api.post('/ai.php', {
+                action: 'generate-content',
+                title: post.title,
+                keywords,
+                existing_content: post.content,
+                type: post.post_type
+            });
+
+            if (response.data.success) {
+                setPost(prev => ({ ...prev, content: response.data.content }));
+                Swal.fire({ title: 'İçerik Üretildi', icon: 'success', timer: 1500, showConfirmButton: false });
+            }
+        } catch (error) {
+            Swal.fire('Hata', 'İçerik üretilemedi: ' + (error.response?.data?.error || error.message), 'error');
+        } finally {
+            setGenerating(false);
         }
     };
 
@@ -167,15 +222,49 @@ export default function PostEditor() {
                                 </div>
 
                                 <div className="quill-editor-wrapper">
-                                    <label className="block text-sm font-bold text-gray-700 mb-2 tracking-tight">İçerik</label>
-                                    <ReactQuill
-                                        theme="snow"
+                                    <div className="flex justify-between items-end mb-2">
+                                        <label className="block text-sm font-bold text-gray-700 tracking-tight">İçerik</label>
+                                        <button
+                                            type="button"
+                                            onClick={handleAiGenerate}
+                                            disabled={generating}
+                                            className="px-4 py-1.5 bg-purple-100 text-purple-700 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-purple-200 transition-all flex items-center gap-2 disabled:opacity-50"
+                                        >
+                                            {generating ? '⌛ Üretiliyor...' : '✨ AI ile Üret'}
+                                        </button>
+                                    </div>
+                                    <Editor
+                                        init={{
+                                            height: 600,
+                                            menubar: true,
+                                            license_key: 'gpl',
+                                            promotion: false,
+                                            branding: false,
+                                            plugins: [
+                                                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                                                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                                                'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
+                                            ],
+                                            toolbar: 'undo redo | blocks | ' +
+                                                'bold italic forecolor | alignleft aligncenter ' +
+                                                'alignright alignjustify | borderless_table | bullist numlist outdent indent | ' +
+                                                'removeformat | help',
+                                            content_style: 'body { font-family:Inter,Helvetica,Arial,sans-serif; font-size:16px; line-height:1.6; padding: 20px; } h2 { font-weight: 800; color: #1e293b; } p { color: #475569; }',
+                                            skin: 'oxide',
+                                            content_css: 'default'
+                                        }}
                                         value={post.content}
-                                        onChange={(content) => setPost({ ...post, content })}
-                                        modules={modules}
-                                        className="bg-white rounded-2xl overflow-hidden"
-                                        style={{ height: '500px', marginBottom: '60px' }}
+                                        onEditorChange={(content) => setPost({ ...post, content })}
                                     />
+                                    <style>{`
+                                        /* Hide TinyMCE setup and promotion elements */
+                                        .tox-promotion, 
+                                        .tox-statusbar__branding, 
+                                        .tox-notification--warning {
+                                            display: none !important;
+                                        }
+                                        /* If the 'Finish setting up' is a dialog, this might be tricky, but usually it's a notification or promo */
+                                    `}</style>
                                 </div>
                             </div>
                         </motion.div>

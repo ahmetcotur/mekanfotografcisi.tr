@@ -1,0 +1,72 @@
+[2026-01-15 18:56:57] API Error: Missing required parameters for update
+Array
+(
+    [action] => update
+    [table] => settings
+    [data] => Array
+        (
+            [value] => service-province
+        )
+
+)
+
+[2026-01-15 18:57:00] API Error: Missing required parameters for update
+Array
+(
+    [action] => update
+    [table] => settings
+    [data] => Array
+        (
+            [value] => a-
+        )
+
+)
+
+[2026-01-15 18:57:03] API Error: Missing required parameters for update
+Array
+(
+    [action] => update
+    [table] => settings
+    [data] => Array
+        (
+            [value] => {province} {service}s
+        )
+
+)
+
+[2026-01-15 18:59:54] API Error: Missing required parameters for update
+Array
+(
+    [action] => update
+    [table] => settings
+    [data] => Array
+        (
+            [value] => {province} {service}s
+        )
+
+)
+
+[2026-01-15 18:59:57] API Error: Missing required parameters for update
+Array
+(
+    [action] => update
+    [table] => settings
+    [data] => Array
+        (
+            [value] => {name} Mekan Fotoğrafçısı 
+        )
+
+)
+
+[2026-01-15 18:59:59] API Error: Missing required parameters for update
+Array
+(
+    [action] => update
+    [table] => settings
+    [data] => Array
+        (
+            [value] => -mekan-fotografcisi 
+        )
+
+)
+

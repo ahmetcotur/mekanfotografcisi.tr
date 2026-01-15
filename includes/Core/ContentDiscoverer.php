@@ -20,25 +20,30 @@ class ContentDiscoverer
      */
     public function discover($slug)
     {
-        // 1. Check for Service-Location pattern: {province}-{service-slug}
-        // Example: adana-mimari-fotografcilik
+        // 1. Check for Service-Location pattern
+        $sep = $this->getSetting('seo_service_location_sep', '-');
+        $order = $this->getSetting('seo_service_location_order', 'province-service');
 
         $provinces = $this->db->select('locations_province', ['is_active' => 'true']);
-        foreach ($provinces as $province) {
-            $provinceSlug = $province['slug'];
-            if (strpos($slug, $provinceSlug . '-') === 0) {
-                $serviceSlug = substr($slug, strlen($provinceSlug) + 1);
+        $services = $this->db->select('services', ['is_active' => 'true']);
 
-                // Check if service exists
-                $service = $this->db->select('services', ['slug' => $serviceSlug, 'is_active' => 'true']);
-                if (!empty($service)) {
-                    return $this->generateServiceLocationPage($province, $service[0], $slug);
+        foreach ($provinces as $province) {
+            foreach ($services as $service) {
+                $expectedSlug = ($order === 'service-province')
+                    ? $service['slug'] . $sep . $province['slug']
+                    : $province['slug'] . $sep . $service['slug'];
+
+                if ($slug === $expectedSlug) {
+                    return $this->generateServiceLocationPage($province, $service, $slug);
                 }
             }
         }
 
-        // 2. Check for simple Location pattern: {location}-mekan-fotografcisi
-        if (preg_match('/^([a-z0-9-]+)-mekan-fotografcisi$/', $slug, $matches)) {
+        // 2. Check for simple Location pattern: {location}{suffix}
+        $suffix = $this->getSetting('seo_location_suffix', '-mekan-fotografcisi');
+        $regex = '/^([a-z0-9-]+)' . preg_quote($suffix, '/') . '$/';
+
+        if (preg_match($regex, $slug, $matches)) {
             $locationSlug = $matches[1];
 
             // A. Town Check
@@ -92,12 +97,17 @@ class ContentDiscoverer
      */
     private function generateServiceLocationPage($province, $service, $slug)
     {
-        $title = $province['name'] . ' ' . $service['name'];
+        $template = $this->getSetting('seo_service_location_title_template', '{province} {service}');
+        $title = str_replace(['{province}', '{service}'], [$province['name'], $service['name']], $template);
         $content = "{$province['name']} bölgesinde profesyonel {$service['name']} hizmetleri sunuyoruz. Uzman ekibimizle en iyi sonuçları garanti ediyoruz.";
+
+        $globalDescTemplate = $this->getSetting('seo_service_location_meta_desc_template', '{name} bölgesinde profesyonel {service} hizmetleri.');
+        $metaDesc = str_replace(['{name}', '{province}', '{service}', '{location}'], [$province['name'], $province['name'], $service['name'], $province['name']], $globalDescTemplate);
 
         return $this->createPostRecord([
             'title' => $title,
             'slug' => $slug,
+            'excerpt' => $metaDesc,
             'content' => $content,
             'post_type' => 'seo_page',
             'post_status' => 'publish'
@@ -105,7 +115,7 @@ class ContentDiscoverer
             'province_id' => $province['id'],
             'service_id' => $service['id'],
             'h1' => $title,
-            'meta_description' => "{$province['name']} {$service['name']} çekimleri için profesyonel çözümler."
+            'meta_description' => $metaDesc
         ]);
     }
 
@@ -115,12 +125,17 @@ class ContentDiscoverer
     private function generateTownPage($town, $district, $slug)
     {
         $districtName = $district ? $district['name'] : '';
-        $title = $town['name'] . ' Mekan Fotoğrafçısı';
+        $template = $this->getSetting('seo_location_title_template', '{name} Mekan Fotoğrafçısı');
+        $title = str_replace('{name}', $town['name'], $template);
         $content = "{$town['name']} ({$districtName}) bölgesinde profesyonel otel, villa ve emlak fotoğraf çekimi hizmetleri. Mekanınızın en iyi açılarını yakalıyoruz.";
+
+        $globalDescTemplate = $this->getSetting('seo_location_meta_desc_template', '{name} bölgesinde profesyonel çekim hizmetleri.');
+        $metaDesc = str_replace(['{name}', '{location}'], [$town['name'], $town['name']], $globalDescTemplate);
 
         return $this->createPostRecord([
             'title' => $title,
             'slug' => $slug,
+            'excerpt' => $metaDesc,
             'content' => $content,
             'post_type' => 'seo_page',
             'post_status' => 'publish'
@@ -128,7 +143,7 @@ class ContentDiscoverer
             'town_id' => $town['id'],
             'district_id' => $district ? $district['id'] : null,
             'h1' => $title,
-            'meta_description' => "{$town['name']} mekan fotoğrafçısı ve mimari çekim hizmetleri."
+            'meta_description' => $metaDesc
         ]);
     }
 
@@ -138,12 +153,17 @@ class ContentDiscoverer
     private function generateDistrictPage($district, $province, $slug)
     {
         $provinceName = $province ? $province['name'] : '';
-        $title = $district['name'] . ' Mekan Fotoğrafçısı';
+        $template = $this->getSetting('seo_location_title_template', '{name} Mekan Fotoğrafçısı');
+        $title = str_replace('{name}', $district['name'], $template);
         $content = "{$district['name']}, {$provinceName} genelinde profesyonel mekan ve mimari fotoğrafçılık hizmetleri. İşletmeniz için etkileyici görseller.";
+
+        $globalDescTemplate = $this->getSetting('seo_location_meta_desc_template', '{name} bölgesinde profesyonel çekim hizmetleri.');
+        $metaDesc = str_replace(['{name}', '{location}'], [$district['name'], $district['name']], $globalDescTemplate);
 
         return $this->createPostRecord([
             'title' => $title,
             'slug' => $slug,
+            'excerpt' => $metaDesc,
             'content' => $content,
             'post_type' => 'seo_page',
             'post_status' => 'publish'
@@ -151,7 +171,7 @@ class ContentDiscoverer
             'district_id' => $district['id'],
             'province_id' => $province ? $province['id'] : null,
             'h1' => $title,
-            'meta_description' => "{$district['name']} profesyonel mekan fotoğrafçısı hizmetleri."
+            'meta_description' => $metaDesc
         ]);
     }
 
@@ -160,20 +180,34 @@ class ContentDiscoverer
      */
     private function generateLocationPage($province, $slug)
     {
-        $title = $province['name'] . ' Mekan Fotoğrafçısı';
+        $template = $this->getSetting('seo_location_title_template', '{name} Mekan Fotoğrafçısı');
+        $title = str_replace('{name}', $province['name'], $template);
         $content = "{$province['name']} ve çevresinde profesyonel mekan fotoğrafçılığı hizmetleri. Otel, villa, cafe ve restoran çekimlerinde uzman ekibimizle hizmetinizdeyiz.";
+
+        $globalDescTemplate = $this->getSetting('seo_location_meta_desc_template', '{name} bölgesinde profesyonel çekim hizmetleri.');
+        $metaDesc = str_replace(['{name}', '{location}'], [$province['name'], $province['name']], $globalDescTemplate);
 
         return $this->createPostRecord([
             'title' => $title,
             'slug' => $slug,
+            'excerpt' => $metaDesc,
             'content' => $content,
             'post_type' => 'seo_page',
             'post_status' => 'publish'
         ], [
             'province_id' => $province['id'],
             'h1' => $title,
-            'meta_description' => "{$province['name']} mekan fotoğrafçısı olarak profesyonel çekim hizmetleri sunmaktayız."
+            'meta_description' => $metaDesc
         ]);
+    }
+
+    /**
+     * Get a setting from the database
+     */
+    private function getSetting($key, $default = '')
+    {
+        $setting = $this->db->select('settings', ['key' => $key]);
+        return (!empty($setting)) ? $setting[0]['value'] : $default;
     }
 
     /**
@@ -181,14 +215,29 @@ class ContentDiscoverer
      */
     private function createPostRecord($postData, $metaData)
     {
-        $post = $this->db->insert('posts', $postData);
+        // CRITICAL: Check if slug already exists to prevent Fatal Error (Unique Violation)
+        // This can happen if a page was previously created as a draft or by another process.
+        $existing = $this->db->select('posts', ['slug' => $postData['slug'], 'limit' => 1]);
+        if (!empty($existing)) {
+            $post = $existing[0];
+        } else {
+            $post = $this->db->insert('posts', $postData);
+        }
 
         foreach ($metaData as $key => $value) {
-            $this->db->insert('post_meta', [
+            // Check if meta already exists to avoid duplicates if we found an existing post
+            $existingMeta = $this->db->select('post_meta', [
                 'post_id' => $post['id'],
-                'meta_key' => $key,
-                'meta_value' => json_encode($value)
+                'meta_key' => $key
             ]);
+
+            if (empty($existingMeta)) {
+                $this->db->insert('post_meta', [
+                    'post_id' => $post['id'],
+                    'meta_key' => $key,
+                    'meta_value' => json_encode($value)
+                ]);
+            }
         }
 
         return new Post($post, $this->db);

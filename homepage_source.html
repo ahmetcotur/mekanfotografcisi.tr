@@ -1,0 +1,1851 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+
+<head>
+    <!-- Tailwind Console Warning Filter (must be at the top) -->
+    <script>
+        (function () {
+            const originalWarn = console.warn;
+            console.warn = function (...args) {
+                if (args[0] && typeof args[0] === 'string' && (args[0].includes('tailwindcss') || args[0].includes('production'))) return;
+                originalWarn.apply(console, args);
+            };
+        })();
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow">
+
+    <!-- SEO Meta Tags -->
+    <title>Mekan Fotoğrafçısı</title>
+    <meta name="description" content="Antalya ve Muğla bölgesinde profesyonel mimari, iç mekan ve otel fotoğrafçılığı hizmetleri. Profesyonel ekipman ve yaratıcı bakış açısı ile mekanlarınızı en iyi şekilde yansıtıyoruz.">
+    <link rel="canonical" href="https://mekanfotografcisi.tr/">
+    <link rel="icon" href="/favicon.ico">
+
+    <!-- Open Graph -->
+    <meta property="og:locale" content="tr_TR">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Mekan Fotoğrafçısı">
+    <meta property="og:description" content="Antalya ve Muğla bölgesinde profesyonel mimari, iç mekan ve otel fotoğrafçılığı hizmetleri. Profesyonel ekipman ve yaratıcı bakış açısı ile mekanlarınızı en iyi şekilde yansıtıyoruz.">
+    <meta property="og:url" content="https://mekanfotografcisi.tr/">
+    <meta property="og:site_name" content="Mekan Fotoğrafçısı">
+    <meta property="og:image" content="https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Mekan Fotoğrafçısı">
+    <meta name="twitter:description" content="Antalya ve Muğla bölgesinde profesyonel mimari, iç mekan ve otel fotoğrafçılığı hizmetleri. Profesyonel ekipman ve yaratıcı bakış açısı ile mekanlarınızı en iyi şekilde yansıtıyoruz.">
+    <meta name="twitter:image" content="https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg">
+
+    <!-- Schema.org -->
+    <script type="application/ld+json">
+    {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "Mekan Fotoğrafçısı",
+    "image": "https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg",
+    "url": "https://mekanfotografcisi.tr",
+    "telephone": "+90 507 467 75 02",
+    "email": "info@mekanfotografcisi.tr",
+    "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Kalkan Mah. Şehitler Cad. no 7",
+        "addressLocality": "Kaş",
+        "addressRegion": "Antalya",
+        "addressCountry": "TR"
+    },
+    "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 36.2667,
+        "longitude": 29.4167
+    },
+    "openingHoursSpecification": [
+        {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": [
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday"
+            ],
+            "opens": "09:00",
+            "closes": "18:00"
+        }
+    ],
+    "priceRange": "$$"
+}    </script>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+        window.tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Inter"', 'sans-serif'],
+                        heading: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f2cb0710', // 10% opacity
+                            100: '#f2cb0720',
+                            200: '#f2cb0740',
+                            300: '#f2cb0760',
+                            400: '#f2cb0780',
+                            500: '#f2cb07',
+                            600: '#f58224',
+                            700: '#f58224', // Fallback
+                            800: '#f58224',
+                            900: '#0c4a6e', // Keep dark slate/navy for contrast textuals if needed, or derived? Keep standard for now.
+                            950: '#082f49',
+                        },
+                        accent: {
+                            50: '#ecfdf5',
+                            500: '#10b981',
+                            600: '#059669',
+                        }
+                    },
+                    borderRadius: {
+                        '3xl': '1.5rem',
+                        '4xl': '2rem',
+                        '5xl': '2.5rem',
+                    },
+                    backgroundImage: {
+                        'brand-gradient': 'linear-gradient(135deg, #f2cb07 0%, #f58224 100%)',
+                        'glass-gradient': 'linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.4))',
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                        'slide-up': 'slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-subtle': 'pulseSubtle 3s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        pulseSubtle: {
+                            '0%, 100%': { opacity: '1' },
+                            '50%': { opacity: '0.8' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom CSS Overrides -->
+    <style>
+        :root {
+            --brand-primary:
+                #f2cb07            ;
+            --brand-secondary:
+                #f58224            ;
+            --brand-gradient: linear-gradient(135deg,
+                    #f2cb07                    0%,
+                    #f58224                    100%);
+        }
+
+        /* Modern Glassmorphism Utilities */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .glass-dark {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .text-gradient {
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Smooth interactions */
+        .hover-lift {
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f8fafc;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Optimized images */
+        img {
+            content-visibility: auto;
+        }
+    </style>
+
+    <!-- Legacy Styles (keeping specific ones if needed, but prioritizing Tailwind) -->
+    <link rel="stylesheet" href="/assets/css/styles.css?v=1768493623">
+    <script src="/assets/js/gooey-text.js?v=1768493623"></script>
+
+    </head>
+
+<body class="font-sans text-slate-800 bg-white antialiased selection:bg-brand-100 selection:text-brand-900">
+
+    
+    <!-- Navigation -->
+    <header class="fixed w-full top-0 z-[100] transition-all duration-500" id="main-header">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+            <div class="glass-panel rounded-3xl px-6 md:px-10 h-20 flex justify-between items-center transition-all duration-500 border-white/40 shadow-xl shadow-slate-900/5"
+                id="header-inner">
+
+                <!-- Logo -->
+                <div class="flex-shrink-0">
+                    <a href="/" class="group flex items-center gap-3">
+                                                                            <img src="/uploads/media/mekanfotografcisilogo2x-1768268765.webp" alt="Mekan Fotoğrafçısı"
+                                class="h-10 w-auto object-contain transition-transform group-hover:scale-105">
+                                            </a>
+                </div>
+
+                <!-- Desktop Menu -->
+                <nav class="hidden md:flex gap-1 items-center">
+                    <a href="/"
+                        class="px-5 py-2 text-sm font-bold text-slate-600 hover:text-brand-600 transition-all rounded-full hover:bg-brand-50 items-center gap-1.5 text-brand-600 bg-brand-50">Ana
+                        Sayfa</a>
+
+                    <!-- Dropdown Trigger -->
+                    <div class="relative group py-2">
+                        <button
+                            class="flex items-center gap-1.5 px-5 py-2 text-sm font-bold text-slate-600 group-hover:text-brand-600 transition-all rounded-full group-hover:bg-brand-50">
+                            Hizmetler
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                                stroke-linejoin="round" class="transition-transform group-hover:rotate-180">
+                                <path d="m6 9 6 6 6-6" />
+                            </svg>
+                        </button>
+
+                        <!-- Mega Menu -->
+                        <div
+                            class="mega-menu hidden group-hover:block absolute top-[calc(100%+0.5rem)] left-1/2 -translate-x-1/2 w-[640px] bg-white/95 backdrop-blur-xl rounded-4xl shadow-2xl border border-slate-100 p-3 z-50 origin-top">
+                            <div class="grid grid-cols-2 gap-2">
+                                                                    <a href="/mimari-fotografcilik"
+                                        class="flex items-start gap-4 p-4 rounded-3xl hover:bg-brand-50/50 transition-all group/item">
+                                        <div
+                                            class="flex-shrink-0 w-12 h-12 rounded-2xl bg-slate-50 text-slate-400 flex items-center justify-center group-hover/item:bg-brand-600 group-hover/item:text-white transition-all shadow-sm">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M15 8h.01" />
+                                                <rect width="16" height="13" x="4" y="5" rx="2" />
+                                                <path d="m4 15 3-3 3 3 5-5 5 5" />
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <h4
+                                                class="text-sm font-bold text-slate-900 group-hover/item:text-brand-600 transition-colors line-clamp-1">
+                                                Mimari Fotoğrafçılık                                            </h4>
+                                            <p class="text-slate-400 text-xs font-medium leading-relaxed mt-1 line-clamp-2">
+                                                Binaların dış cephe, peyzaj ve çevre düzenlemelerini en etkileyici açılar                                            </p>
+                                        </div>
+                                    </a>
+                                                                    <a href="/hizmetlerimiz/lifestyle-fotografciligi"
+                                        class="flex items-start gap-4 p-4 rounded-3xl hover:bg-brand-50/50 transition-all group/item">
+                                        <div
+                                            class="flex-shrink-0 w-12 h-12 rounded-2xl bg-slate-50 text-slate-400 flex items-center justify-center group-hover/item:bg-brand-600 group-hover/item:text-white transition-all shadow-sm">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M15 8h.01" />
+                                                <rect width="16" height="13" x="4" y="5" rx="2" />
+                                                <path d="m4 15 3-3 3 3 5-5 5 5" />
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <h4
+                                                class="text-sm font-bold text-slate-900 group-hover/item:text-brand-600 transition-colors line-clamp-1">
+                                                Lifestyle Fotoğrafçılığı                                            </h4>
+                                            <p class="text-slate-400 text-xs font-medium leading-relaxed mt-1 line-clamp-2">
+                                                    
+        
+            
+            
+                Hizmetlerimiz
+                                                      </p>
+                                        </div>
+                                    </a>
+                                                                    <a href="/hizmetlerimiz/konut-projeleri-fotografciligi"
+                                        class="flex items-start gap-4 p-4 rounded-3xl hover:bg-brand-50/50 transition-all group/item">
+                                        <div
+                                            class="flex-shrink-0 w-12 h-12 rounded-2xl bg-slate-50 text-slate-400 flex items-center justify-center group-hover/item:bg-brand-600 group-hover/item:text-white transition-all shadow-sm">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M15 8h.01" />
+                                                <rect width="16" height="13" x="4" y="5" rx="2" />
+                                                <path d="m4 15 3-3 3 3 5-5 5 5" />
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <h4
+                                                class="text-sm font-bold text-slate-900 group-hover/item:text-brand-600 transition-colors line-clamp-1">
+                                                Konut Projeleri Fotoğrafçılığı                                            </h4>
+                                            <p class="text-slate-400 text-xs font-medium leading-relaxed mt-1 line-clamp-2">
+                                                    
+        
+            
+            
+                Hizmetlerimiz
+                                                      </p>
+                                        </div>
+                                    </a>
+                                                                    <a href="/hizmetlerimiz/ofis-fotografciligi"
+                                        class="flex items-start gap-4 p-4 rounded-3xl hover:bg-brand-50/50 transition-all group/item">
+                                        <div
+                                            class="flex-shrink-0 w-12 h-12 rounded-2xl bg-slate-50 text-slate-400 flex items-center justify-center group-hover/item:bg-brand-600 group-hover/item:text-white transition-all shadow-sm">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M15 8h.01" />
+                                                <rect width="16" height="13" x="4" y="5" rx="2" />
+                                                <path d="m4 15 3-3 3 3 5-5 5 5" />
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <h4
+                                                class="text-sm font-bold text-slate-900 group-hover/item:text-brand-600 transition-colors line-clamp-1">
+                                                Ofis Fotoğrafçılığı                                            </h4>
+                                            <p class="text-slate-400 text-xs font-medium leading-relaxed mt-1 line-clamp-2">
+                                                    
+        
+            
+            
+                Hizmetlerimiz
+                                                      </p>
+                                        </div>
+                                    </a>
+                                                                    <a href="/emlak-fotografciligi"
+                                        class="flex items-start gap-4 p-4 rounded-3xl hover:bg-brand-50/50 transition-all group/item">
+                                        <div
+                                            class="flex-shrink-0 w-12 h-12 rounded-2xl bg-slate-50 text-slate-400 flex items-center justify-center group-hover/item:bg-brand-600 group-hover/item:text-white transition-all shadow-sm">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M15 8h.01" />
+                                                <rect width="16" height="13" x="4" y="5" rx="2" />
+                                                <path d="m4 15 3-3 3 3 5-5 5 5" />
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <h4
+                                                class="text-sm font-bold text-slate-900 group-hover/item:text-brand-600 transition-colors line-clamp-1">
+                                                Emlak Fotoğrafçılığı                                            </h4>
+                                            <p class="text-slate-400 text-xs font-medium leading-relaxed mt-1 line-clamp-2">
+                                                Satılık veya kiralık mülklerinizi en çekici şekilde göstererek pazarlama                                             </p>
+                                        </div>
+                                    </a>
+                                                                <a href="/hizmetlerimiz"
+                                    class="col-span-2 flex items-center justify-between p-4 rounded-3xl bg-slate-50 hover:bg-brand-600 hover:text-white transition-all group/link mt-2">
+                                    <span class="text-xs font-black uppercase tracking-widest">Tüm Hizmetleri
+                                        Keşfet</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="transition-transform group-hover/link:translate-x-2">
+                                        <path d="M5 12h14" />
+                                        <path d="m12 5 7 7-7 7" />
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="/portfolio"
+                        class="px-5 py-2 text-sm font-bold text-slate-600 hover:text-brand-600 transition-all rounded-full hover:bg-brand-50">Portfolyo</a>
+                    <a href="/hizmet-bolgeleri"
+                        class="px-5 py-2 text-sm font-bold text-slate-600 hover:text-brand-600 transition-all rounded-full hover:bg-brand-50">Bölgeler</a>
+                </nav>
+
+                <div class="hidden md:flex items-center gap-4">
+                    <button onclick="openQuoteWizard()"
+                        class="inline-flex h-12 items-center justify-center rounded-2xl bg-brand-600 px-8 text-sm font-black uppercase tracking-widest text-white shadow-lg shadow-brand-500/25 transition-all hover:bg-brand-700 hover:scale-105 active:scale-95">
+                        Teklif Al
+                    </button>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn"
+                    class="md:hidden w-12 h-12 flex items-center justify-center bg-slate-50 text-slate-600 rounded-2xl transition-all active:scale-90 shadow-sm border border-slate-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="4" x2="20" y1="12" y2="12" />
+                        <line x1="4" x2="20" y1="6" y2="6" />
+                        <line x1="4" x2="20" y1="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu"
+            class="hidden md:hidden absolute top-[calc(100%-1rem)] left-4 right-4 bg-white/95 backdrop-blur-xl rounded-4xl shadow-2xl border border-slate-100 p-4 transition-all duration-300 origin-top animate-slide-up">
+            <div class="space-y-1">
+                <a href="/"
+                    class="block px-6 py-4 text-sm font-bold text-slate-600 hover:bg-brand-50 hover:text-brand-600 rounded-2xl transition-all">Ana
+                    Sayfa</a>
+                <a href="/hizmetlerimiz"
+                    class="block px-6 py-4 text-sm font-bold text-slate-600 hover:bg-brand-50 hover:text-brand-600 rounded-2xl transition-all">Hizmetlerimiz</a>
+                <a href="/portfolio"
+                    class="block px-6 py-4 text-sm font-bold text-slate-600 hover:bg-brand-50 hover:text-brand-600 rounded-2xl transition-all">Portfolyo</a>
+                <a href="/hizmet-bolgeleri"
+                    class="block px-6 py-4 text-sm font-bold text-slate-600 hover:bg-brand-50 hover:text-brand-600 rounded-2xl transition-all">Bölgeler</a>
+                <div class="pt-4 px-2">
+                    <button onclick="openQuoteWizard()"
+                        class="w-full py-5 text-sm font-black uppercase tracking-widest text-brand-600 bg-brand-50 rounded-3xl text-center active:scale-95 transition-all">Teklif
+                        Al</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <script>
+        // Header scroll effect
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('main-header');
+            const inner = document.getElementById('header-inner');
+            if (window.scrollY > 20) {
+                inner.classList.remove('rounded-3xl', 'mt-4');
+                inner.classList.add('rounded-none', 'md:rounded-full', 'mt-0', 'shadow-2xl');
+                header.querySelector('.max-w-7xl').classList.remove('mt-4');
+            } else {
+                inner.classList.add('rounded-3xl');
+                inner.classList.remove('rounded-none', 'md:rounded-full', 'shadow-2xl');
+                header.querySelector('.max-w-7xl').classList.add('mt-4');
+            }
+        });
+    </script>
+
+    <script>
+        // Mobile menu toggle
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+    </script><!-- Hero Section -->
+<section class="relative min-h-[95vh] flex items-center justify-center overflow-hidden bg-slate-900" id="hero-slider">
+    <div class="absolute inset-0 z-0">
+        <div id="hero-slides" class="w-full h-full"></div>
+        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-[1px]"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-slate-900/60 via-transparent to-slate-900"></div>
+        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:30px_30px]"></div>
+    </div>
+
+    <!-- Content -->
+    <div class="relative z-10 container mx-auto px-4 overflow-visible">
+        <div class="max-w-7xl mx-auto text-center overflow-visible">
+            <div class="inline-flex items-center gap-2 py-1 px-4 rounded-full bg-white/10 border border-white/20 text-brand-500 font-bold text-xs font-semibold tracking-widest uppercase mb-12 backdrop-blur-xl animate-fade-in shadow-2xl">
+                <span class="relative flex h-2 w-2">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-brand-50"></span>
+                </span>
+                Profesyonel Mimari & Mekan Fotoğrafçılığı
+            </div>
+            
+            <h1 class="font-heading font-black text-5xl md:text-7xl lg:text-8xl text-white mb-16 leading-[1.1] tracking-tight drop-shadow-2xl overflow-visible"><div id="hero-effect-root" class="overflow-visible flex items-center justify-center"></div></h1>
+
+            <p class="text-xl md:text-2xl lg:text-3xl text-slate-200/90 max-w-4xl mx-auto mb-16 leading-relaxed font-light drop-shadow-md">
+                Mekanlarınızın ruhunu ve estetiğini profesyonel karelerle ölümsüzleştiriyoruz.
+                <span class="block mt-3 font-medium text-brand-500 font-bold">İşletmenize değer katan prestijli çekim çözümleri.</span>
+            </p>
+
+            <div class="flex flex-col sm:flex-row gap-8 justify-center items-center">
+                <button onclick="openQuoteWizard()" class="group relative w-full sm:w-auto px-12 py-6 bg-brand-600 hover:bg-brand-500 text-white rounded-2xl font-black text-xl shadow-2xl shadow-brand-500/50 transition-all hover:scale-110 active:scale-95 overflow-hidden">
+                    <span class="relative z-10">Hemen Fiyat Hesapla</span>
+                    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                </button>
+                <a href="/portfolio" class="w-full sm:w-auto px-12 py-6 bg-white/5 hover:bg-white/10 text-white border border-white/20 rounded-2xl font-black text-xl backdrop-blur-xl transition-all hover:scale-110 active:scale-95 flex items-center justify-center gap-4">
+                    Portfolyoyu İncele
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+<!-- Stats Section -->
+<section class="py-24 bg-white border-b border-slate-100">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-12">
+            <div class="text-center group border-r border-slate-50 last:border-0">
+                <div class="text-4xl md:text-6xl font-black text-brand-600 mb-3 group-hover:scale-110 transition-transform">16</div>
+                <div class="text-slate-600 font-bold uppercase tracking-tighter text-sm">Hizmet Alanı</div>
+            </div>
+            <div class="text-center group border-r border-slate-50 last:border-0">
+                <div class="text-4xl md:text-6xl font-black text-brand-600 mb-3 group-hover:scale-110 transition-transform">10</div>
+                <div class="text-slate-600 font-bold uppercase tracking-tighter text-sm">Aktif İl</div>
+            </div>
+            <div class="text-center group border-r border-slate-50 last:border-0">
+                <div class="text-4xl md:text-6xl font-black text-brand-600 mb-3 group-hover:scale-110 transition-transform">28</div>
+                <div class="text-slate-600 font-bold uppercase tracking-tighter text-sm">Aktif İlçe</div>
+            </div>
+             <div class="text-center group last:border-0">
+                <div class="text-4xl md:text-6xl font-black text-brand-600 mb-3 group-hover:scale-110 transition-transform">1000+</div>
+                <div class="text-slate-600 font-bold uppercase tracking-tighter text-sm">Proje Teslimi</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Working Steps (Process) Section -->
+<section class="py-32 bg-slate-50 overflow-hidden" id="nasil-calisiriz">
+    <div class="container mx-auto px-4">
+        <div class="text-center max-w-4xl mx-auto mb-24">
+            <span class="text-brand-600 font-black tracking-[0.2em] uppercase text-xs mb-6 block drop-shadow-sm">Süreç</span>
+            <h2 class="font-heading font-black text-4xl md:text-6xl text-slate-900 mb-8">Nasıl Çalışıyoruz?</h2>
+            <p class="text-slate-500 text-xl lg:text-2xl font-light leading-relaxed">Mükemmel sonucu elde etmek için her aşamada titizlikle çalışıyoruz.</p>
+        </div>
+
+        <div class="grid md:grid-cols-4 gap-16 relative">
+            <!-- Connector Line (Desktop) -->
+            <div class="absolute top-[40px] left-0 w-full h-1 bg-brand-100/50 z-0 hidden md:block rounded-full"></div>
+            
+            <!-- Step 1 -->
+            <div class="relative z-10 text-center group">
+                <div class="w-24 h-24 bg-white rounded-[2rem] flex items-center justify-center mx-auto mb-10 group-hover:bg-brand-600 group-hover:rotate-12 transition-all duration-500 shadow-2xl shadow-brand-200/50">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-brand-600 group-hover:text-white transition-colors"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                </div>
+                <h3 class="text-2xl font-black text-slate-900 mb-5">Keşif & Planlama</h3>
+                <p class="text-slate-500 text-base leading-relaxed font-medium">Mekanınızın ihtiyaçlarını analiz ediyor, çekim konseptini birlikte planlıyoruz.</p>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="relative z-10 text-center group">
+                <div class="w-24 h-24 bg-white rounded-[2rem] flex items-center justify-center mx-auto mb-10 group-hover:bg-brand-600 group-hover:-rotate-12 transition-all duration-500 shadow-2xl shadow-brand-200/50">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-brand-600 group-hover:text-white transition-colors"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+                </div>
+                <h3 class="text-2xl font-black text-slate-900 mb-5">Profesyonel Çekim</h3>
+                <p class="text-slate-500 text-base leading-relaxed font-medium">En son teknoloji ekipmanlar ve sanatsal bakış açımızla çekimi gerçekleştiriyoruz.</p>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="relative z-10 text-center group">
+                <div class="w-24 h-24 bg-white rounded-[2rem] flex items-center justify-center mx-auto mb-10 group-hover:bg-brand-600 group-hover:rotate-12 transition-all duration-500 shadow-2xl shadow-brand-200/50">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-brand-600 group-hover:text-white transition-colors"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                </div>
+                <h3 class="text-2xl font-black text-slate-900 mb-5">Post-Prodüksiyon</h3>
+                <p class="text-slate-500 text-base leading-relaxed font-medium">Gerekli renk düzenlemeleri ve rötüş işlemleriyle fotoğrafları kusursuzlaştırıyoruz.</p>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="relative z-10 text-center group">
+                <div class="w-24 h-24 bg-white rounded-[2rem] flex items-center justify-center mx-auto mb-10 group-hover:bg-brand-600 group-hover:-rotate-12 transition-all duration-500 shadow-2xl shadow-brand-200/50">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-brand-600 group-hover:text-white transition-colors"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+                </div>
+                <h3 class="text-2xl font-black text-slate-900 mb-5">Hızlı Teslimat</h3>
+                <p class="text-slate-500 text-base leading-relaxed font-medium">İşlenen tüm görselleri dijital platformlar üzerinden hızlı ve güvenli şekilde iletiyoruz.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Services Preview -->
+<section class="py-32 bg-white" id="hizmetler">
+    <div class="container mx-auto px-4">
+        <div class="text-center max-w-4xl mx-auto mb-24">
+             <span class="text-brand-600 font-black tracking-[0.2em] uppercase text-xs mb-6 block">Kategoriler</span>
+            <h2 class="font-heading font-black text-4xl md:text-6xl text-slate-900 mb-8">Neler Yapıyoruz?</h2>
+            <p class="text-slate-500 text-xl lg:text-2xl font-light leading-relaxed">Her mekanın kendine has bir dili vardır. Biz o dili görselleştiriyoruz.</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            <!-- Service: Butik Otel Fotoğrafçılığı -->
+            <div class="group relative bg-slate-900 rounded-5xl h-[500px] overflow-hidden shadow-2xl hover-lift">
+                <img src="https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg" alt="Butik Otel Fotoğrafçılığı" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-60">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/40 to-transparent"></div>
+                
+                <div class="absolute inset-0 p-10 flex flex-col justify-end transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500">
+                    <div class="bg-white/10 backdrop-blur-md border border-white/10 p-8 rounded-4xl">
+                        <div class="w-12 h-1 bg-brand-500 mb-6 rounded-full overflow-hidden">
+                            <div class="w-full h-full bg-white -translate-x-full group-hover:translate-x-0 transition-transform duration-700"></div>
+                        </div>
+                        <h3 class="text-3xl font-black text-white mb-4 tracking-tight">Butik Otel Fotoğrafçılığı</h3>
+                        <p class="text-slate-200 text-sm font-medium leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">Küçük ölçekli, özel karakterli butik oteller için özel fotoğrafçılık hizmetleri.</p>
+                        <a href="/hizmetlerimiz/butik-otel-fotografciligi" class="mt-8 inline-flex items-center gap-2 text-white font-bold text-xs uppercase tracking-widest group/btn border border-white/20 px-6 py-3 rounded-full hover:bg-white hover:text-brand-900 transition-all">
+                            Detaylar <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="group-hover/btn:translate-x-2 transition-transform"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- Service: Emlak Fotoğrafçılığı -->
+            <div class="group relative bg-slate-900 rounded-5xl h-[500px] overflow-hidden shadow-2xl hover-lift">
+                <img src="https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg" alt="Emlak Fotoğrafçılığı" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-60">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/40 to-transparent"></div>
+                
+                <div class="absolute inset-0 p-10 flex flex-col justify-end transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500">
+                    <div class="bg-white/10 backdrop-blur-md border border-white/10 p-8 rounded-4xl">
+                        <div class="w-12 h-1 bg-brand-500 mb-6 rounded-full overflow-hidden">
+                            <div class="w-full h-full bg-white -translate-x-full group-hover:translate-x-0 transition-transform duration-700"></div>
+                        </div>
+                        <h3 class="text-3xl font-black text-white mb-4 tracking-tight">Emlak Fotoğrafçılığı</h3>
+                        <p class="text-slate-200 text-sm font-medium leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">Satılık veya kiralık mülklerinizi en çekici şekilde göstererek pazarlama sürecinize katkı sağlıyoruz.</p>
+                        <a href="/hizmetlerimiz/emlak-fotografciligi" class="mt-8 inline-flex items-center gap-2 text-white font-bold text-xs uppercase tracking-widest group/btn border border-white/20 px-6 py-3 rounded-full hover:bg-white hover:text-brand-900 transition-all">
+                            Detaylar <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="group-hover/btn:translate-x-2 transition-transform"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- Service: Konut Projeleri Fotoğrafçılığı -->
+            <div class="group relative bg-slate-900 rounded-5xl h-[500px] overflow-hidden shadow-2xl hover-lift">
+                <img src="https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg" alt="Konut Projeleri Fotoğrafçılığı" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-60">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/40 to-transparent"></div>
+                
+                <div class="absolute inset-0 p-10 flex flex-col justify-end transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500">
+                    <div class="bg-white/10 backdrop-blur-md border border-white/10 p-8 rounded-4xl">
+                        <div class="w-12 h-1 bg-brand-500 mb-6 rounded-full overflow-hidden">
+                            <div class="w-full h-full bg-white -translate-x-full group-hover:translate-x-0 transition-transform duration-700"></div>
+                        </div>
+                        <h3 class="text-3xl font-black text-white mb-4 tracking-tight">Konut Projeleri Fotoğrafçılığı</h3>
+                        <p class="text-slate-200 text-sm font-medium leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">Konut kompleksleri ve rezidans projeleri için pazarlama odaklı profesyonel fotoğrafçılık.</p>
+                        <a href="/hizmetlerimiz/konut-projeleri-fotografciligi" class="mt-8 inline-flex items-center gap-2 text-white font-bold text-xs uppercase tracking-widest group/btn border border-white/20 px-6 py-3 rounded-full hover:bg-white hover:text-brand-900 transition-all">
+                            Detaylar <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="group-hover/btn:translate-x-2 transition-transform"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- Service: Lifestyle Fotoğrafçılığı -->
+            <div class="group relative bg-slate-900 rounded-5xl h-[500px] overflow-hidden shadow-2xl hover-lift">
+                <img src="https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg" alt="Lifestyle Fotoğrafçılığı" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-60">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/40 to-transparent"></div>
+                
+                <div class="absolute inset-0 p-10 flex flex-col justify-end transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500">
+                    <div class="bg-white/10 backdrop-blur-md border border-white/10 p-8 rounded-4xl">
+                        <div class="w-12 h-1 bg-brand-500 mb-6 rounded-full overflow-hidden">
+                            <div class="w-full h-full bg-white -translate-x-full group-hover:translate-x-0 transition-transform duration-700"></div>
+                        </div>
+                        <h3 class="text-3xl font-black text-white mb-4 tracking-tight">Lifestyle Fotoğrafçılığı</h3>
+                        <p class="text-slate-200 text-sm font-medium leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">Yaşam tarzını yansıtan, hikaye anlatan profesyonel lifestyle fotoğrafçılığı.</p>
+                        <a href="/hizmetlerimiz/lifestyle-fotografciligi" class="mt-8 inline-flex items-center gap-2 text-white font-bold text-xs uppercase tracking-widest group/btn border border-white/20 px-6 py-3 rounded-full hover:bg-white hover:text-brand-900 transition-all">
+                            Detaylar <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="group-hover/btn:translate-x-2 transition-transform"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- Service: Mimari Fotoğrafçılık -->
+            <div class="group relative bg-slate-900 rounded-5xl h-[500px] overflow-hidden shadow-2xl hover-lift">
+                <img src="https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg" alt="Mimari Fotoğrafçılık" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-60">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/40 to-transparent"></div>
+                
+                <div class="absolute inset-0 p-10 flex flex-col justify-end transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500">
+                    <div class="bg-white/10 backdrop-blur-md border border-white/10 p-8 rounded-4xl">
+                        <div class="w-12 h-1 bg-brand-500 mb-6 rounded-full overflow-hidden">
+                            <div class="w-full h-full bg-white -translate-x-full group-hover:translate-x-0 transition-transform duration-700"></div>
+                        </div>
+                        <h3 class="text-3xl font-black text-white mb-4 tracking-tight">Mimari Fotoğrafçılık</h3>
+                        <p class="text-slate-200 text-sm font-medium leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">Binaların dış cephe, peyzaj ve çevre düzenlemelerini en etkileyici açılardan fotoğraflıyoruz.</p>
+                        <a href="/hizmetlerimiz/mimari-fotografcilik" class="mt-8 inline-flex items-center gap-2 text-white font-bold text-xs uppercase tracking-widest group/btn border border-white/20 px-6 py-3 rounded-full hover:bg-white hover:text-brand-900 transition-all">
+                            Detaylar <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="group-hover/btn:translate-x-2 transition-transform"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- Service: Ofis Fotoğrafçılığı -->
+            <div class="group relative bg-slate-900 rounded-5xl h-[500px] overflow-hidden shadow-2xl hover-lift">
+                <img src="https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg" alt="Ofis Fotoğrafçılığı" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-60">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/40 to-transparent"></div>
+                
+                <div class="absolute inset-0 p-10 flex flex-col justify-end transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500">
+                    <div class="bg-white/10 backdrop-blur-md border border-white/10 p-8 rounded-4xl">
+                        <div class="w-12 h-1 bg-brand-500 mb-6 rounded-full overflow-hidden">
+                            <div class="w-full h-full bg-white -translate-x-full group-hover:translate-x-0 transition-transform duration-700"></div>
+                        </div>
+                        <h3 class="text-3xl font-black text-white mb-4 tracking-tight">Ofis Fotoğrafçılığı</h3>
+                        <p class="text-slate-200 text-sm font-medium leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">Kurumsal ofislerin modern ve profesyonel görünümünü fotoğraflarla yansıtıyoruz.</p>
+                        <a href="/hizmetlerimiz/ofis-fotografciligi" class="mt-8 inline-flex items-center gap-2 text-white font-bold text-xs uppercase tracking-widest group/btn border border-white/20 px-6 py-3 rounded-full hover:bg-white hover:text-brand-900 transition-all">
+                            Detaylar <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="group-hover/btn:translate-x-2 transition-transform"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- Service: Otel Fotoğrafçılığı -->
+            <div class="group relative bg-slate-900 rounded-5xl h-[500px] overflow-hidden shadow-2xl hover-lift">
+                <img src="https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg" alt="Otel Fotoğrafçılığı" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-60">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/40 to-transparent"></div>
+                
+                <div class="absolute inset-0 p-10 flex flex-col justify-end transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500">
+                    <div class="bg-white/10 backdrop-blur-md border border-white/10 p-8 rounded-4xl">
+                        <div class="w-12 h-1 bg-brand-500 mb-6 rounded-full overflow-hidden">
+                            <div class="w-full h-full bg-white -translate-x-full group-hover:translate-x-0 transition-transform duration-700"></div>
+                        </div>
+                        <h3 class="text-3xl font-black text-white mb-4 tracking-tight">Otel Fotoğrafçılığı</h3>
+                        <p class="text-slate-200 text-sm font-medium leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">Otel, resort ve tatil köylerinin tüm alanlarını profesyonel fotoğraflarla belgeliyoruz.</p>
+                        <a href="/hizmetlerimiz/otel-fotografciligi" class="mt-8 inline-flex items-center gap-2 text-white font-bold text-xs uppercase tracking-widest group/btn border border-white/20 px-6 py-3 rounded-full hover:bg-white hover:text-brand-900 transition-all">
+                            Detaylar <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="group-hover/btn:translate-x-2 transition-transform"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- Service: Otel ve Restoran Fotoğrafçılığı -->
+            <div class="group relative bg-slate-900 rounded-5xl h-[500px] overflow-hidden shadow-2xl hover-lift">
+                <img src="https://images.pexels.com/photos/67468/pexels-photo-67468.jpeg" alt="Otel ve Restoran Fotoğrafçılığı" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-60">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/40 to-transparent"></div>
+                
+                <div class="absolute inset-0 p-10 flex flex-col justify-end transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500">
+                    <div class="bg-white/10 backdrop-blur-md border border-white/10 p-8 rounded-4xl">
+                        <div class="w-12 h-1 bg-brand-500 mb-6 rounded-full overflow-hidden">
+                            <div class="w-full h-full bg-white -translate-x-full group-hover:translate-x-0 transition-transform duration-700"></div>
+                        </div>
+                        <h3 class="text-3xl font-black text-white mb-4 tracking-tight">Otel ve Restoran Fotoğrafçılığı</h3>
+                        <p class="text-slate-200 text-sm font-medium leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">Otel odaları, restoranlar ve cafe mekanları için müşteri çekici fotoğraflar üretiyoruz.</p>
+                        <a href="/hizmetlerimiz/otel-restoran-fotografciligi" class="mt-8 inline-flex items-center gap-2 text-white font-bold text-xs uppercase tracking-widest group/btn border border-white/20 px-6 py-3 rounded-full hover:bg-white hover:text-brand-900 transition-all">
+                            Detaylar <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="group-hover/btn:translate-x-2 transition-transform"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- Service: Pansiyon Fotoğrafçılığı -->
+            <div class="group relative bg-slate-900 rounded-5xl h-[500px] overflow-hidden shadow-2xl hover-lift">
+                <img src="https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg" alt="Pansiyon Fotoğrafçılığı" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-60">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/40 to-transparent"></div>
+                
+                <div class="absolute inset-0 p-10 flex flex-col justify-end transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500">
+                    <div class="bg-white/10 backdrop-blur-md border border-white/10 p-8 rounded-4xl">
+                        <div class="w-12 h-1 bg-brand-500 mb-6 rounded-full overflow-hidden">
+                            <div class="w-full h-full bg-white -translate-x-full group-hover:translate-x-0 transition-transform duration-700"></div>
+                        </div>
+                        <h3 class="text-3xl font-black text-white mb-4 tracking-tight">Pansiyon Fotoğrafçılığı</h3>
+                        <p class="text-slate-200 text-sm font-medium leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">Pansiyon ve butik konaklama tesislerinin samimi atmosferini fotoğraflarla gösteriyoruz.</p>
+                        <a href="/hizmetlerimiz/pansiyon-fotografciligi" class="mt-8 inline-flex items-center gap-2 text-white font-bold text-xs uppercase tracking-widest group/btn border border-white/20 px-6 py-3 rounded-full hover:bg-white hover:text-brand-900 transition-all">
+                            Detaylar <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="group-hover/btn:translate-x-2 transition-transform"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- Service: Termal Tesis Fotoğrafçılığı -->
+            <div class="group relative bg-slate-900 rounded-5xl h-[500px] overflow-hidden shadow-2xl hover-lift">
+                <img src="https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg" alt="Termal Tesis Fotoğrafçılığı" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-60">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/40 to-transparent"></div>
+                
+                <div class="absolute inset-0 p-10 flex flex-col justify-end transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500">
+                    <div class="bg-white/10 backdrop-blur-md border border-white/10 p-8 rounded-4xl">
+                        <div class="w-12 h-1 bg-brand-500 mb-6 rounded-full overflow-hidden">
+                            <div class="w-full h-full bg-white -translate-x-full group-hover:translate-x-0 transition-transform duration-700"></div>
+                        </div>
+                        <h3 class="text-3xl font-black text-white mb-4 tracking-tight">Termal Tesis Fotoğrafçılığı</h3>
+                        <p class="text-slate-200 text-sm font-medium leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">Termal oteller ve spa tesislerinin sağlık ve dinlenme alanlarını profesyonelce çekiyoruz.</p>
+                        <a href="/hizmetlerimiz/termal-tesis-fotografciligi" class="mt-8 inline-flex items-center gap-2 text-white font-bold text-xs uppercase tracking-widest group/btn border border-white/20 px-6 py-3 rounded-full hover:bg-white hover:text-brand-900 transition-all">
+                            Detaylar <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="group-hover/btn:translate-x-2 transition-transform"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- Service: Ticari Alan Fotoğrafçılığı -->
+            <div class="group relative bg-slate-900 rounded-5xl h-[500px] overflow-hidden shadow-2xl hover-lift">
+                <img src="https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg" alt="Ticari Alan Fotoğrafçılığı" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-60">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/40 to-transparent"></div>
+                
+                <div class="absolute inset-0 p-10 flex flex-col justify-end transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500">
+                    <div class="bg-white/10 backdrop-blur-md border border-white/10 p-8 rounded-4xl">
+                        <div class="w-12 h-1 bg-brand-500 mb-6 rounded-full overflow-hidden">
+                            <div class="w-full h-full bg-white -translate-x-full group-hover:translate-x-0 transition-transform duration-700"></div>
+                        </div>
+                        <h3 class="text-3xl font-black text-white mb-4 tracking-tight">Ticari Alan Fotoğrafçılığı</h3>
+                        <p class="text-slate-200 text-sm font-medium leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">Mağaza, showroom ve ticari işletmelerin çekici görsellerini profesyonelce üretiyoruz.</p>
+                        <a href="/hizmetlerimiz/ticari-alan-fotografciligi" class="mt-8 inline-flex items-center gap-2 text-white font-bold text-xs uppercase tracking-widest group/btn border border-white/20 px-6 py-3 rounded-full hover:bg-white hover:text-brand-900 transition-all">
+                            Detaylar <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="group-hover/btn:translate-x-2 transition-transform"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- Service: Villa Fotoğrafçılığı -->
+            <div class="group relative bg-slate-900 rounded-5xl h-[500px] overflow-hidden shadow-2xl hover-lift">
+                <img src="https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg" alt="Villa Fotoğrafçılığı" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-60">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/40 to-transparent"></div>
+                
+                <div class="absolute inset-0 p-10 flex flex-col justify-end transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500">
+                    <div class="bg-white/10 backdrop-blur-md border border-white/10 p-8 rounded-4xl">
+                        <div class="w-12 h-1 bg-brand-500 mb-6 rounded-full overflow-hidden">
+                            <div class="w-full h-full bg-white -translate-x-full group-hover:translate-x-0 transition-transform duration-700"></div>
+                        </div>
+                        <h3 class="text-3xl font-black text-white mb-4 tracking-tight">Villa Fotoğrafçılığı</h3>
+                        <p class="text-slate-200 text-sm font-medium leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">Lüks villaların tüm detaylarını profesyonel fotoğraflarla ölümsüzleştiriyoruz.</p>
+                        <a href="/hizmetlerimiz/villa-fotografciligi" class="mt-8 inline-flex items-center gap-2 text-white font-bold text-xs uppercase tracking-widest group/btn border border-white/20 px-6 py-3 rounded-full hover:bg-white hover:text-brand-900 transition-all">
+                            Detaylar <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="group-hover/btn:translate-x-2 transition-transform"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- Service: Yat Fotoğrafçılığı -->
+            <div class="group relative bg-slate-900 rounded-5xl h-[500px] overflow-hidden shadow-2xl hover-lift">
+                <img src="https://images.pexels.com/photos/7045926/pexels-photo-7045926.jpeg" alt="Yat Fotoğrafçılığı" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-60">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/40 to-transparent"></div>
+                
+                <div class="absolute inset-0 p-10 flex flex-col justify-end transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500">
+                    <div class="bg-white/10 backdrop-blur-md border border-white/10 p-8 rounded-4xl">
+                        <div class="w-12 h-1 bg-brand-500 mb-6 rounded-full overflow-hidden">
+                            <div class="w-full h-full bg-white -translate-x-full group-hover:translate-x-0 transition-transform duration-700"></div>
+                        </div>
+                        <h3 class="text-3xl font-black text-white mb-4 tracking-tight">Yat Fotoğrafçılığı</h3>
+                        <p class="text-slate-200 text-sm font-medium leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">Lüks yatların iç ve dış mekanlarını profesyonel fotoğraflarla çekiyoruz.</p>
+                        <a href="/hizmetlerimiz/yat-fotografciligi" class="mt-8 inline-flex items-center gap-2 text-white font-bold text-xs uppercase tracking-widest group/btn border border-white/20 px-6 py-3 rounded-full hover:bg-white hover:text-brand-900 transition-all">
+                            Detaylar <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="group-hover/btn:translate-x-2 transition-transform"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- Service: Yemek Fotoğrafçılığı -->
+            <div class="group relative bg-slate-900 rounded-5xl h-[500px] overflow-hidden shadow-2xl hover-lift">
+                <img src="https://images.pexels.com/photos/67468/pexels-photo-67468.jpeg" alt="Yemek Fotoğrafçılığı" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-60">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/40 to-transparent"></div>
+                
+                <div class="absolute inset-0 p-10 flex flex-col justify-end transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500">
+                    <div class="bg-white/10 backdrop-blur-md border border-white/10 p-8 rounded-4xl">
+                        <div class="w-12 h-1 bg-brand-500 mb-6 rounded-full overflow-hidden">
+                            <div class="w-full h-full bg-white -translate-x-full group-hover:translate-x-0 transition-transform duration-700"></div>
+                        </div>
+                        <h3 class="text-3xl font-black text-white mb-4 tracking-tight">Yemek Fotoğrafçılığı</h3>
+                        <p class="text-slate-200 text-sm font-medium leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">Restoran ve cafe menüleri için profesyonel yemek ve gastronomi fotoğrafçılığı.</p>
+                        <a href="/hizmetlerimiz/yemek-fotografciligi" class="mt-8 inline-flex items-center gap-2 text-white font-bold text-xs uppercase tracking-widest group/btn border border-white/20 px-6 py-3 rounded-full hover:bg-white hover:text-brand-900 transition-all">
+                            Detaylar <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="group-hover/btn:translate-x-2 transition-transform"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- Service: İç Mekan Fotoğrafçılığı -->
+            <div class="group relative bg-slate-900 rounded-5xl h-[500px] overflow-hidden shadow-2xl hover-lift">
+                <img src="https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg" alt="İç Mekan Fotoğrafçılığı" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-60">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/40 to-transparent"></div>
+                
+                <div class="absolute inset-0 p-10 flex flex-col justify-end transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500">
+                    <div class="bg-white/10 backdrop-blur-md border border-white/10 p-8 rounded-4xl">
+                        <div class="w-12 h-1 bg-brand-500 mb-6 rounded-full overflow-hidden">
+                            <div class="w-full h-full bg-white -translate-x-full group-hover:translate-x-0 transition-transform duration-700"></div>
+                        </div>
+                        <h3 class="text-3xl font-black text-white mb-4 tracking-tight">İç Mekan Fotoğrafçılığı</h3>
+                        <p class="text-slate-200 text-sm font-medium leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">Ev, villa, ofis ve ticari alanların iç mekan fotoğraflarını profesyonel ekipmanlarla çekiyoruz.</p>
+                        <a href="/hizmetlerimiz/ic-mekan-fotografciligi" class="mt-8 inline-flex items-center gap-2 text-white font-bold text-xs uppercase tracking-widest group/btn border border-white/20 px-6 py-3 rounded-full hover:bg-white hover:text-brand-900 transition-all">
+                            Detaylar <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="group-hover/btn:translate-x-2 transition-transform"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- Service: İş Merkezi Fotoğrafçılığı -->
+            <div class="group relative bg-slate-900 rounded-5xl h-[500px] overflow-hidden shadow-2xl hover-lift">
+                <img src="https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg" alt="İş Merkezi Fotoğrafçılığı" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-60">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/40 to-transparent"></div>
+                
+                <div class="absolute inset-0 p-10 flex flex-col justify-end transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500">
+                    <div class="bg-white/10 backdrop-blur-md border border-white/10 p-8 rounded-4xl">
+                        <div class="w-12 h-1 bg-brand-500 mb-6 rounded-full overflow-hidden">
+                            <div class="w-full h-full bg-white -translate-x-full group-hover:translate-x-0 transition-transform duration-700"></div>
+                        </div>
+                        <h3 class="text-3xl font-black text-white mb-4 tracking-tight">İş Merkezi Fotoğrafçılığı</h3>
+                        <p class="text-slate-200 text-sm font-medium leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">İş merkezleri ve ticari komplekslerin profesyonel görünümünü fotoğraflarla yansıtıyoruz.</p>
+                        <a href="/hizmetlerimiz/is-merkezi-fotografciligi" class="mt-8 inline-flex items-center gap-2 text-white font-bold text-xs uppercase tracking-widest group/btn border border-white/20 px-6 py-3 rounded-full hover:bg-white hover:text-brand-900 transition-all">
+                            Detaylar <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="group-hover/btn:translate-x-2 transition-transform"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="py-32 relative bg-slate-900" id="iletisim">
+    <div class="absolute inset-0 z-0 opacity-40">
+         <img src="https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg" alt="Contact BG" class="w-full h-full object-cover">
+         <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent"></div>
+    </div>
+    <div class="container mx-auto px-4 relative z-10 text-center">
+        <h2 class="font-heading font-black text-5xl md:text-7xl text-white mb-10 tracking-tight">Hayalinizdeki Kareler İçin</h2>
+        <p class="text-2xl text-brand-100 mb-16 font-light max-w-3xl mx-auto leading-relaxed">Profesyonel çekimler ve markanızın ihtiyacı olan prestijli görseller için bizimle hemen iletişime geçebilirsiniz.</p>
+        <div class="flex flex-col sm:flex-row gap-8 justify-center items-center">
+             <a href="mailto:info@mekanfotografcisi.tr" class="group inline-flex items-center justify-center gap-4 px-12 py-6 bg-white text-slate-900 rounded-[2rem] font-black text-xl hover:bg-brand-50 transition-all shadow-2xl hover:scale-105 active:scale-95">
+                <div class="w-12 h-12 bg-slate-900 text-white rounded-full flex items-center justify-center group-hover:bg-brand-600 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                </div>
+                info@mekanfotografcisi.tr
+            </a>
+            <button onclick="openQuoteWizard()" class="px-12 py-6 bg-brand-600 text-white rounded-[2rem] font-black text-xl hover:bg-brand-500 transition-all shadow-2xl hover:scale-105 active:scale-95 shadow-brand-500/40">Hemen Teklif Al</button>
+        </div>
+    </div>
+</section>
+<!-- Dynamic Slider Logic Footer -->
+<script src="/assets/js/react/hero-effect.iife.js"></script>
+<script>
+    (function () {
+        const images = ["https:\/\/images.pexels.com\/photos\/29702267\/pexels-photo-29702267.jpeg?auto=compress&cs=tinysrgb&h=650&w=940","https:\/\/images.pexels.com\/photos\/28054879\/pexels-photo-28054879.jpeg?auto=compress&cs=tinysrgb&h=650&w=940","https:\/\/images.pexels.com\/photos\/35069535\/pexels-photo-35069535.jpeg?auto=compress&cs=tinysrgb&h=650&w=940","https:\/\/images.pexels.com\/photos\/32153586\/pexels-photo-32153586.jpeg?auto=compress&cs=tinysrgb&h=650&w=940","https:\/\/images.pexels.com\/photos\/32153577\/pexels-photo-32153577.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"];
+        const container = document.getElementById('hero-slides');
+        if (!container) return;
+
+        // Clear existing placeholder slides
+        container.innerHTML = '';
+        let current = 0;
+
+        if (images.length === 0) {
+            // Fallback image if Pexels fails
+            images.push('https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg');
+        }
+
+        // Initialize slides
+        images.forEach((img, index) => {
+            const div = document.createElement('div');
+            div.className = 'absolute inset-0 w-full h-full bg-cover bg-center transition-opacity duration-1000 ease-in-out';
+            div.style.backgroundImage = `url('${img}')`;
+            div.style.opacity = index === 0 ? '1' : '0';
+            container.appendChild(div);
+        });
+
+        // Loop slider
+        if (images.length > 1) {
+            setInterval(() => {
+                const slides = container.children;
+                if (!slides || !slides[current]) return;
+                slides[current].style.opacity = '0';
+                current = (current + 1) % slides.length;
+                if (slides[current]) {
+                    slides[current].style.opacity = '1';
+                }
+            }, 5000);
+        }
+    })();
+</script>
+
+    <!-- Freelancer Application Section -->
+    <section class="py-32 bg-slate-50 relative overflow-hidden" id="freelancer-basvuru">
+        <!-- Decorative Elements -->
+        <div
+            class="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-200/20 rounded-full blur-[120px] -mr-64 -mt-64 animate-pulse-subtle">
+        </div>
+        <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-accent-200/10 rounded-full blur-[120px] -ml-64 -mb-64 animate-pulse-subtle"
+            style="animation-delay: 2s"></div>
+
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="max-w-6xl mx-auto">
+                <!-- Header -->
+                <div class="text-center mb-20 animate-slide-up">
+                    <span
+                        class="inline-block px-4 py-1.5 rounded-full bg-brand-50 text-brand-600 font-black tracking-[0.2em] uppercase text-[10px] mb-6 border border-brand-100">Ekibimize
+                        Katıl</span>
+                    <h2 class="font-heading font-black text-4xl md:text-7xl text-slate-900 mb-8 tracking-tight">Freelancer
+                        Olarak <br><span class="text-gradient">Sisteme Katıl</span></h2>
+                    <p class="text-slate-500 text-xl lg:text-2xl font-light leading-relaxed max-w-3xl mx-auto">
+                        Profesyonel mekan fotoğrafçısı mısınız? Ekibimize katılın ve Türkiye'nin dört bir yanındaki
+                        projelerde çözüm ortağımız olun.
+                    </p>
+                </div>
+
+                <!-- Form -->
+                <div class="bg-white rounded-5xl shadow-[0_32px_80px_-20px_rgba(0,0,0,0.08)] p-8 md:p-16 border border-slate-100 animate-slide-up"
+                    style="animation-delay: 0.2s">
+                    <form id="freelancer-form" class="space-y-8">
+                        <!-- Name and Email Row -->
+                        <div class="grid md:grid-cols-2 gap-10">
+                            <div class="space-y-3">
+                                <label for="freelancer-name" class="block text-sm font-bold text-slate-700 ml-2">
+                                    Ad Soyad <span class="text-brand-500">*</span>
+                                </label>
+                                <input type="text" id="freelancer-name" name="name" required
+                                    class="w-full px-8 py-5 rounded-3xl border-2 border-slate-100 bg-slate-50/50 focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition-all outline-none text-slate-900 font-medium placeholder:text-slate-400"
+                                    placeholder="Adınız ve soyadınız">
+                            </div>
+                            <div class="space-y-3">
+                                <label for="freelancer-email" class="block text-sm font-bold text-slate-700 ml-2">
+                                    E-posta <span class="text-brand-500">*</span>
+                                </label>
+                                <input type="email" id="freelancer-email" name="email" required
+                                    class="w-full px-8 py-5 rounded-3xl border-2 border-slate-100 bg-slate-50/50 focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition-all outline-none text-slate-900 font-medium placeholder:text-slate-400"
+                                    placeholder="ornek@email.com">
+                            </div>
+                        </div>
+
+                        <!-- Phone and City Row -->
+                        <div class="grid md:grid-cols-2 gap-10">
+                            <div class="space-y-3">
+                                <label for="freelancer-phone" class="block text-sm font-bold text-slate-700 ml-2">
+                                    Telefon <span class="text-brand-500">*</span>
+                                </label>
+                                <input type="tel" id="freelancer-phone" name="phone" required
+                                    class="w-full px-8 py-5 rounded-3xl border-2 border-slate-100 bg-slate-50/50 focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition-all outline-none text-slate-900 font-medium placeholder:text-slate-400"
+                                    placeholder="0555 123 45 67">
+                            </div>
+                            <div class="space-y-3">
+                                <label for="freelancer-city" class="block text-sm font-bold text-slate-700 ml-2">
+                                    Bulunduğunuz Şehir <span class="text-brand-500">*</span>
+                                </label>
+                                <input type="text" id="freelancer-city" name="city" required
+                                    class="w-full px-8 py-5 rounded-3xl border-2 border-slate-100 bg-slate-50/50 focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition-all outline-none text-slate-900 font-medium placeholder:text-slate-400"
+                                    placeholder="Örn: Antalya">
+                            </div>
+                        </div>
+
+                        <!-- Experience -->
+                        <div class="space-y-3">
+                            <label for="freelancer-experience" class="block text-sm font-bold text-slate-700 ml-2">
+                                Deneyim Yılı <span class="text-brand-500">*</span>
+                            </label>
+                            <div class="relative">
+                                <select id="freelancer-experience" name="experience" required
+                                    class="w-full px-8 py-5 rounded-3xl border-2 border-slate-100 bg-slate-50/50 focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition-all outline-none text-slate-900 font-medium appearance-none">
+                                    <option value="">Seçiniz...</option>
+                                    <option value="0-1">0-1 yıl</option>
+                                    <option value="1-3">1-3 yıl</option>
+                                    <option value="3-5">3-5 yıl</option>
+                                    <option value="5-10">5-10 yıl</option>
+                                    <option value="10+">10+ yıl</option>
+                                </select>
+                                <div class="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="m6 9 6 6 6-6" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Specialization -->
+                        <div class="space-y-4">
+                            <label class="block text-sm font-bold text-slate-700 ml-2">
+                                Uzmanlık Alanlarınız <span class="text-brand-500">*</span>
+                            </label>
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                                                    <label
+                                        class="group flex items-center gap-4 p-5 rounded-3xl border-2 border-slate-100 bg-slate-50/30 hover:bg-white hover:border-brand-200 cursor-pointer transition-all active:scale-95">
+                                        <div class="relative flex items-center justify-center">
+                                            <input type="checkbox" name="specialization[]" value="mimari"
+                                                class="peer appearance-none w-6 h-6 rounded-lg border-2 border-slate-200 checked:bg-brand-500 checked:border-brand-500 transition-all">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                                fill="none" stroke="white" stroke-width="4" stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                class="absolute opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none">
+                                                <polyline points="20 6 9 17 4 12"></polyline>
+                                            </svg>
+                                        </div>
+                                        <span
+                                            class="text-slate-600 font-bold group-hover:text-slate-900 transition-colors">Mimari</span>
+                                    </label>
+                                                                    <label
+                                        class="group flex items-center gap-4 p-5 rounded-3xl border-2 border-slate-100 bg-slate-50/30 hover:bg-white hover:border-brand-200 cursor-pointer transition-all active:scale-95">
+                                        <div class="relative flex items-center justify-center">
+                                            <input type="checkbox" name="specialization[]" value="ic-mekan"
+                                                class="peer appearance-none w-6 h-6 rounded-lg border-2 border-slate-200 checked:bg-brand-500 checked:border-brand-500 transition-all">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                                fill="none" stroke="white" stroke-width="4" stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                class="absolute opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none">
+                                                <polyline points="20 6 9 17 4 12"></polyline>
+                                            </svg>
+                                        </div>
+                                        <span
+                                            class="text-slate-600 font-bold group-hover:text-slate-900 transition-colors">İç Mekan</span>
+                                    </label>
+                                                                    <label
+                                        class="group flex items-center gap-4 p-5 rounded-3xl border-2 border-slate-100 bg-slate-50/30 hover:bg-white hover:border-brand-200 cursor-pointer transition-all active:scale-95">
+                                        <div class="relative flex items-center justify-center">
+                                            <input type="checkbox" name="specialization[]" value="otel"
+                                                class="peer appearance-none w-6 h-6 rounded-lg border-2 border-slate-200 checked:bg-brand-500 checked:border-brand-500 transition-all">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                                fill="none" stroke="white" stroke-width="4" stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                class="absolute opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none">
+                                                <polyline points="20 6 9 17 4 12"></polyline>
+                                            </svg>
+                                        </div>
+                                        <span
+                                            class="text-slate-600 font-bold group-hover:text-slate-900 transition-colors">Otel</span>
+                                    </label>
+                                                                    <label
+                                        class="group flex items-center gap-4 p-5 rounded-3xl border-2 border-slate-100 bg-slate-50/30 hover:bg-white hover:border-brand-200 cursor-pointer transition-all active:scale-95">
+                                        <div class="relative flex items-center justify-center">
+                                            <input type="checkbox" name="specialization[]" value="emlak"
+                                                class="peer appearance-none w-6 h-6 rounded-lg border-2 border-slate-200 checked:bg-brand-500 checked:border-brand-500 transition-all">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                                fill="none" stroke="white" stroke-width="4" stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                class="absolute opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none">
+                                                <polyline points="20 6 9 17 4 12"></polyline>
+                                            </svg>
+                                        </div>
+                                        <span
+                                            class="text-slate-600 font-bold group-hover:text-slate-900 transition-colors">Emlak</span>
+                                    </label>
+                                                                    <label
+                                        class="group flex items-center gap-4 p-5 rounded-3xl border-2 border-slate-100 bg-slate-50/30 hover:bg-white hover:border-brand-200 cursor-pointer transition-all active:scale-95">
+                                        <div class="relative flex items-center justify-center">
+                                            <input type="checkbox" name="specialization[]" value="yemek"
+                                                class="peer appearance-none w-6 h-6 rounded-lg border-2 border-slate-200 checked:bg-brand-500 checked:border-brand-500 transition-all">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                                fill="none" stroke="white" stroke-width="4" stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                class="absolute opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none">
+                                                <polyline points="20 6 9 17 4 12"></polyline>
+                                            </svg>
+                                        </div>
+                                        <span
+                                            class="text-slate-600 font-bold group-hover:text-slate-900 transition-colors">Yemek</span>
+                                    </label>
+                                                                    <label
+                                        class="group flex items-center gap-4 p-5 rounded-3xl border-2 border-slate-100 bg-slate-50/30 hover:bg-white hover:border-brand-200 cursor-pointer transition-all active:scale-95">
+                                        <div class="relative flex items-center justify-center">
+                                            <input type="checkbox" name="specialization[]" value="drone"
+                                                class="peer appearance-none w-6 h-6 rounded-lg border-2 border-slate-200 checked:bg-brand-500 checked:border-brand-500 transition-all">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                                fill="none" stroke="white" stroke-width="4" stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                class="absolute opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none">
+                                                <polyline points="20 6 9 17 4 12"></polyline>
+                                            </svg>
+                                        </div>
+                                        <span
+                                            class="text-slate-600 font-bold group-hover:text-slate-900 transition-colors">Drone</span>
+                                    </label>
+                                                            </div>
+                        </div>
+
+                        <!-- Portfolio URL -->
+                        <div class="space-y-3">
+                            <label for="freelancer-portfolio" class="block text-sm font-bold text-slate-700 ml-2">
+                                Portfolio / Instagram Linki
+                            </label>
+                            <input type="url" id="freelancer-portfolio" name="portfolio"
+                                class="w-full px-8 py-5 rounded-3xl border-2 border-slate-100 bg-slate-50/50 focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition-all outline-none text-slate-900 font-medium placeholder:text-slate-400"
+                                placeholder="https://instagram.com/kullaniciadi veya portfolio linki">
+                        </div>
+
+                        <!-- Message -->
+                        <div class="space-y-3">
+                            <label for="freelancer-message" class="block text-sm font-bold text-slate-700 ml-2">
+                                Kendinizden Bahsedin
+                            </label>
+                            <textarea id="freelancer-message" name="message" rows="5"
+                                class="w-full px-8 py-5 rounded-3xl border-2 border-slate-100 bg-slate-50/50 focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition-all outline-none text-slate-900 font-medium resize-none placeholder:text-slate-400"
+                                placeholder="Deneyimleriniz, ekipmanlarınız ve neden ekibimize katılmak istediğiniz hakkında kısaca bilgi verin..."></textarea>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="text-center pt-8">
+                            <button type="submit"
+                                class="group relative px-16 py-6 bg-brand-600 hover:bg-brand-500 text-white rounded-3xl font-black text-xl shadow-[0_20px_50px_rgba(14,165,233,0.3)] transition-all hover:scale-105 active:scale-95 overflow-hidden">
+                                <span class="relative z-10">Başvurumu Gönder</span>
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000">
+                                </div>
+                            </button>
+                            <p class="text-sm font-medium text-slate-400 mt-8">
+                                Başvurunuz en kısa sürede değerlendirilecek ve size dönüş yapılacaktır.
+                            </p>
+                        </div>
+                    </form>
+
+                    <!-- Success Message (Hidden by default) -->
+                    <div id="freelancer-success" class="hidden text-center py-12">
+                        <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"
+                                class="text-green-600">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </div>
+                        <h3 class="text-3xl font-black text-slate-900 mb-4">Başvurunuz Alındı!</h3>
+                        <p class="text-slate-600 text-lg">Teşekkür ederiz. En kısa sürede sizinle iletişime geçeceğiz.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.getElementById("freelancer-form");
+            const successMessage = document.getElementById("freelancer-success");
+
+            if (form) {
+                form.addEventListener("submit", async function (e) {
+                    e.preventDefault();
+
+                    const formData = new FormData(form);
+                    const data = {
+                        name: formData.get("name"),
+                        email: formData.get("email"),
+                        phone: formData.get("phone"),
+                        city: formData.get("city"),
+                        experience: formData.get("experience"),
+                        specialization: formData.getAll("specialization[]"),
+                        portfolio: formData.get("portfolio"),
+                        message: formData.get("message"),
+                        type: "freelancer_application"
+                    };
+
+                    // Validate specialization
+                    if (data.specialization.length === 0) {
+                        alert("Lütfen en az bir uzmanlık alanı seçiniz.");
+                        return;
+                    }
+
+                    try {
+                        const response = await fetch("/api/freelancer-application.php", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify(data)
+                        });
+
+                        if (response.ok) {
+                            form.style.display = "none";
+                            successMessage.classList.remove("hidden");
+
+                            // Scroll to success message
+                            successMessage.scrollIntoView({ behavior: "smooth", block: "center" });
+                        } else {
+                            alert("Bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.");
+                        }
+                    } catch (error) {
+                        console.error("Form submission error:", error);
+                        alert("Bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.");
+                    }
+                });
+            }
+        });
+    </script>
+
+<!-- Footer -->
+<!-- Quote Wizard Modal -->
+<div id="quote-wizard-modal" class="fixed inset-0 z-50 hidden" aria-labelledby="modal-title" role="dialog"
+    aria-modal="true">
+    <!-- Backdrop -->
+    <div class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm transition-opacity opacity-0" id="wizard-backdrop"></div>
+
+    <div class="fixed inset-0 z-10 overflow-y-auto">
+        <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+            <!-- Modal Panel -->
+            <div class="relative transform overflow-hidden rounded-3xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-2xl opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                id="wizard-panel">
+
+                <!-- Header -->
+                <div
+                    class="bg-gradient-to-r from-brand-600 to-brand-800 px-6 py-6 sm:px-10 flex justify-between items-center">
+                    <div>
+                        <h3 class="text-2xl font-bold leading-6 text-white" id="modal-title">Teklif Sihirbazı</h3>
+                        <p class="mt-1 text-brand-100 text-sm">Projeniz için en doğru fiyatı 3 adımda alın.</p>
+                    </div>
+                    <button type="button" class="text-white/70 hover:text-white transition-colors"
+                        onclick="closeQuoteWizard()">
+                        <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Steps Progress -->
+                <div class="bg-slate-50 px-6 py-4 border-b border-slate-100">
+                    <div class="flex items-center justify-between max-w-md mx-auto">
+                        <div class="flex flex-col items-center step-indicator active" data-step="1">
+                            <div
+                                class="w-8 h-8 rounded-full bg-brand-600 text-white flex items-center justify-center font-bold text-sm mb-1 ring-4 ring-brand-100">
+                                1</div>
+                            <span class="text-[10px] uppercase tracking-tighter font-bold text-slate-900">Hizmet</span>
+                        </div>
+                        <div class="h-0.5 w-8 bg-slate-200" id="line-1"></div>
+                        <div class="flex flex-col items-center step-indicator" data-step="2">
+                            <div
+                                class="w-8 h-8 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center font-bold text-sm mb-1">
+                                2</div>
+                            <span
+                                class="text-[10px] uppercase tracking-tighter font-bold text-slate-500">Detaylar</span>
+                        </div>
+                        <div class="h-0.5 w-8 bg-slate-200" id="line-2"></div>
+                        <div class="flex flex-col items-center step-indicator" data-step="3">
+                            <div
+                                class="w-8 h-8 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center font-bold text-sm mb-1">
+                                3</div>
+                            <span
+                                class="text-[10px] uppercase tracking-tighter font-bold text-slate-500">Planlama</span>
+                        </div>
+                        <div class="h-0.5 w-8 bg-slate-200" id="line-3"></div>
+                        <div class="flex flex-col items-center step-indicator" data-step="4">
+                            <div
+                                class="w-8 h-8 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center font-bold text-sm mb-1">
+                                4</div>
+                            <span
+                                class="text-[10px] uppercase tracking-tighter font-bold text-slate-500">İletişim</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Content -->
+                <form id="quote-form" class="px-6 py-8 sm:px-10">
+
+                    <!-- Step 1: Service Type -->
+                    <div class="step-content block" id="step-1">
+                        <label class="block text-lg font-bold text-slate-900 mb-4">Hangi hizmet için teklif almak
+                            istiyorsunuz?</label>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <!-- Options will be populated via JS or PHP -->
+                            <label
+                                class="relative flex cursor-pointer rounded-xl border border-slate-200 bg-white p-4 shadow-sm focus:outline-none hover:border-brand-500 hover:ring-1 hover:ring-brand-500 transition-all group">
+                                <input type="radio" name="service_type" value="mimari" class="peer sr-only" required>
+                                <span class="flex flex-1">
+                                    <span class="flex flex-col">
+                                        <span
+                                            class="block text-base font-medium text-slate-900 peer-checked:text-brand-600">Mimari
+                                            & İç Mekan</span>
+                                        <span class="mt-1 flex items-center text-sm text-slate-500">Villa, Ofis,
+                                            Mağaza</span>
+                                    </span>
+                                </span>
+                                <svg class="h-5 w-5 text-brand-600 opacity-0 peer-checked:opacity-100"
+                                    viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd"
+                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                                <div
+                                    class="absolute inset-0 rounded-xl ring-2 ring-transparent peer-checked:ring-brand-600 pointer-events-none">
+                                </div>
+                            </label>
+
+                            <label
+                                class="relative flex cursor-pointer rounded-xl border border-slate-200 bg-white p-4 shadow-sm focus:outline-none hover:border-brand-500 hover:ring-1 hover:ring-brand-500 transition-all group">
+                                <input type="radio" name="service_type" value="otel" class="peer sr-only">
+                                <span class="flex flex-1">
+                                    <span class="flex flex-col">
+                                        <span
+                                            class="block text-base font-medium text-slate-900 peer-checked:text-brand-600">Otel
+                                            & Turizm</span>
+                                        <span class="mt-1 flex items-center text-sm text-slate-500">Otel, Pansiyon,
+                                            Resort</span>
+                                    </span>
+                                </span>
+                                <svg class="h-5 w-5 text-brand-600 opacity-0 peer-checked:opacity-100"
+                                    viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd"
+                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                                <div
+                                    class="absolute inset-0 rounded-xl ring-2 ring-transparent peer-checked:ring-brand-600 pointer-events-none">
+                                </div>
+                            </label>
+
+                            <label
+                                class="relative flex cursor-pointer rounded-xl border border-slate-200 bg-white p-4 shadow-sm focus:outline-none hover:border-brand-500 hover:ring-1 hover:ring-brand-500 transition-all group">
+                                <input type="radio" name="service_type" value="yemek" class="peer sr-only">
+                                <span class="flex flex-1">
+                                    <span class="flex flex-col">
+                                        <span
+                                            class="block text-base font-medium text-slate-900 peer-checked:text-brand-600">Yemek
+                                            & Restoran</span>
+                                        <span class="mt-1 flex items-center text-sm text-slate-500">Menü, Sosyal
+                                            Medya</span>
+                                    </span>
+                                </span>
+                                <svg class="h-5 w-5 text-brand-600 opacity-0 peer-checked:opacity-100"
+                                    viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd"
+                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                                <div
+                                    class="absolute inset-0 rounded-xl ring-2 ring-transparent peer-checked:ring-brand-600 pointer-events-none">
+                                </div>
+                            </label>
+
+                            <label
+                                class="relative flex cursor-pointer rounded-xl border border-slate-200 bg-white p-4 shadow-sm focus:outline-none hover:border-brand-500 hover:ring-1 hover:ring-brand-500 transition-all group">
+                                <input type="radio" name="service_type" value="diger" class="peer sr-only">
+                                <span class="flex flex-1">
+                                    <span class="flex flex-col">
+                                        <span
+                                            class="block text-base font-medium text-slate-900 peer-checked:text-brand-600">Diğer
+                                            / Özel Proje</span>
+                                        <span class="mt-1 flex items-center text-sm text-slate-500">Hava çekimi,
+                                            Endüstriyel vb.</span>
+                                    </span>
+                                </span>
+                                <svg class="h-5 w-5 text-brand-600 opacity-0 peer-checked:opacity-100"
+                                    viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd"
+                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                                <div
+                                    class="absolute inset-0 rounded-xl ring-2 ring-transparent peer-checked:ring-brand-600 pointer-events-none">
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Dynamic Details -->
+                    <div class="step-content hidden" id="step-2">
+                        <h4 class="text-lg font-semibold text-slate-900 mb-4" id="step-2-title">Proje Detayları</h4>
+
+                        <!-- Dynamic Fields Container -->
+                        <div id="dynamic-fields" class="space-y-4">
+                            <!-- Injected via JS -->
+                        </div>
+
+                        <div class="mt-6">
+                            <label for="project_desc" class="block text-sm font-medium text-slate-700 mb-1">Ek Notlar /
+                                Beklentiler</label>
+                            <textarea id="project_desc" name="project_desc" rows="3"
+                                class="w-full rounded-xl border-slate-200 shadow-sm focus:border-brand-500 focus:ring-brand-500"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Shoot Planning -->
+                    <div class="step-content hidden" id="step-3">
+                        <h4 class="text-lg font-bold text-slate-900 mb-2">Çekim Planlaması</h4>
+                        <p class="text-slate-500 text-sm mb-6">Çekimi ne zaman gerçekleştirmeyi düşünüyorsunuz?</p>
+
+                        <div class="space-y-6">
+                            <div>
+                                <label for="preferred_date" class="block text-sm font-medium text-slate-700 mb-1">Tercih
+                                    Edilen Tarih</label>
+                                <input type="date" id="preferred_date" name="preferred_date"
+                                    class="w-full rounded-xl border-slate-200 shadow-sm focus:border-brand-500 py-3 px-4">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-3">Tercih Edilen Zaman
+                                    Aralığı</label>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <label
+                                        class="relative flex cursor-pointer rounded-xl border border-slate-200 p-3 hover:bg-slate-50 transition-all has-[:checked]:border-brand-500 has-[:checked]:bg-brand-50">
+                                        <input type="radio" name="preferred_time" value="sabah" class="sr-only">
+                                        <span class="text-xs font-bold text-slate-600">Gündüz (Soft Işık)</span>
+                                    </label>
+                                    <label
+                                        class="relative flex cursor-pointer rounded-xl border border-slate-200 p-3 hover:bg-slate-50 transition-all has-[:checked]:border-brand-500 has-[:checked]:bg-brand-50">
+                                        <input type="radio" name="preferred_time" value="aksam" class="sr-only">
+                                        <span class="text-xs font-bold text-slate-600">Gün Batımı / Akşam</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-3">Çekim Aciliyeti</label>
+                                <div class="flex flex-wrap gap-2">
+                                    <label class="cursor-pointer">
+                                        <input type="radio" name="urgency" value="hemen" class="peer sr-only">
+                                        <span
+                                            class="px-4 py-2 rounded-full border border-slate-200 text-xs font-bold text-slate-500 peer-checked:bg-brand-600 peer-checked:text-white peer-checked:border-brand-600 transition-all block">Hemen
+                                            (1-3 Gün)</span>
+                                    </label>
+                                    <label class="cursor-pointer">
+                                        <input type="radio" name="urgency" value="normal" class="peer sr-only" checked>
+                                        <span
+                                            class="px-4 py-2 rounded-full border border-slate-200 text-xs font-bold text-slate-500 peer-checked:bg-brand-600 peer-checked:text-white peer-checked:border-brand-600 transition-all block">Normal
+                                            (1-2 Hafta)</span>
+                                    </label>
+                                    <label class="cursor-pointer">
+                                        <input type="radio" name="urgency" value="ileride" class="peer sr-only">
+                                        <span
+                                            class="px-4 py-2 rounded-full border border-slate-200 text-xs font-bold text-slate-500 peer-checked:bg-brand-600 peer-checked:text-white peer-checked:border-brand-600 transition-all block">İleri
+                                            Tarihli</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Contact Info -->
+                    <div class="step-content hidden" id="step-4">
+                        <div class="text-center mb-6">
+                            <h4 class="text-lg font-bold text-slate-900">Son Adım! İletişim Bilgileriniz</h4>
+                            <p class="text-slate-500 text-sm">Teklifi size iletebilmemiz için bilgilerinizi girin.</p>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div>
+                                <label for="wizard_name" class="block text-sm font-medium text-slate-700">Ad
+                                    Soyad</label>
+                                <input type="text" name="name" id="wizard_name" required
+                                    class="mt-1 block w-full rounded-xl border-slate-200 shadow-sm focus:border-brand-500 focus:ring-brand-500 py-3 px-4">
+                            </div>
+                            <div>
+                                <label for="wizard_email" class="block text-sm font-medium text-slate-700">E-posta
+                                    Adresi</label>
+                                <input type="email" name="email" id="wizard_email" required
+                                    class="mt-1 block w-full rounded-xl border-slate-200 shadow-sm focus:border-brand-500 focus:ring-brand-500 py-3 px-4">
+                            </div>
+                            <div>
+                                <label for="wizard_phone" class="block text-sm font-medium text-slate-700">Telefon
+                                    Numarası</label>
+                                <input type="tel" name="phone" id="wizard_phone" required
+                                    class="mt-1 block w-full rounded-xl border-slate-200 shadow-sm focus:border-brand-500 focus:ring-brand-500 py-3 px-4">
+                            </div>
+                            <div>
+                                <label for="wizard_location" class="block text-sm font-medium text-slate-700">Proje
+                                    Konumu (İl/İlçe)</label>
+                                <input type="text" name="location" id="wizard_location"
+                                    class="mt-1 block w-full rounded-xl border-slate-200 shadow-sm focus:border-brand-500 focus:ring-brand-500 py-3 px-4">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="mt-10 flex justify-between pt-6 border-t border-slate-100">
+                        <button type="button" id="btn-prev"
+                            class="hidden px-6 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-medium transition-colors">
+                            ← Geri
+                        </button>
+                        <button type="button" id="btn-next"
+                            class="ml-auto px-8 py-2.5 bg-brand-600 text-white rounded-xl font-bold shadow-lg shadow-brand-500/30 hover:bg-brand-500 transition-all hover:scale-105">
+                            Devam Et →
+                        </button>
+                        <button type="submit" id="btn-submit"
+                            class="hidden ml-auto px-8 py-2.5 bg-green-600 text-white rounded-xl font-bold shadow-lg shadow-green-500/30 hover:bg-green-500 transition-all hover:scale-105">
+                            Teklif İste ✨
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<footer class="site-footer bg-slate-950 border-t border-white/5 text-slate-400 mt-32 relative overflow-hidden">
+    <!-- Subtle glow effect -->
+    <div class="absolute top-0 left-1/4 w-96 h-96 bg-brand-500/10 rounded-full blur-[120px] -mt-48"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12 relative z-10">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-16 mb-24">
+
+            <!-- Brand Section -->
+            <div class="lg:col-span-4 space-y-8">
+                <a href="/" class="flex items-center gap-3 group">
+                                                                <img src="/uploads/media/mekanfotografcisilogo2x-1768268765.webp" alt="Mekan Fotoğrafçısı"
+                            class="h-10 w-auto object-contain transition-transform group-hover:scale-105 brightness-0 invert">
+                                    </a>
+
+                <p class="text-slate-500 leading-relaxed text-sm max-w-sm">
+                    Antalya ve Muğla bölgesinde mimari, iç mekan ve otel fotoğrafçılığında uzmanlaşmış ekibimizle
+                    mekanlarınızın hikayesini en vizyoner bakış açısıyla anlatıyoruz.
+                </p>
+
+                <!-- Social Links -->
+                <div class="flex items-center gap-4">
+                                            <a href="https://www.instagram.com/mekanfotografcisi.tr/"
+                            class="w-12 h-12 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center text-slate-400 hover:bg-brand-600 hover:text-white hover:border-brand-500 transition-all hover:-translate-y-2 group shadow-lg"
+                            aria-label="Instagram">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="group-hover:scale-110 transition-transform">
+                                <rect width="20" height="20" x="2" y="2" rx="5" ry="5" /><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" /><line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />                            </svg>
+                        </a>
+                                            <a href="https://www.facebook.com/mekanfotografcisi.tr/"
+                            class="w-12 h-12 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center text-slate-400 hover:bg-brand-600 hover:text-white hover:border-brand-500 transition-all hover:-translate-y-2 group shadow-lg"
+                            aria-label="Facebook">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="group-hover:scale-110 transition-transform">
+                                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />                            </svg>
+                        </a>
+                                            <a href="mailto:info@mekanfotografcisi.tr"
+                            class="w-12 h-12 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center text-slate-400 hover:bg-brand-600 hover:text-white hover:border-brand-500 transition-all hover:-translate-y-2 group shadow-lg"
+                            aria-label="Email">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="group-hover:scale-110 transition-transform">
+                                <rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />                            </svg>
+                        </a>
+                                    </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="lg:col-span-2 space-y-8">
+                <h4 class="text-white font-black text-xs uppercase tracking-[0.2em]">Hizmetler</h4>
+                <ul class="space-y-4">
+                    <li><a href="/hizmetlerimiz/mimari-fotografcilik"
+                            class="text-sm font-medium hover:text-brand-400 transition-colors flex items-center gap-2 group"><span
+                                class="w-1 h-1 bg-brand-500 rounded-full group-hover:scale-150 transition-transform"></span>
+                            Mimari Çekimler</a></li>
+                    <li><a href="/hizmetlerimiz/ic-mekan-fotografciligi"
+                            class="text-sm font-medium hover:text-brand-400 transition-colors flex items-center gap-2 group"><span
+                                class="w-1 h-1 bg-brand-500 rounded-full group-hover:scale-150 transition-transform"></span>
+                            İç Mekan</a></li>
+                    <li><a href="/hizmetlerimiz/otel-fotografciligi"
+                            class="text-sm font-medium hover:text-brand-400 transition-colors flex items-center gap-2 group"><span
+                                class="w-1 h-1 bg-brand-500 rounded-full group-hover:scale-150 transition-transform"></span>
+                            Otel & Tatil Köyü</a></li>
+                    <li><a href="/hizmetlerimiz/emlak-fotografciligi"
+                            class="text-sm font-medium hover:text-brand-400 transition-colors flex items-center gap-2 group"><span
+                                class="w-1 h-1 bg-brand-500 rounded-full group-hover:scale-150 transition-transform"></span>
+                            Emlak & Villa</a></li>
+                    <li><a href="/hizmetlerimiz"
+                            class="text-sm font-black text-brand-400 hover:text-brand-300 transition-colors flex items-center gap-2 group">Tümünü
+                            Keşfet <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                                stroke-linejoin="round" class="group-hover:translate-x-1 transition-transform">
+                                <path d="m9 18 6-6-6-6" />
+                            </svg></a></li>
+                </ul>
+            </div>
+
+            <!-- Corporate -->
+            <div class="lg:col-span-2 space-y-8">
+                <h4 class="text-white font-black text-xs uppercase tracking-[0.2em]">Kurumsal</h4>
+                <ul class="space-y-4">
+                    <li><a href="/portfolio"
+                            class="text-sm font-medium hover:text-brand-400 transition-colors">Portfolyo</a></li>
+                    <li><a href="/hizmet-bolgeleri"
+                            class="text-sm font-medium hover:text-brand-400 transition-colors">Bölgeler</a></li>
+                    <li><a href="/#hakkimizda"
+                            class="text-sm font-medium hover:text-brand-400 transition-colors">Hakkımızda</a></li>
+                    <li><a href="/#iletisim"
+                            class="text-sm font-medium hover:text-brand-400 transition-colors">İletişim</a></li>
+                </ul>
+            </div>
+
+            <!-- Pexels Integration -->
+                                        <div class="lg:col-span-4 space-y-8">
+                    <h4 class="text-white font-black text-xs uppercase tracking-[0.2em]">Günün İzleyici</h4>
+                    <a href="https://images.pexels.com/photos/28054873/pexels-photo-28054873.jpeg?auto=compress&amp;cs=tinysrgb&amp;h=650&amp;w=940" target="_blank" rel="noopener"
+                        class="block group relative aspect-video rounded-3xl overflow-hidden border border-white/5 shadow-2xl">
+                        <img src="https://images.pexels.com/photos/28054873/pexels-photo-28054873.jpeg?auto=compress&amp;cs=tinysrgb&amp;h=650&amp;w=940"
+                            alt="Ahmet ÇÖTÜR - Mekan Fotoğrafçısı"
+                            class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-80"
+                            loading="lazy">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent"></div>
+                        <div class="absolute inset-x-0 bottom-0 p-5">
+                            <div class="flex items-center justify-between">
+                                <span
+                                    class="text-[10px] font-black uppercase tracking-widest text-white/70">Ahmet ÇÖTÜR</span>
+                                <span
+                                    class="text-[9px] px-2 py-0.5 rounded-full bg-white/10 text-white/90 backdrop-blur-md border border-white/5 font-bold uppercase tracking-widest">Pexels</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                    </div>
+
+        <div class="border-t border-white/5 pt-12 flex flex-col md:flex-row justify-between items-center gap-6">
+            <p class="text-xs font-bold text-slate-600 uppercase tracking-widest">&copy; 2026 Mekan
+                Fotoğrafçısı. Crafted with passion.</p>
+            <div class="flex gap-8 text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">
+                <a href="/gizlilik-politikasi" class="hover:text-brand-400 transition-colors">Gizlilik</a>
+                <a href="/kullanim-sartlari" class="hover:text-brand-400 transition-colors">Şartlar</a>
+                <a href="/cerez-politikasi" class="hover:text-brand-400 transition-colors">Çerez Politikası</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cookie Consent Partial -->
+    <div id="cookie-consent-banner"
+    class="fixed bottom-0 inset-x-0 z-[9999] hidden translate-y-full transition-transform duration-500 ease-out">
+    <div
+        class="bg-slate-900/90 backdrop-blur-md border-t border-white/10 p-4 md:p-6 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+
+            <div class="flex items-start gap-4 max-w-3xl">
+                <div class="hidden md:flex w-12 h-12 rounded-xl bg-brand-500/10 items-center justify-center shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="text-brand-500">
+                        <path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5" />
+                        <path d="M8.5 8.5v.01" />
+                        <path d="M16 15.5v.01" />
+                        <path d="M12 12v.01" />
+                        <path d="M11 17v.01" />
+                        <path d="M7 14v.01" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-white font-bold text-sm mb-1">Çerez Tercihleriniz</h3>
+                    <p class="text-slate-400 text-xs leading-relaxed">
+                        Sizlere daha iyi bir deneyim sunmak için çerezleri kullanıyoruz. Sitemizi kullanarak çerez
+                        politikamızı kabul etmiş olursunuz.
+                        Detaylı bilgi için <a href="/cerez-politikasi"
+                            class="text-brand-400 hover:text-brand-300 underline underline-offset-2 transition-colors">Çerez
+                            Politikamızı</a> inceleyebilirsiniz.
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 w-full md:w-auto">
+                <button onclick="acceptCookies()"
+                    class="flex-1 md:flex-none px-6 py-2.5 bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-lg shadow-brand-600/20 active:scale-95">
+                    Kabul Et
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const banner = document.getElementById('cookie-consent-banner');
+
+        // Check if user has already accepted cookies
+        if (!localStorage.getItem('cookie_consent')) {
+            // Show banner with a slight delay for smooth entrance
+            setTimeout(() => {
+                banner.classList.remove('hidden');
+                // Trigger reflow
+                void banner.offsetWidth;
+                banner.classList.remove('translate-y-full');
+            }, 1000);
+        }
+    });
+
+    function acceptCookies() {
+        const banner = document.getElementById('cookie-consent-banner');
+
+        // Set local storage
+        localStorage.setItem('cookie_consent', 'true');
+
+        // Animate out
+        banner.classList.add('translate-y-full');
+
+        // Hide after anmation
+        setTimeout(() => {
+            banner.classList.add('hidden');
+        }, 500);
+    }
+</script></footer>
+
+<!-- JavaScript -->
+<script src="/assets/js/main.js?v=1768493623"></script>
+
+<!-- SweetAlert2 for Frontend Modals -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Inquiry Modal -->
+<div id="inquiry-modal" class="fixed inset-0 z-[10000] hidden flex items-center justify-center p-4">
+    <div onclick="closeInquiryModal()" class="absolute inset-0 bg-slate-950/60 backdrop-blur-sm"></div>
+    <div
+        class="relative bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in duration-300">
+        <div class="p-8">
+            <h3 class="text-2xl font-heading font-black text-slate-900 mb-2">Teklif Takibi</h3>
+            <p class="text-slate-500 text-sm mb-6">Lütfen size verilen MF-XXXXX formatındaki teklif numarasını giriniz.
+            </p>
+
+            <div class="space-y-4">
+                <input type="text" id="inquiry-number" placeholder="Örn: MF-00123"
+                    class="w-full bg-slate-50 border-slate-200 rounded-2xl p-4 text-center text-xl font-black tracking-tight focus:ring-brand-500 focus:border-brand-500">
+
+                <button onclick="submitInquiry()" id="inquiry-btn"
+                    class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-4 rounded-2xl shadow-lg shadow-brand-600/30 transition-all">
+                    Sorgula
+                </button>
+            </div>
+
+            <div id="inquiry-result"
+                class="mt-8 hidden border-t border-slate-100 pt-8 animate-in slide-in-from-bottom-4 duration-500">
+                <!-- Result injected here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/assets/js/quote-wizard-v2.js?v=1768493623"></script>
+
+<script>
+    function openInquiryModal() {
+        document.getElementById('inquiry-modal').classList.remove('hidden');
+        document.getElementById('inquiry-result').classList.add('hidden');
+        document.getElementById('inquiry-number').value = '';
+    }
+
+    function closeInquiryModal() {
+        document.getElementById('inquiry-modal').classList.add('hidden');
+    }
+
+    function submitInquiry() {
+        const number = document.getElementById('inquiry-number').value.trim();
+        if (!number) return Swal.fire('Uyarı', 'Lütfen teklif numarası giriniz.', 'warning');
+
+        const btn = document.getElementById('inquiry-btn');
+        const resultDiv = document.getElementById('inquiry-result');
+
+        btn.disabled = true;
+        btn.innerText = 'Sorgulanıyor...';
+
+        fetch('/api/quote-status.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ quote_number: number })
+        })
+            .then(r => r.json())
+            .then(res => {
+                if (res.success) {
+                    resultDiv.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-slate-400">Sayın</span>
+                            <span class="font-bold text-slate-900">${res.data.name}</span>
+                        </div>
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-slate-400">Durum</span>
+                            <span class="bg-brand-50 text-brand-600 px-3 py-1 rounded-full text-xs font-bold border border-brand-100 line-clamp-1">${res.data.status}</span>
+                        </div>
+                        <div class="bg-slate-50 rounded-2xl p-4 text-left">
+                            <span class="text-[10px] text-slate-400 uppercase font-bold block mb-1">Mekan Fotoğrafçısı Notu</span>
+                            <p class="text-xs text-slate-700 italic leading-relaxed">${res.data.note}</p>
+                        </div>
+                        <div class="text-[10px] text-center text-slate-300 pt-2 border-t border-slate-100">Talep Tarihi: ${res.data.date}</div>
+                    </div>
+                `;
+                    resultDiv.classList.remove('hidden');
+                } else {
+                    Swal.fire({
+                        title: 'Hata',
+                        text: res.message,
+                        icon: 'error',
+                        confirmButtonColor: 'var(--brand-600)'
+                    });
+                }
+            })
+            .finally(() => {
+                btn.disabled = false;
+                btn.innerText = 'Sorgula';
+            });
+    }
+</script>
+
+<!-- GLightbox for Service Galleries -->
+</body>
+
+</html>

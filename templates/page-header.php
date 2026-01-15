@@ -255,12 +255,13 @@ $schema = [
 
     <!-- Legacy Styles (keeping specific ones if needed, but prioritizing Tailwind) -->
     <link rel="stylesheet" href="/assets/css/styles.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="/assets/css/prose-styles.css?v=<?= time() ?>">
     <script src="/assets/js/gooey-text.js?v=<?= time() ?>"></script>
 
     <?php if (isset($schemaMarkup)): ?>
         <script type="application/ld+json">
-                                                                                            <?= json_encode($schemaMarkup, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>
-                                                                                                    </script>
+                                                                                                <?= json_encode($schemaMarkup, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>
+                                                                                                        </script>
     <?php endif; ?>
 </head>
 

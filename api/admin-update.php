@@ -29,7 +29,7 @@ try {
 
     if ($action === 'list') {
         $table = $data['table'] ?? '';
-        $allowed_tables = ['locations_province', 'locations_district', 'locations_town', 'services', 'posts', 'quotes', 'media', 'media_folders', 'seo_pages'];
+        $allowed_tables = ['locations_province', 'locations_district', 'locations_town', 'locations_city_distance', 'services', 'posts', 'quotes', 'media', 'media_folders', 'seo_pages', 'settings'];
 
         if (!in_array($table, $allowed_tables)) {
             throw new Exception("Invalid table specified for list: $table");
@@ -60,12 +60,13 @@ try {
         $table = $data['table'] ?? '';
         $id = $data['id'] ?? '';
 
-        $allowed_tables = ['locations_province', 'locations_district', 'locations_town', 'services', 'posts', 'quotes', 'media', 'media_folders', 'seo_pages'];
+        $allowed_tables = ['locations_province', 'locations_district', 'locations_town', 'locations_city_distance', 'services', 'posts', 'quotes', 'media', 'media_folders', 'settings'];
         if (!in_array($table, $allowed_tables)) {
             throw new Exception("Invalid table specified for get: $table");
         }
 
-        $item = $db->select($table, ['id' => $id]);
+        $where = ($table === 'settings') ? ['key' => $id] : ['id' => $id];
+        $item = $db->select($table, $where);
         if (empty($item)) {
             throw new Exception('Item not found');
         }
@@ -76,38 +77,46 @@ try {
     } elseif ($action === 'update') {
         $table = $data['table'] ?? '';
         $id = $data['id'] ?? '';
+        $ids = $data['ids'] ?? [];
         $updateData = $data['data'] ?? [];
 
-        if (empty($table) || empty($id) || empty($updateData)) {
+        if (empty($table) || (empty($id) && empty($ids)) || empty($updateData)) {
             throw new Exception('Missing required parameters for update');
         }
 
         // Allowed tables check
-        $allowed_tables = ['locations_province', 'locations_district', 'locations_town', 'services', 'posts', 'quotes', 'settings', 'seo_pages'];
+        $allowed_tables = ['locations_province', 'locations_district', 'locations_town', 'locations_city_distance', 'services', 'posts', 'quotes', 'settings', 'seo_pages'];
         if (!in_array($table, $allowed_tables)) {
             throw new Exception("Invalid table specified for update: $table");
         }
 
+        $targetIds = !empty($ids) ? $ids : [$id];
+
         // If updating 'is_active', handle boolean correctly for Postgres
         if (isset($updateData['is_active'])) {
-            if ($updateData['is_active'] === '' || $updateData['is_active'] === null) {
-                unset($updateData['is_active']);
+            $isActive = filter_var($updateData['is_active'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+            if ($isActive !== null) {
+                $updateData['is_active'] = $isActive;
             } else {
-                $isActive = filter_var($updateData['is_active'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
-                if ($isActive === null) {
-                    unset($updateData['is_active']);
-                } else {
-                    $updateData['is_active'] = $isActive;
+                unset($updateData['is_active']);
+            }
+        }
 
-                    if ($table === 'locations_province' && $isActive === false) {
-                        $db->update('locations_district', ['is_active' => false], ['province_id' => $id]);
-                    }
+        foreach ($targetIds as $targetId) {
+            $where = ($table === 'settings') ? ['key' => $targetId] : ['id' => $targetId];
+            $db->update($table, $updateData, $where);
+
+            // Cascading deactivation for locations
+            if (isset($updateData['is_active']) && $updateData['is_active'] === false) {
+                if ($table === 'locations_province') {
+                    $db->update('locations_district', ['is_active' => false], ['province_id' => $targetId]);
+                } elseif ($table === 'locations_district') {
+                    $db->update('locations_town', ['is_active' => false], ['district_id' => $targetId]);
                 }
             }
         }
 
-        $result = $db->update($table, $updateData, ['id' => $id]);
-        echo json_encode(['success' => true, 'data' => $result]);
+        echo json_encode(['success' => true]);
         exit;
 
     } elseif ($action === 'save-post') {
@@ -165,25 +174,30 @@ try {
     } elseif ($action === 'delete') {
         $table = $data['table'] ?? '';
         $id = $data['id'] ?? '';
+        $ids = $data['ids'] ?? [];
 
-        if (empty($table) || empty($id)) {
+        if (empty($table) || (empty($id) && empty($ids))) {
             throw new Exception('Missing required parameters for delete');
         }
 
-        $allowed_tables = ['locations_province', 'locations_district', 'locations_town', 'services', 'posts', 'quotes', 'media', 'media_folders', 'seo_pages'];
+        $allowed_tables = ['locations_province', 'locations_district', 'locations_town', 'locations_city_distance', 'services', 'posts', 'quotes', 'media', 'media_folders', 'seo_pages'];
         if (!in_array($table, $allowed_tables)) {
             throw new Exception("Invalid table specified for delete: $table");
         }
 
-        // Cascading Delete
-        if ($table === 'locations_province') {
-            $db->delete('locations_district', ['province_id' => $id]);
-        }
-        if ($table === 'locations_district') {
-            $db->delete('locations_town', ['district_id' => $id]);
+        $targetIds = !empty($ids) ? $ids : [$id];
+
+        foreach ($targetIds as $targetId) {
+            // Cascading Delete
+            if ($table === 'locations_province') {
+                $db->delete('locations_district', ['province_id' => $targetId]);
+            }
+            if ($table === 'locations_district') {
+                $db->delete('locations_town', ['district_id' => $targetId]);
+            }
+            $db->delete($table, ['id' => $targetId]);
         }
 
-        $result = $db->delete($table, ['id' => $id]);
         echo json_encode(['success' => true, 'deleted' => true]);
         exit;
 
@@ -192,7 +206,7 @@ try {
         $id = $data['id'] ?? null;
         $name = $data['name'] ?? '';
         $slug = $data['slug'] ?? '';
-        $is_active = filter_var($data['is_active'] ?? true, FILTER_VALIDATE_BOOLEAN);
+        $is_active = filter_var($data['is_active'] ?? ($table === 'locations_town' ? false : true), FILTER_VALIDATE_BOOLEAN);
 
         if (empty($name))
             throw new Exception('Name is required');
@@ -247,6 +261,28 @@ try {
         echo json_encode(['success' => true, 'data' => $towns]);
         exit;
 
+    } elseif ($action === 'import-locations') {
+        $scriptPath = __DIR__ . '/../import_locations.php';
+        // Run in background
+        exec("php $scriptPath > /dev/null 2>&1 &");
+        echo json_encode(['success' => true, 'message' => 'Import started in background']);
+        exit;
+
+    } elseif ($action === 'get-distances') {
+        $provinceId = $data['province_id'] ?? null;
+        if (!$provinceId)
+            throw new Exception('Province ID required');
+
+        $distances = $db->query("
+            SELECT d.*, p2.name as to_province_name 
+            FROM locations_city_distance d
+            JOIN locations_province p2 ON d.province_to_id = p2.id
+            WHERE d.province_from_id = :id
+            ORDER BY p2.name ASC
+        ", ['id' => $provinceId]);
+
+        echo json_encode(['success' => true, 'data' => $distances]);
+        exit;
     }
 
 } catch (Exception $e) {

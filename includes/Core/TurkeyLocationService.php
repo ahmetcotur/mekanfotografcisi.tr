@@ -10,72 +10,80 @@ class TurkeyLocationService
     // We will use a local JSON fallback if API is unavailable
     // Source: https://github.com/ubeydeozdmr/turkiye-api (example structure)
 
-    private $apiUrl = "https://turkiyeapi.dev/api/v1";
+    private $db;
+
+    public function __construct()
+    {
+        require_once __DIR__ . '/../database.php';
+        $this->db = new \DatabaseClient();
+    }
 
     /**
      * Fetch districts for a province name
      */
     public function getDistricts($provinceName)
     {
-        $slug = $this->slugify($provinceName);
-        $data = $this->fetchUrl("{$this->apiUrl}/provinces?name={$provinceName}");
+        $result = $this->db->query("
+            SELECT d.* 
+            FROM locations_district d
+            JOIN locations_province p ON d.province_id = p.id
+            WHERE p.name = :name OR p.plate_code = :code
+            ORDER BY d.name ASC
+        ", [
+            'name' => $provinceName,
+            'code' => is_numeric($provinceName) ? $provinceName : 'XX'
+        ]);
 
-        if (isset($data['data'][0]['districts'])) {
-            return $data['data'][0]['districts']; // Returns array of districts
-        }
-
-        return [];
+        return array_column($result, 'name');
     }
 
     /**
      * Fetch neighborhoods/towns for a specific district
-     * Since most open APIs don't provide deep neighborhood data easily, 
-     * we might need to rely on a substantial static JSON or a specific endpoint.
-     * For now, we will simulate this or use a known list for key tourism areas if API fails.
      */
     public function getTowns($provinceName, $districtName)
     {
-        // Real-world scenario: Fetching ~50k neighborhoods is heavy.
-        // We will try to fetch from an external source or return a curated list for popular areas.
+        $result = $this->db->query("
+            SELECT t.name 
+            FROM locations_town t
+            JOIN locations_district d ON t.district_id = d.id
+            JOIN locations_province p ON d.province_id = p.id
+            WHERE (p.name = :p_name OR p.plate_code = :p_code)
+            AND d.name = :d_name
+            ORDER BY t.name ASC
+        ", [
+            'p_name' => $provinceName,
+            'p_code' => is_numeric($provinceName) ? $provinceName : 'XX',
+            'd_name' => $districtName
+        ]);
 
-        // Mocking popular tourism towns for the "Select from library" feature
-        // In a real app, this would query a dedicated tr-neighborhoods database.
-
-        $popularTowns = [
-            'bodrum' => ['Bitez', 'Yalıkavak', 'Göltürkbükü', 'Gümüşlük', 'Turgutreis', 'Ortakent', 'Torba'],
-            'marmaris' => ['Göcek', 'Selimiye', 'Bozburun', 'Söğüt', 'Turunç', 'Hisarönü'],
-            'fethiye' => ['Ölüdeniz', 'Göcek', 'Ovacık', 'Faralya', 'Kabak'],
-            'kaş' => ['Kalkan', 'Gelemiş', 'Patara', 'İslamlar'],
-            'çeşme' => ['Alaçatı', 'Ilıca', 'Dalyan', 'Çiftlik'],
-            'kemer' => ['Göynük', 'Beldibi', 'Tekirova', 'Çamyuva'],
-            'beşiktaş' => ['Bebek', 'Etiler', 'Arnavutköy', 'Levent', 'Ortaköy'],
-            'sarıyer' => ['Tarabya', 'İstinye', 'Emirgan', 'Yeniköy', 'Zekeriyaköy'],
-            'kadıköy' => ['Moda', 'Caddebostan', 'Suadiye', 'Fenerbahçe'],
-            'beyoğlu' => ['Cihangir', 'Karaköy', 'Galata', 'Teşvikiye'] // Teşvikiye actually Şişli but good for context
-        ];
-
-        $key = strtolower($districtName);
-        return $popularTowns[$key] ?? [];
+        return array_column($result, 'name');
     }
 
-    private function fetchUrl($url)
+    /**
+     * Get distance between two provinces in kilometers
+     */
+    public function getDistance($provinceFrom, $provinceTo)
     {
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        $output = curl_exec($ch);
-        curl_close($ch);
-        return json_decode($output, true);
+        $result = $this->db->query("
+            SELECT d.distance_km
+            FROM locations_city_distance d
+            JOIN locations_province p1 ON d.province_from_id = p1.id
+            JOIN locations_province p2 ON d.province_to_id = p2.id
+            WHERE (p1.name = :from_name OR p1.plate_code = :from_code)
+            AND (p2.name = :to_name OR p2.plate_code = :to_code)
+        ", [
+            'from_name' => $provinceFrom,
+            'from_code' => is_numeric($provinceFrom) ? $provinceFrom : 'XX',
+            'to_name' => $provinceTo,
+            'to_code' => is_numeric($provinceTo) ? $provinceTo : 'XX'
+        ]);
+
+        return $result[0]['distance_km'] ?? null;
     }
 
     private function slugify($text)
     {
-        $text = mb_strtolower($text, 'UTF-8');
-        $text = str_replace(
-            ['ı', 'ğ', 'ü', 'ş', 'ö', 'ç'],
-            ['i', 'g', 'u', 's', 'o', 'c'],
-            $text
-        );
-        return preg_replace('/[^a-z0-9-]/', '-', $text);
+        require_once __DIR__ . '/../helpers.php';
+        return to_permalink($text);
     }
 }
