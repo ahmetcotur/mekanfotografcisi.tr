@@ -259,8 +259,8 @@ $schema = [
 
     <?php if (isset($schemaMarkup)): ?>
         <script type="application/ld+json">
-                                                                            <?= json_encode($schemaMarkup, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>
-                                                                                    </script>
+                                                                                <?= json_encode($schemaMarkup, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>
+                                                                                        </script>
     <?php endif; ?>
 </head>
 
@@ -329,7 +329,7 @@ $schema = [
 
                         <!-- Mega Menu -->
                         <div
-                            class="mega-menu hidden group-hover:block absolute top-[calc(100%+0.5rem)] left-1/2 -translate-x-1/2 w-[640px] bg-white/95 backdrop-blur-xl rounded-4xl shadow-2xl border border-slate-100 p-3 z-50 origin-top animate-slide-up">
+                            class="mega-menu hidden group-hover:block absolute top-[calc(100%+0.5rem)] left-1/2 -translate-x-1/2 w-[640px] bg-white/95 backdrop-blur-xl rounded-4xl shadow-2xl border border-slate-100 p-3 z-50 origin-top">
                             <div class="grid grid-cols-2 gap-2">
                                 <?php foreach ($menuServices as $service): ?>
                                     <a href="/<?= $service['slug'] ?>"
