@@ -260,8 +260,8 @@ $schema = [
 
     <?php if (isset($schemaMarkup)): ?>
         <script type="application/ld+json">
-                                                                                                                                <?= json_encode($schemaMarkup, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>
-                                                                                                                                        </script>
+                                                                                                                                    <?= json_encode($schemaMarkup, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>
+                                                                                                                                            </script>
     <?php endif; ?>
 </head>
 
@@ -285,11 +285,11 @@ $schema = [
                         <?php $logoUrl = get_setting('logo_url'); ?>
                         <?php if ($logoUrl): ?>
                             <img src="<?= e($logoUrl) ?>" alt="<?= e($siteName) ?>"
-                                class="h-14 md:h-12 w-auto object-contain transition-all duration-500 group-hover:drop-shadow-[0_0_15px_rgba(var(--brand-rgb),0.3)] animate-float">
+                                class="h-16 md:h-14 w-auto object-contain transition-all duration-500 group-hover:drop-shadow-[0_0_15px_rgba(var(--brand-rgb),0.3)] animate-float">
                         <?php else: ?>
                             <div
-                                class="w-12 h-12 bg-brand-600 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-brand-500/30 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 group-hover:shadow-brand-500/50 animate-float">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                class="w-14 h-14 bg-brand-600 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-brand-500/30 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 group-hover:shadow-brand-500/50 animate-float">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
                                     stroke-linejoin="round">
                                     <path
@@ -435,7 +435,8 @@ $schema = [
                         class="w-10 h-10 rounded-2xl bg-slate-50 text-slate-400 flex items-center justify-center group-hover:bg-brand-200/50 group-hover:text-brand-600 transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 1 1 7.072 0l-.548.547A3.374 3.374 0 0 0 14 18.469V19a2 2 0 1 1-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                            <path
+                                d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 1 1 7.072 0l-.548.547A3.374 3.374 0 0 0 14 18.469V19a2 2 0 1 1-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                         </svg>
                     </div>
                     Nasıl Çalışır?
