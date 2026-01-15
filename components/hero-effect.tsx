@@ -21,23 +21,23 @@ export function HeroEffect() {
     }, []);
 
     return (
-        <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-6 mb-8 overflow-visible">
-            <div className="h-24 md:h-32 lg:h-40 min-w-[320px] md:min-w-[480px] lg:min-w-[650px] overflow-visible flex items-center justify-center">
+        <div className="flex flex-col md:flex-row items-center justify-center gap-x-4 gap-y-2 mb-8 overflow-visible">
+            <div className="overflow-visible flex items-center justify-center">
                 <TextEffect
                     key={`prefix-${key}`}
-                    per='char'
-                    preset='fade'
-                    className="text-white text-5xl md:text-7xl lg:text-8xl font-black"
+                    per='word'
+                    preset='blur'
+                    className="text-white text-5xl md:text-7xl lg:text-8xl font-black tracking-tight"
                 >
                     {prefixes[prefixIndex]}
                 </TextEffect>
             </div>
-            <div className="h-24 md:h-32 lg:h-40 min-w-[220px] md:min-w-[380px] lg:min-w-[500px] overflow-visible flex items-center justify-center">
+            <div className="overflow-visible flex items-center justify-center">
                 <TextEffect
                     key={`suffix-${key}`}
-                    per='char'
-                    preset='slide'
-                    className="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-brand-300 font-black italic text-5xl md:text-7xl lg:text-8xl"
+                    per='word'
+                    preset='blur'
+                    className="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-brand-300 font-black italic text-5xl md:text-7xl lg:text-8xl tracking-tight"
                 >
                     {suffixes[suffixIndex]}
                 </TextEffect>
