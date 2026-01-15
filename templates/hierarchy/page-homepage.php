@@ -118,6 +118,13 @@ if ($newContent !== null) {
     $content = $newContent;
 }
 
+// Force sub-header text to be solid brand color and bold
+$content = str_replace('text-brand-300', 'text-brand-500 font-bold', $content);
+$content = str_replace('text-brand-400', 'text-brand-500 font-bold', $content);
+
+// Force button shadows to be premium brand shadows
+$content = str_replace('shadow-[0_20px_50px_rgba(14,165,233,0.4)]', 'shadow-2xl shadow-brand-500/50', $content);
+
 // Remove the old GooeyText script from content
 $newContent = preg_replace('/<script>.*?window\.initGooeyText.*?<\/script>/s', '', $content);
 if ($newContent !== null) {
