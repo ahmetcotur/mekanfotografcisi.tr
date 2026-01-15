@@ -55,6 +55,19 @@ class Post
             ]);
         }
 
+        // 3. Smart handle for prefixes
+        if (empty($results)) {
+            // If searching for hizmetlerimiz/slug or services/slug, try finding just slug
+            $cleanSlug = preg_replace('/^(hizmetlerimiz\/|services\/)/', '', $slug);
+            if ($cleanSlug !== $slug) {
+                $results = $db->select('posts', [
+                    'slug' => $cleanSlug,
+                    'post_status' => 'publish',
+                    'limit' => 1
+                ]);
+            }
+        }
+
         // Also try common path patterns if last part matches
         if (empty($results)) {
             $results = $db->query("SELECT * FROM posts WHERE slug LIKE ? AND post_status = 'publish' LIMIT 1", ["%/$slug"]);

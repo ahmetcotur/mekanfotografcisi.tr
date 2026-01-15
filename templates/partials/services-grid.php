@@ -8,7 +8,12 @@ global $db;
 
 // Fetch active services
 // Exclude current page if possible (passed via $currentServiceId variable if needed)
-$services = $db->select('posts', ['post_type' => 'service', 'post_status' => 'publish', 'limit' => 6]);
+$services = $db->select('posts', [
+    'post_type' => 'service',
+    'post_status' => 'publish',
+    'limit' => 50,
+    'order' => 'title ASC'
+]);
 
 if (!empty($services)):
     // Get unique photos for each service

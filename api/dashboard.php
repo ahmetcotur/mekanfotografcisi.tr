@@ -19,7 +19,9 @@ try {
         'provinces' => count($db->select('locations_province', ['is_active' => true])),
         'districts' => count($db->select('locations_district', ['is_active' => true])),
         'total_quotes' => count($db->query("SELECT id FROM quotes")),
-        'new_quotes' => count($db->query("SELECT id FROM quotes WHERE is_read = false"))
+        'new_quotes' => count($db->query("SELECT id FROM quotes WHERE is_read = false")),
+        'total_freelancers' => count($db->query("SELECT id FROM freelancer_applications")),
+        'new_freelancers' => count($db->query("SELECT id FROM freelancer_applications WHERE status = 'pending'"))
     ];
 
     // Recent quotes

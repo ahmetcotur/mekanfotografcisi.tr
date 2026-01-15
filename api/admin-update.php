@@ -29,7 +29,7 @@ try {
 
     if ($action === 'list') {
         $table = $data['table'] ?? '';
-        $allowed_tables = ['locations_province', 'locations_district', 'locations_town', 'locations_city_distance', 'services', 'posts', 'quotes', 'media', 'media_folders', 'seo_pages', 'settings'];
+        $allowed_tables = ['locations_province', 'locations_district', 'locations_town', 'locations_city_distance', 'services', 'posts', 'quotes', 'media', 'media_folders', 'seo_pages', 'settings', 'freelancer_applications'];
 
         if (!in_array($table, $allowed_tables)) {
             throw new Exception("Invalid table specified for list: $table");
@@ -38,6 +38,9 @@ try {
         $where = [];
         if ($table === 'posts' && isset($data['post_type'])) {
             $where['post_type'] = $data['post_type'];
+        }
+        if ($table === 'posts' && isset($data['post_status'])) {
+            $where['post_status'] = $data['post_status'];
         }
         if ($table === 'posts' && isset($data['slug'])) {
             $where['slug'] = $data['slug'];
@@ -60,7 +63,7 @@ try {
         $table = $data['table'] ?? '';
         $id = $data['id'] ?? '';
 
-        $allowed_tables = ['locations_province', 'locations_district', 'locations_town', 'locations_city_distance', 'services', 'posts', 'quotes', 'media', 'media_folders', 'settings'];
+        $allowed_tables = ['locations_province', 'locations_district', 'locations_town', 'locations_city_distance', 'services', 'posts', 'quotes', 'media', 'media_folders', 'settings', 'freelancer_applications'];
         if (!in_array($table, $allowed_tables)) {
             throw new Exception("Invalid table specified for get: $table");
         }
@@ -85,7 +88,7 @@ try {
         }
 
         // Allowed tables check
-        $allowed_tables = ['locations_province', 'locations_district', 'locations_town', 'locations_city_distance', 'services', 'posts', 'quotes', 'settings', 'seo_pages'];
+        $allowed_tables = ['locations_province', 'locations_district', 'locations_town', 'locations_city_distance', 'services', 'posts', 'quotes', 'settings', 'seo_pages', 'freelancer_applications'];
         if (!in_array($table, $allowed_tables)) {
             throw new Exception("Invalid table specified for update: $table");
         }
@@ -180,7 +183,7 @@ try {
             throw new Exception('Missing required parameters for delete');
         }
 
-        $allowed_tables = ['locations_province', 'locations_district', 'locations_town', 'locations_city_distance', 'services', 'posts', 'quotes', 'media', 'media_folders', 'seo_pages'];
+        $allowed_tables = ['locations_province', 'locations_district', 'locations_town', 'locations_city_distance', 'services', 'posts', 'quotes', 'media', 'media_folders', 'seo_pages', 'freelancer_applications'];
         if (!in_array($table, $allowed_tables)) {
             throw new Exception("Invalid table specified for delete: $table");
         }

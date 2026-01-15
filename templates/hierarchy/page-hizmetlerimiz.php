@@ -5,12 +5,13 @@
 include __DIR__ . '/../page-header.php';
 global $db;
 
-// Fetch all active services
-$services = $db->select('services', ['limit' => 50, 'order' => 'name ASC']);
-$activeServices = array_filter($services, function ($s) {
-    $isActive = $s['is_active'];
-    return ($isActive === true || $isActive === 't' || $isActive === 'true' || $isActive === 1 || $isActive === '1');
-});
+// Fetch all active services from posts table
+$activeServices = $db->select('posts', [
+    'post_type' => 'service',
+    'post_status' => 'publish',
+    'limit' => 50,
+    'order' => 'title ASC'
+]);
 
 // Service images mapping
 $serviceImages = [
@@ -62,24 +63,37 @@ $heroImage = $randomPhoto ? $randomPhoto['src'] : '/assets/images/hero-bg.jpg';
             <div class="text-center py-20 bg-white rounded-3xl border border-slate-100 shadow-sm">
                 <p class="text-slate-500 text-lg">Henüz aktif hizmet bulunmuyor.</p>
             </div>
-        <?php else: ?>
+        <?php else:
+            // Fetch Pexels photos for all services
+            $servicePhotos = get_random_pexels_photos(count($activeServices));
+            ?>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                <?php foreach ($activeServices as $service):
-                    $serviceName = htmlspecialchars($service['name']);
+                <?php
+                $idx = 0;
+                foreach ($activeServices as $service):
+                    $serviceName = htmlspecialchars($service['title']);
                     $serviceSlug = htmlspecialchars($service['slug']);
                     $serviceIntro = htmlspecialchars($service['short_intro'] ?? 'Profesyonel fotoğrafçılık hizmeti.');
-                    $serviceImage = $serviceImages[$serviceSlug] ?? $defaultImage;
-                    ?>
-                    <!-- Service Card -->
-                    <div class="group relative bg-slate-900 rounded-5xl h-[500px] overflow-hidden shadow-2xl hover-lift">
-                        <img src="<?= $serviceImage ?>" alt="<?= $serviceName ?>"
-                            class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-60">
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/40 to-transparent"></div>
 
+                    // Use Pexels photo if available
+                    $photo = $servicePhotos[$idx] ?? null;
+                    $serviceImage = $photo ? ($photo['src']['large'] ?? $photo['src']) : ($serviceImages[$serviceSlug] ?? $defaultImage);
+                    $idx++;
+                    ?>
+                    <!-- Full-Image Glass Card -->
+                    <div class="group relative bg-slate-900 rounded-5xl h-[550px] overflow-hidden shadow-2xl hover-lift">
+                        <!-- Background Image -->
+                        <img src="<?= $serviceImage ?>" alt="<?= $serviceName ?>"
+                            class="absolute inset-0 w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110 opacity-70">
+
+                        <!-- Overlay Gradient -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/20 to-transparent"></div>
+
+                        <!-- Content Overlay -->
                         <div
-                            class="absolute inset-0 p-10 flex flex-col justify-end transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500">
-                            <div class="glass-panel p-8 rounded-4xl border-white/10 backdrop-blur-md">
+                            class="absolute inset-0 p-8 flex flex-col justify-end transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                            <div class="bg-white/10 backdrop-blur-md border border-white/10 p-8 rounded-4xl">
                                 <div class="w-12 h-1 bg-brand-500 mb-6 rounded-full overflow-hidden">
                                     <div
                                         class="w-full h-full bg-white -translate-x-full group-hover:translate-x-0 transition-transform duration-700">
@@ -88,10 +102,12 @@ $heroImage = $randomPhoto ? $randomPhoto['src'] : '/assets/images/hero-bg.jpg';
                                 <h3 class="text-3xl font-black text-white mb-4 tracking-tight"><?= $serviceName ?></h3>
                                 <p
                                     class="text-slate-200 text-sm font-medium leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
-                                    <?= $serviceIntro ?></p>
-                                <a href="/hizmetlerimiz/<?= $serviceSlug ?>"
-                                    class="mt-8 inline-flex items-center gap-2 text-white font-bold text-xs uppercase tracking-widest group/btn border border-white/20 px-6 py-3 rounded-full hover:bg-white hover:text-brand-900 transition-all">
-                                    Detaylar <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    <?= $serviceIntro ?>
+                                </p>
+                                <a href="/<?= $serviceSlug ?>"
+                                    class="mt-8 inline-flex items-center gap-3 text-white font-bold text-xs uppercase tracking-widest group/btn border border-white/20 px-8 py-4 rounded-full hover:bg-white hover:text-brand-900 transition-all">
+                                    Detayları İncele
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
                                         stroke-linejoin="round" class="group-hover/btn:translate-x-2 transition-transform">
                                         <path d="M5 12h14" />
@@ -103,8 +119,8 @@ $heroImage = $randomPhoto ? $randomPhoto['src'] : '/assets/images/hero-bg.jpg';
                     </div>
                 <?php endforeach; ?>
             </div>
-
         <?php endif; ?>
+
 
         <!-- CTA Section -->
         <div

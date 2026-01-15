@@ -1,50 +1,110 @@
+<?php
+// Fetch custom color for the quote wizard
+$customColor = get_setting('primary_color', '#fa7000'); // Use primary color (orange)
+$customColorRgb = sscanf($customColor, "#%02x%02x%02x");
+$customColorRgbString = implode(', ', $customColorRgb);
+?>
+
+<style>
+    /* Custom color overrides for quote wizard */
+    #quote-wizard-modal .wizard-brand-bg {
+        background-color:
+            <?= $customColor ?>
+            !important;
+    }
+
+    #quote-wizard-modal .wizard-brand-text {
+        color:
+            <?= $customColor ?>
+            !important;
+    }
+
+    #quote-wizard-modal .wizard-brand-border {
+        border-color:
+            <?= $customColor ?>
+            !important;
+    }
+
+    #quote-wizard-modal .wizard-brand-ring {
+        --tw-ring-color:
+            <?= $customColor ?>
+            !important;
+    }
+
+    #quote-wizard-modal .wizard-brand-shadow {
+        --tw-shadow-color: rgb(<?= $customColorRgbString ?> / 0.3) !important;
+        --tw-shadow: var(--tw-shadow-colored);
+    }
+
+    .glass-modal {
+        background: rgba(255, 255, 255, 0.7) !important;
+        backdrop-filter: blur(20px) saturate(180%) !important;
+        -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+        border: 1px solid rgba(255, 255, 255, 0.4) !important;
+    }
+
+    .glass-step-indicator {
+        background: rgba(255, 255, 255, 0.5) !important;
+        backdrop-filter: blur(10px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    }
+</style>
+
 <div id="quote-wizard-modal" class="fixed inset-0 z-50 hidden" aria-labelledby="modal-title" role="dialog"
     aria-modal="true">
     <!-- Backdrop -->
     <div class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm transition-opacity opacity-0" id="wizard-backdrop"></div>
 
     <div class="fixed inset-0 z-10 overflow-y-auto">
-        <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+        <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
             <!-- Modal Panel -->
-            <div class="relative transform overflow-hidden rounded-3xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-2xl opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+            <div class="relative transform overflow-hidden rounded-[2.5rem] glass-modal text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-2xl opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95 shadow-black/10"
                 id="wizard-panel">
 
                 <!-- Header -->
-                <div
-                    class="bg-gradient-to-r from-brand-600 to-brand-800 px-6 py-6 sm:px-10 flex justify-between items-center">
-                    <div>
-                        <h3 class="text-2xl font-bold leading-6 text-white" id="modal-title">Teklif Sihirbazı</h3>
-                        <p class="mt-1 text-brand-100 text-sm">Projeniz için en doğru fiyatı 3 adımda alın.</p>
+                <div class="wizard-brand-bg px-8 py-8 sm:px-12 flex justify-between items-center relative overflow-hidden"
+                    style="background: linear-gradient(135deg, <?= $customColor ?>, <?= $customColor ?>dd);">
+                    <div
+                        class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]">
                     </div>
-                    <button type="button" class="text-white/70 hover:text-white transition-colors"
+                    <div class="relative z-10">
+                        <h3 class="text-3xl font-black leading-none text-white tracking-tight" id="modal-title">Teklif
+                            Sihirbazı</h3>
+                        <p class="mt-2 text-white/80 text-sm font-medium">Projeniz için en doğru fiyatı 3 adımda alın.
+                        </p>
+                    </div>
+                    <button type="button"
+                        class="relative z-10 w-12 h-12 flex items-center justify-center rounded-2xl bg-black/10 text-white hover:bg-black/20 transition-all hover:scale-110 active:scale-90"
                         onclick="closeQuoteWizard()">
-                        <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </button>
                 </div>
 
                 <!-- Steps Progress -->
-                <div class="bg-slate-50 px-6 py-4 border-b border-slate-100">
-                    <div class="flex items-center justify-between max-w-md mx-auto">
+                <div class="bg-white/30 backdrop-blur-md px-6 py-4 border-b border-white/20">
+                    <div class="flex items-center justify-between max-w-md mx-auto relative px-4">
+                        <!-- Progress Line Background -->
+                        <div class="absolute left-10 right-10 top-4 h-0.5 bg-black/5 -z-10"></div>
                         <div class="flex flex-col items-center step-indicator active" data-step="1">
-                            <div
-                                class="w-8 h-8 rounded-full bg-brand-600 text-white flex items-center justify-center font-bold text-sm mb-1 ring-4 ring-brand-100">
+                            <div class="w-8 h-8 rounded-full wizard-brand-bg text-white flex items-center justify-center font-bold text-sm mb-1 shadow-lg shadow-black/5"
+                                style="background-color: <?= $customColor ?>;">
                                 1</div>
                             <span class="text-[10px] uppercase tracking-tighter font-bold text-slate-900">Hizmet</span>
                         </div>
-                        <div class="h-0.5 w-8 bg-slate-200" id="line-1"></div>
+                        <div class="h-0.5 w-8 bg-black/5 rounded-full" id="line-1"></div>
                         <div class="flex flex-col items-center step-indicator" data-step="2">
                             <div
-                                class="w-8 h-8 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center font-bold text-sm mb-1">
+                                class="w-8 h-8 rounded-full bg-white text-slate-400 flex items-center justify-center font-bold text-sm mb-1 border border-black/5 shadow-sm">
                                 2</div>
                             <span
-                                class="text-[10px] uppercase tracking-tighter font-bold text-slate-500">Detaylar</span>
+                                class="text-[10px] uppercase tracking-tighter font-bold text-slate-400">Detaylar</span>
                         </div>
-                        <div class="h-0.5 w-8 bg-slate-200" id="line-2"></div>
+                        <div class="h-0.5 w-8 bg-black/5 rounded-full" id="line-2"></div>
                         <div class="flex flex-col items-center step-indicator" data-step="3">
                             <div
-                                class="w-8 h-8 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center font-bold text-sm mb-1">
+                                class="w-8 h-8 rounded-full bg-white text-slate-400 flex items-center justify-center font-bold text-sm mb-1 border border-black/5 shadow-sm">
                                 3</div>
                             <span
                                 class="text-[10px] uppercase tracking-tighter font-bold text-slate-500">Planlama</span>
@@ -70,94 +130,98 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <!-- Options will be populated via JS or PHP -->
                             <label
-                                class="relative flex cursor-pointer rounded-xl border border-slate-200 bg-white p-4 shadow-sm focus:outline-none hover:border-brand-500 hover:ring-1 hover:ring-brand-500 transition-all group">
+                                class="relative flex cursor-pointer rounded-xl border border-slate-200 bg-white p-4 shadow-sm focus:outline-none transition-all group"
+                                style="--hover-border: <?= $customColor ?>;">
                                 <input type="radio" name="service_type" value="mimari" class="peer sr-only" required>
                                 <span class="flex flex-1">
                                     <span class="flex flex-col">
-                                        <span
-                                            class="block text-base font-medium text-slate-900 peer-checked:text-brand-600">Mimari
+                                        <span class="block text-base font-medium text-slate-900 wizard-brand-text"
+                                            style="color: inherit;">Mimari
                                             & İç Mekan</span>
                                         <span class="mt-1 flex items-center text-sm text-slate-500">Villa, Ofis,
                                             Mağaza</span>
                                     </span>
                                 </span>
-                                <svg class="h-5 w-5 text-brand-600 opacity-0 peer-checked:opacity-100"
+                                <svg class="h-5 w-5 wizard-brand-text opacity-0 peer-checked:opacity-100"
                                     viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd"
                                         d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                                         clip-rule="evenodd" />
                                 </svg>
                                 <div
-                                    class="absolute inset-0 rounded-xl ring-2 ring-transparent peer-checked:ring-brand-600 pointer-events-none">
+                                    class="absolute inset-0 rounded-xl ring-2 ring-transparent wizard-brand-ring pointer-events-none">
                                 </div>
                             </label>
 
                             <label
-                                class="relative flex cursor-pointer rounded-xl border border-slate-200 bg-white p-4 shadow-sm focus:outline-none hover:border-brand-500 hover:ring-1 hover:ring-brand-500 transition-all group">
+                                class="relative flex cursor-pointer rounded-xl border border-slate-200 bg-white p-4 shadow-sm focus:outline-none transition-all group"
+                                style="--hover-border: <?= $customColor ?>;">
                                 <input type="radio" name="service_type" value="otel" class="peer sr-only">
                                 <span class="flex flex-1">
                                     <span class="flex flex-col">
-                                        <span
-                                            class="block text-base font-medium text-slate-900 peer-checked:text-brand-600">Otel
+                                        <span class="block text-base font-medium text-slate-900 wizard-brand-text"
+                                            style="color: inherit;">Otel
                                             & Turizm</span>
                                         <span class="mt-1 flex items-center text-sm text-slate-500">Otel, Pansiyon,
                                             Resort</span>
                                     </span>
                                 </span>
-                                <svg class="h-5 w-5 text-brand-600 opacity-0 peer-checked:opacity-100"
+                                <svg class="h-5 w-5 wizard-brand-text opacity-0 peer-checked:opacity-100"
                                     viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd"
                                         d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                                         clip-rule="evenodd" />
                                 </svg>
                                 <div
-                                    class="absolute inset-0 rounded-xl ring-2 ring-transparent peer-checked:ring-brand-600 pointer-events-none">
+                                    class="absolute inset-0 rounded-xl ring-2 ring-transparent wizard-brand-ring pointer-events-none">
                                 </div>
                             </label>
 
                             <label
-                                class="relative flex cursor-pointer rounded-xl border border-slate-200 bg-white p-4 shadow-sm focus:outline-none hover:border-brand-500 hover:ring-1 hover:ring-brand-500 transition-all group">
+                                class="relative flex cursor-pointer rounded-xl border border-slate-200 bg-white p-4 shadow-sm focus:outline-none transition-all group"
+                                style="--hover-border: <?= $customColor ?>;">
                                 <input type="radio" name="service_type" value="yemek" class="peer sr-only">
                                 <span class="flex flex-1">
                                     <span class="flex flex-col">
-                                        <span
-                                            class="block text-base font-medium text-slate-900 peer-checked:text-brand-600">Yemek
+                                        <span class="block text-base font-medium text-slate-900 wizard-brand-text"
+                                            style="color: inherit;">Yemek
                                             & Restoran</span>
                                         <span class="mt-1 flex items-center text-sm text-slate-500">Menü, Sosyal
                                             Medya</span>
                                     </span>
                                 </span>
-                                <svg class="h-5 w-5 text-brand-600 opacity-0 peer-checked:opacity-100"
+                                <svg class="h-5 w-5 wizard-brand-text opacity-0 peer-checked:opacity-100"
                                     viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd"
                                         d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                                         clip-rule="evenodd" />
                                 </svg>
                                 <div
-                                    class="absolute inset-0 rounded-xl ring-2 ring-transparent peer-checked:ring-brand-600 pointer-events-none">
+                                    class="absolute inset-0 rounded-xl ring-2 ring-transparent wizard-brand-ring pointer-events-none">
                                 </div>
                             </label>
 
                             <label
-                                class="relative flex cursor-pointer rounded-xl border border-slate-200 bg-white p-4 shadow-sm focus:outline-none hover:border-brand-500 hover:ring-1 hover:ring-brand-500 transition-all group">
+                                class="relative flex cursor-pointer rounded-xl border border-slate-200 bg-white p-4 shadow-sm focus:outline-none transition-all group"
+                                style="--hover-border: <?= $customColor ?>;">
                                 <input type="radio" name="service_type" value="diger" class="peer sr-only">
                                 <span class="flex flex-1">
                                     <span class="flex flex-col">
-                                        <span
-                                            class="block text-base font-medium text-slate-900 peer-checked:text-brand-600">Diğer
+                                        <span class="block text-base font-medium text-slate-900 wizard-brand-text"
+                                            style="color: inherit;">Diğer
                                             / Özel Proje</span>
                                         <span class="mt-1 flex items-center text-sm text-slate-500">Hava çekimi,
                                             Endüstriyel vb.</span>
                                     </span>
                                 </span>
-                                <svg class="h-5 w-5 text-brand-600 opacity-0 peer-checked:opacity-100"
+                                <svg class="h-5 w-5 wizard-brand-text opacity-0 peer-checked:opacity-100"
                                     viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd"
                                         d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                                         clip-rule="evenodd" />
                                 </svg>
                                 <div
-                                    class="absolute inset-0 rounded-xl ring-2 ring-transparent peer-checked:ring-brand-600 pointer-events-none">
+                                    class="absolute inset-0 rounded-xl ring-2 ring-transparent wizard-brand-ring pointer-events-none">
                                 </div>
                             </label>
                         </div>
@@ -216,19 +280,22 @@
                                     <label class="cursor-pointer">
                                         <input type="radio" name="urgency" value="hemen" class="peer sr-only">
                                         <span
-                                            class="px-4 py-2 rounded-full border border-slate-200 text-xs font-bold text-slate-500 peer-checked:bg-brand-600 peer-checked:text-white peer-checked:border-brand-600 transition-all block">Hemen
+                                            class="px-4 py-2 rounded-full border border-slate-200 text-xs font-bold text-slate-500 wizard-brand-bg wizard-brand-border peer-checked:text-white transition-all block"
+                                            style="background-color: transparent; border-color: #cbd5e1;">Hemen
                                             (1-3 Gün)</span>
                                     </label>
                                     <label class="cursor-pointer">
                                         <input type="radio" name="urgency" value="normal" class="peer sr-only" checked>
                                         <span
-                                            class="px-4 py-2 rounded-full border border-slate-200 text-xs font-bold text-slate-500 peer-checked:bg-brand-600 peer-checked:text-white peer-checked:border-brand-600 transition-all block">Normal
+                                            class="px-4 py-2 rounded-full border border-slate-200 text-xs font-bold text-slate-500 wizard-brand-bg wizard-brand-border peer-checked:text-white transition-all block"
+                                            style="background-color: transparent; border-color: #cbd5e1;">Normal
                                             (1-2 Hafta)</span>
                                     </label>
                                     <label class="cursor-pointer">
                                         <input type="radio" name="urgency" value="ileride" class="peer sr-only">
                                         <span
-                                            class="px-4 py-2 rounded-full border border-slate-200 text-xs font-bold text-slate-500 peer-checked:bg-brand-600 peer-checked:text-white peer-checked:border-brand-600 transition-all block">İleri
+                                            class="px-4 py-2 rounded-full border border-slate-200 text-xs font-bold text-slate-500 wizard-brand-bg wizard-brand-border peer-checked:text-white transition-all block"
+                                            style="background-color: transparent; border-color: #cbd5e1;">İleri
                                             Tarihli</span>
                                     </label>
                                 </div>
@@ -278,7 +345,10 @@
                             ← Geri
                         </button>
                         <button type="button" id="btn-next"
-                            class="ml-auto px-8 py-2.5 bg-brand-600 text-white rounded-xl font-bold shadow-lg shadow-brand-500/30 hover:bg-brand-500 transition-all hover:scale-105">
+                            class="ml-auto px-8 py-2.5 wizard-brand-bg wizard-brand-shadow text-white rounded-xl font-bold shadow-lg transition-all hover:scale-105"
+                            style="filter: brightness(1); transition: filter 0.3s;"
+                            onmouseover="this.style.filter='brightness(1.1)'"
+                            onmouseout="this.style.filter='brightness(1)'">
                             Devam Et →
                         </button>
                         <button type="submit" id="btn-submit"

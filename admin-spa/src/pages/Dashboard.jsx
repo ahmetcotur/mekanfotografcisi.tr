@@ -37,6 +37,7 @@ export default function Dashboard() {
                 <StatCard title="SEO Sayfası" value={stats?.stats?.seo_pages || 0} icon="🌐" color="green" />
                 <StatCard title="Toplam Teklif" value={stats?.stats?.total_quotes || 0} icon="✉️" color="purple" />
                 <StatCard title="Yeni Talep" value={stats?.stats?.new_quotes || 0} icon="🔔" color="red" />
+                <StatCard title="Freelancer Başvuru" value={stats?.stats?.total_freelancers || 0} icon="👷" color="amber" />
             </div>
 
             {/* Recent Quotes */}
@@ -76,7 +77,8 @@ function StatCard({ title, value, icon, color }) {
         blue: 'bg-blue-500',
         green: 'bg-green-500',
         purple: 'bg-purple-500',
-        red: 'bg-red-500'
+        red: 'bg-red-500',
+        amber: 'bg-amber-500'
     };
 
     return (

@@ -15,10 +15,12 @@ $sliderImagesJson = json_encode(array_map(function ($p) {
 // Fetch services from database
 require_once __DIR__ . '/../../includes/database.php';
 $db = new DatabaseClient();
-$services = $db->select('services', [
-    'eq.is_active' => true,
-    'select' => 'id,name,slug,short_intro',
-    'order' => 'name'
+// Fetch all active services from posts table
+$services = $db->select('posts', [
+    'post_type' => 'service',
+    'post_status' => 'publish',
+    'limit' => 50,
+    'order' => 'title'
 ]);
 
 // Service images mapping (Pexels URLs from the current homepage)
@@ -47,20 +49,28 @@ $defaultImage = 'https://images.pexels.com/photos/7045926/pexels-photo-7045926.j
 // Build services HTML
 $servicesHtml = '';
 $serviceCount = 0;
-foreach ($services as $service) {
-    if ($serviceCount >= 16)
-        break; // Limit to 16 services max
+// Fetch Pexels photos for services
+require_once __DIR__ . '/../../includes/Core/PexelsService.php';
+$pexelsService = new \Core\PexelsService();
+$servicePhotos = $pexelsService->getRandomPhotos(count($services));
 
-    $serviceName = htmlspecialchars($service['name']);
+foreach ($services as $index => $service) {
+    if ($serviceCount >= 24)
+        break; // Limit to 24 services max
+
+    $serviceName = htmlspecialchars($service['title']);
     $serviceSlug = htmlspecialchars($service['slug']);
     $serviceIntro = htmlspecialchars($service['short_intro'] ?? 'Profesyonel fotoğrafçılık hizmeti.');
-    $serviceImage = $serviceImages[$serviceSlug] ?? $defaultImage;
+
+    // Get Pexels photo
+    $photo = $servicePhotos[$index] ?? null;
+    $serviceImage = $photo ? ($photo['src'] ?? $photo['src']['large']) : ($serviceImages[$serviceSlug] ?? $defaultImage);
 
     // Replace service card glass styling
     $servicesHtml .= <<<HTML
             <!-- Service: {$serviceName} -->
-            <div class="group relative bg-slate-900 rounded-5xl h-[500px] overflow-hidden shadow-2xl hover-lift min-w-[85vw] md:min-w-[350px] snap-center shrink-0">
-                <img src="{$serviceImage}" alt="{$serviceName}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-60">
+            <div class="group relative bg-slate-900 rounded-5xl h-[550px] overflow-hidden shadow-2xl hover-lift min-w-[85vw] md:min-w-[350px] snap-center shrink-0">
+                <img src="{$serviceImage}" alt="{$serviceName}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110 opacity-60">
                 <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/40 to-transparent"></div>
                 
                 <div class="absolute inset-0 p-10 flex flex-col justify-end transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500">
@@ -76,7 +86,6 @@ foreach ($services as $service) {
                     </div>
                 </div>
             </div>
-
 HTML;
     $serviceCount++;
 }

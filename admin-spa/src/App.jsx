@@ -12,6 +12,7 @@ import Pexels from './pages/Pexels';
 import PostEditor from './pages/PostEditor';
 import Settings from './pages/Settings';
 import SeoLinkManager from './pages/SeoLinkManager';
+import FreelancerApplications from './pages/FreelancerApplications';
 import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
 import useAuthStore from './store/authStore';
@@ -42,6 +43,7 @@ function App() {
             <Route path="/seo-pages" element={<SeoPages />} />
             <Route path="/seo-links" element={<SeoLinkManager />} />
             <Route path="/quotes" element={<Quotes />} />
+            <Route path="/freelancers" element={<FreelancerApplications />} />
             <Route path="/media" element={<Media />} />
             <Route path="/pexels" element={<Pexels />} />
             <Route path="/settings" element={<Settings />} />

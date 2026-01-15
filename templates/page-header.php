@@ -260,20 +260,15 @@ $schema = [
 
     <?php if (isset($schemaMarkup)): ?>
         <script type="application/ld+json">
-                                                                                                <?= json_encode($schemaMarkup, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>
-                                                                                                        </script>
+                                                                                                                                <?= json_encode($schemaMarkup, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>
+                                                                                                                                        </script>
     <?php endif; ?>
 </head>
 
 <body class="font-sans text-slate-800 bg-white antialiased selection:bg-brand-100 selection:text-brand-900">
 
     <?php
-    // Fetch dropdown services
-    if (!isset($db)) {
-        require_once __DIR__ . '/../includes/database.php';
-        $db = new DatabaseClient();
-    }
-    $menuServices = $db->select('posts', ['post_type' => 'service', 'post_status' => 'publish', 'limit' => 5]);
+
     ?>
 
     <!-- Navigation -->
@@ -284,15 +279,17 @@ $schema = [
 
                 <!-- Logo -->
                 <div class="flex-shrink-0 absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0 md:left-auto">
-                    <a href="/" class="group flex items-center gap-3">
+                    <a href="/"
+                        class="group flex items-center gap-4 transition-all duration-500 hover:scale-105 active:scale-95"
+                        id="header-logo">
                         <?php $logoUrl = get_setting('logo_url'); ?>
                         <?php if ($logoUrl): ?>
                             <img src="<?= e($logoUrl) ?>" alt="<?= e($siteName) ?>"
-                                class="h-12 md:h-10 w-auto object-contain transition-transform group-hover:scale-105">
+                                class="h-14 md:h-12 w-auto object-contain transition-all duration-500 group-hover:drop-shadow-[0_0_15px_rgba(var(--brand-rgb),0.3)] animate-float">
                         <?php else: ?>
                             <div
-                                class="w-10 h-10 bg-brand-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-brand-500/30 transition-all group-hover:scale-110 group-hover:rotate-6">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                class="w-12 h-12 bg-brand-600 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-brand-500/30 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 group-hover:shadow-brand-500/50 animate-float">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
                                     stroke-linejoin="round">
                                     <path
@@ -302,13 +299,64 @@ $schema = [
                             </div>
                             <div class="flex flex-col">
                                 <span
-                                    class="font-heading font-black text-xl tracking-tight text-slate-900 leading-none group-hover:text-brand-600 transition-colors">Mekan</span>
+                                    class="font-heading font-black text-2xl tracking-tight text-slate-900 leading-none group-hover:text-brand-600 transition-colors">Mekan</span>
                                 <span
-                                    class="font-heading font-bold text-[10px] uppercase tracking-widest text-slate-400 group-hover:text-slate-600 transition-colors">Fotoğrafçısı</span>
+                                    class="font-heading font-bold text-[11px] uppercase tracking-[0.2em] text-slate-400 group-hover:text-slate-600 transition-colors">Fotoğrafçısı</span>
                             </div>
                         <?php endif; ?>
                     </a>
                 </div>
+
+                <style>
+                    @keyframes float {
+
+                        0%,
+                        100% {
+                            transform: translateY(0);
+                        }
+
+                        50% {
+                            transform: translateY(-5px);
+                        }
+                    }
+
+                    .animate-float {
+                        animation: float 4s ease-in-out infinite;
+                    }
+
+                    @keyframes shake {
+
+                        0%,
+                        90%,
+                        100% {
+                            transform: translateX(0);
+                        }
+
+                        91%,
+                        93%,
+                        95%,
+                        97%,
+                        99% {
+                            transform: translateX(-2px);
+                        }
+
+                        92%,
+                        94%,
+                        96%,
+                        98% {
+                            transform: translateX(2px);
+                        }
+                    }
+
+                    .animate-shake {
+                        animation: shake 5s ease-in-out infinite;
+                    }
+
+                    :root {
+                        --brand-rgb: 37, 99, 235;
+                        /* Blue 600 default, should be dynamic if possible */
+                    }
+                </style>
 
                 <!-- Desktop Menu -->
                 <nav class="hidden md:flex gap-1 items-center">
@@ -316,61 +364,12 @@ $schema = [
                         class="px-5 py-2 text-sm font-bold text-slate-600 hover:text-brand-600 transition-all rounded-full hover:bg-brand-50 items-center gap-1.5 <?= ($_SERVER['REQUEST_URI'] == '/') ? 'text-brand-600 bg-brand-50' : '' ?>">Ana
                         Sayfa</a>
 
-                    <!-- Dropdown Trigger -->
-                    <div class="relative group py-2">
-                        <button
-                            class="flex items-center gap-1.5 px-5 py-2 text-sm font-bold text-slate-600 group-hover:text-brand-600 transition-all rounded-full group-hover:bg-brand-50">
-                            Hizmetler
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
-                                stroke-linejoin="round" class="transition-transform group-hover:rotate-180">
-                                <path d="m6 9 6 6 6-6" />
-                            </svg>
-                        </button>
+                    <a href="/hizmetlerimiz"
+                        class="px-5 py-2 text-sm font-bold text-slate-600 hover:text-brand-600 transition-all rounded-full hover:bg-brand-50 <?= ($_SERVER['REQUEST_URI'] == '/hizmetlerimiz') ? 'text-brand-600 bg-brand-50' : '' ?>">Hizmetler</a>
 
-                        <!-- Mega Menu -->
-                        <div
-                            class="mega-menu hidden group-hover:block absolute top-[calc(100%+0.5rem)] left-1/2 -translate-x-1/2 w-[640px] bg-white/95 backdrop-blur-xl rounded-4xl shadow-2xl border border-slate-100 p-3 z-50 origin-top">
-                            <div class="grid grid-cols-2 gap-2">
-                                <?php foreach ($menuServices as $service): ?>
-                                    <a href="/<?= $service['slug'] ?>"
-                                        class="flex items-start gap-4 p-4 rounded-3xl hover:bg-brand-50/50 transition-all group/item">
-                                        <div
-                                            class="flex-shrink-0 w-12 h-12 rounded-2xl bg-slate-50 text-slate-400 flex items-center justify-center group-hover/item:bg-brand-600 group-hover/item:text-white transition-all shadow-sm">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round">
-                                                <path d="M15 8h.01" />
-                                                <rect width="16" height="13" x="4" y="5" rx="2" />
-                                                <path d="m4 15 3-3 3 3 5-5 5 5" />
-                                            </svg>
-                                        </div>
-                                        <div>
-                                            <h4
-                                                class="text-sm font-bold text-slate-900 group-hover/item:text-brand-600 transition-colors line-clamp-1">
-                                                <?= htmlspecialchars($service['title']) ?>
-                                            </h4>
-                                            <p class="text-slate-400 text-xs font-medium leading-relaxed mt-1 line-clamp-2">
-                                                <?= htmlspecialchars(substr(strip_tags($service['content']), 0, 80)) ?>
-                                            </p>
-                                        </div>
-                                    </a>
-                                <?php endforeach; ?>
-                                <a href="/hizmetlerimiz"
-                                    class="col-span-2 flex items-center justify-between p-4 rounded-3xl bg-slate-50 hover:bg-brand-600 hover:text-white transition-all group/link mt-2">
-                                    <span class="text-xs font-black uppercase tracking-widest">Tüm Hizmetleri
-                                        Keşfet</span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        class="transition-transform group-hover/link:translate-x-2">
-                                        <path d="M5 12h14" />
-                                        <path d="m12 5 7 7-7 7" />
-                                    </svg>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+                    <a href="/nasil-calisir"
+                        class="px-5 py-2 text-sm font-bold text-slate-600 hover:text-brand-600 transition-all rounded-full hover:bg-brand-50 <?= ($_SERVER['REQUEST_URI'] == '/nasil-calisir') ? 'text-brand-600 bg-brand-50' : '' ?>">Nasıl
+                        Çalışır?</a>
 
                     <a href="/portfolio"
                         class="px-5 py-2 text-sm font-bold text-slate-600 hover:text-brand-600 transition-all rounded-full hover:bg-brand-50">Portfolyo</a>
@@ -380,7 +379,7 @@ $schema = [
 
                 <div class="hidden md:flex items-center gap-4">
                     <button onclick="openQuoteWizard()"
-                        class="inline-flex h-12 items-center justify-center rounded-2xl bg-brand-600 px-8 text-sm font-black uppercase tracking-widest text-white shadow-lg shadow-brand-500/25 transition-all hover:bg-brand-700 hover:scale-105 active:scale-95">
+                        class="inline-flex h-12 items-center justify-center rounded-2xl bg-brand-600 px-8 text-sm font-black uppercase tracking-widest text-white shadow-lg shadow-brand-500/25 transition-all hover:bg-brand-700 hover:scale-105 active:scale-95 animate-shake">
                         Teklif Al
                     </button>
                 </div>
@@ -400,7 +399,7 @@ $schema = [
 
         <!-- Mobile Menu -->
         <div id="mobile-menu"
-            class="hidden md:hidden absolute top-[calc(100%-1rem)] left-4 right-4 bg-white/95 backdrop-blur-xl rounded-4xl shadow-2xl border border-slate-100 p-4 transition-all duration-300 origin-top animate-slide-up">
+            class="hidden md:hidden absolute top-[calc(100%-1rem)] left-4 right-4 bg-white/95 backdrop-blur-xl rounded-4xl shadow-2xl border border-slate-100 p-4 transition-all duration-300 origin-top animate-slide-up max-h-[85vh] overflow-y-auto">
             <div class="space-y-2">
                 <a href="/"
                     class="flex items-center gap-4 px-6 py-4 text-base font-bold text-slate-700 hover:bg-brand-50 hover:text-brand-600 rounded-3xl transition-all group">
@@ -414,6 +413,7 @@ $schema = [
                     </div>
                     Ana Sayfa
                 </a>
+
                 <a href="/hizmetlerimiz"
                     class="flex items-center gap-4 px-6 py-4 text-base font-bold text-slate-700 hover:bg-brand-50 hover:text-brand-600 rounded-3xl transition-all group">
                     <div
@@ -428,6 +428,19 @@ $schema = [
                     </div>
                     Hizmetlerimiz
                 </a>
+
+                <a href="/nasil-calisir"
+                    class="flex items-center gap-4 px-6 py-4 text-base font-bold text-slate-700 hover:bg-brand-50 hover:text-brand-600 rounded-3xl transition-all group">
+                    <div
+                        class="w-10 h-10 rounded-2xl bg-slate-50 text-slate-400 flex items-center justify-center group-hover:bg-brand-200/50 group-hover:text-brand-600 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 1 1 7.072 0l-.548.547A3.374 3.374 0 0 0 14 18.469V19a2 2 0 1 1-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                        </svg>
+                    </div>
+                    Nasıl Çalışır?
+                </a>
+
                 <a href="/portfolio"
                     class="flex items-center gap-4 px-6 py-4 text-base font-bold text-slate-700 hover:bg-brand-50 hover:text-brand-600 rounded-3xl transition-all group">
                     <div
@@ -455,7 +468,7 @@ $schema = [
                 </a>
                 <div class="pt-6 px-2">
                     <button onclick="openQuoteWizard()"
-                        class="w-full py-5 text-sm font-black uppercase tracking-widest text-white bg-brand-600 rounded-3xl text-center active:scale-95 transition-all shadow-xl shadow-brand-500/30 hover:bg-brand-700">Teklif
+                        class="w-full py-5 text-sm font-black uppercase tracking-widest text-white bg-brand-600 rounded-3xl text-center active:scale-95 transition-all shadow-xl shadow-brand-500/30 hover:bg-brand-700 animate-shake">Teklif
                         Al</button>
                 </div>
             </div>
@@ -467,16 +480,14 @@ $schema = [
         window.addEventListener('scroll', () => {
             const header = document.getElementById('main-header');
             const inner = document.getElementById('header-inner');
-            if (window.scrollY > 20) {
-                inner.classList.remove('rounded-3xl', 'mt-4');
-                inner.classList.add('rounded-none', 'md:rounded-full', 'mt-0', 'shadow-2xl');
-                header.querySelector('.max-w-7xl').classList.remove('mt-4', 'px-4');
-                header.querySelector('.max-w-7xl').classList.add('px-0');
+            if (window.scrollY > 50) {
+                inner.classList.add('md:rounded-full', 'shadow-2xl');
+                inner.classList.remove('rounded-3xl', 'shadow-slate-900/5');
+                header.querySelector('.max-w-7xl').style.marginTop = '0';
             } else {
-                inner.classList.add('rounded-3xl');
-                inner.classList.remove('rounded-none', 'md:rounded-full', 'shadow-2xl');
-                header.querySelector('.max-w-7xl').classList.add('mt-4', 'px-4');
-                header.querySelector('.max-w-7xl').classList.remove('px-0');
+                inner.classList.remove('md:rounded-full', 'shadow-2xl');
+                inner.classList.add('rounded-3xl', 'shadow-slate-900/5');
+                header.querySelector('.max-w-7xl').style.marginTop = '1rem';
             }
         });
     </script>
@@ -489,6 +500,8 @@ $schema = [
         btn.addEventListener('click', () => {
             menu.classList.toggle('hidden');
         });
+
+
 
         // Close menu when clicking outside
         document.addEventListener('click', (e) => {

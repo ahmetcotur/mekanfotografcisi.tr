@@ -12,10 +12,13 @@ export default function SeoLinkManager() {
     const [seoPages, setSeoPages] = useState([]);
 
     const [loading, setLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState('settings'); // settings, locations, services, ai
-    const [locationType, setLocationType] = useState('province'); // province, district, town
+    const [activeTab, setActiveTab] = useState('settings');
+    const [locationType, setLocationType] = useState('province');
     const [aiSuggestions, setAiSuggestions] = useState([]);
     const [generating, setGenerating] = useState(false);
+
+    // Draft settings state for "no-autosave" requirement
+    const [draftSettings, setDraftSettings] = useState({});
 
     useEffect(() => {
         loadData();
@@ -38,7 +41,14 @@ export default function SeoLinkManager() {
                 return { data: { success: false, data: [] } };
             })));
 
-            setSettings(results[0].data.data || []);
+            const fetchedSettings = results[0].data.data || [];
+            setSettings(fetchedSettings);
+
+            // Initialize draft settings
+            const drafts = {};
+            fetchedSettings.forEach(s => drafts[s.key] = s.value);
+            setDraftSettings(drafts);
+
             setProvinces(results[1].data.data || []);
             setDistricts(results[2].data.data || []);
             setTowns(results[3].data.data || []);
@@ -51,28 +61,29 @@ export default function SeoLinkManager() {
         }
     };
 
-    const handleUpdateSetting = async (key, value) => {
-        const setting = settings.find(s => s.key === key);
-        if (!setting) return;
+    const handleUpdateDraft = (key, value) => {
+        setDraftSettings(prev => ({ ...prev, [key]: value }));
+    };
 
+    const handleSaveSetting = async (key) => {
+        const value = draftSettings[key];
         try {
             await api.post('/admin-update.php', {
                 action: 'update',
                 table: 'settings',
-                id: key, // Using 'key' as 'id' for settings
+                id: key,
                 data: { value }
             });
-            // Update local state immediately for better UX
+            // Update the main settings state too
             setSettings(prev => prev.map(s => s.key === key ? { ...s, value } : s));
-
-            Swal.fire({ title: 'Güncellendi', icon: 'success', timer: 800, showConfirmButton: false, toast: true, position: 'bottom-end' });
+            Swal.fire({ title: 'Başarıyla Kaydedildi', icon: 'success', timer: 1000, showConfirmButton: false });
         } catch (error) {
-            Swal.fire('Hata', 'Güncellenemedi', 'error');
+            Swal.fire('Hata', 'Kaydedilemedi', 'error');
         }
     };
 
-    // Helpres for current settings
-    const getSetting = (key, def) => settings.find(s => s.key === key)?.value || def;
+    // Helpers for current settings
+    const getSetting = (key, def) => draftSettings[key] || def;
 
     const locSuffix = getSetting('seo_location_suffix', '-mekan-fotografcisi');
     const locTitleTemplate = getSetting('seo_location_title_template', '{name} Mekan Fotoğrafçısı');
@@ -150,7 +161,43 @@ export default function SeoLinkManager() {
 
             <AnimatePresence mode="wait">
                 {activeTab === 'settings' ? (
-                    <motion.div key="settings" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="space-y-6">
+                    <motion.div key="settings" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="space-y-6 pb-20">
+                        {/* URL Base Definition */}
+                        <div className="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-sm space-y-6">
+                            <h2 className="text-xl font-black text-gray-900 flex items-center gap-2">
+                                <span className="p-2 bg-amber-50 rounded-lg text-amber-600 text-sm">🔗</span> Genel URL Tanımı
+                            </h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                                <div className="space-y-4">
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-black text-gray-400 uppercase tracking-widest px-1">Hizmet Ana URL (Prefix)</label>
+                                        <div className="flex gap-2">
+                                            <input
+                                                type="text"
+                                                value={getSetting('seo_service_base', 'hizmetlerimiz')}
+                                                onChange={(e) => handleUpdateDraft('seo_service_base', e.target.value)}
+                                                className="flex-1 px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 outline-none font-bold text-amber-600"
+                                                placeholder="hizmetlerimiz"
+                                            />
+                                            <button
+                                                onClick={() => handleSaveSetting('seo_service_base')}
+                                                className="px-6 bg-amber-600 text-white rounded-2xl font-bold hover:bg-amber-700 transition-colors shadow-lg shadow-amber-500/20"
+                                            >
+                                                Kaydet
+                                            </button>
+                                        </div>
+                                        <p className="text-[10px] text-gray-400 px-1 italic">Tüm hizmet sayfaları bu önek altında yayına girer. Örn: /hizmetlerimiz/cekim-adi</p>
+                                    </div>
+                                </div>
+                                <div className="bg-amber-900/5 rounded-[2rem] p-6 border border-amber-200/50">
+                                    <h3 className="text-xs font-black text-amber-700 uppercase tracking-widest mb-2">URL Kuralları</h3>
+                                    <p className="text-xs text-amber-900/70 leading-relaxed">
+                                        Sistem otomatik olarak bu öneki zorunlu kılar. Önek olmadan erişilmeye çalışılan hizmet sayfaları otomatik olarak <b>301 (Kalıcı Yönlendirme)</b> ile doğru adrese taşınır.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
                         {/* Location Settings */}
                         <div className="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-sm space-y-6">
                             <h2 className="text-xl font-black text-gray-900 flex items-center gap-2">
@@ -160,22 +207,28 @@ export default function SeoLinkManager() {
                                 <div className="space-y-4">
                                     <div className="space-y-2">
                                         <label className="text-xs font-black text-gray-400 uppercase tracking-widest px-1">URL Sonsakısı (Suffix)</label>
-                                        <input
-                                            type="text"
-                                            value={locSuffix}
-                                            onChange={(e) => handleUpdateSetting('seo_location_suffix', e.target.value)}
-                                            className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none font-mono text-sm"
-                                            placeholder="-mekan-fotografcisi"
-                                        />
+                                        <div className="flex gap-2">
+                                            <input
+                                                type="text"
+                                                value={draftSettings['seo_location_suffix'] || ''}
+                                                onChange={(e) => handleUpdateDraft('seo_location_suffix', e.target.value)}
+                                                className="flex-1 px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none font-mono text-sm"
+                                                placeholder="-mekan-fotografcisi"
+                                            />
+                                            <button onClick={() => handleSaveSetting('seo_location_suffix')} className="px-6 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 transition-colors">Kaydet</button>
+                                        </div>
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-xs font-black text-gray-400 uppercase tracking-widest px-1">Başlık Taslağı</label>
-                                        <input
-                                            type="text"
-                                            value={locTitleTemplate}
-                                            onChange={(e) => handleUpdateSetting('seo_location_title_template', e.target.value)}
-                                            className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none font-bold"
-                                        />
+                                        <div className="flex gap-2">
+                                            <input
+                                                type="text"
+                                                value={draftSettings['seo_location_title_template'] || ''}
+                                                onChange={(e) => handleUpdateDraft('seo_location_title_template', e.target.value)}
+                                                className="flex-1 px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none font-bold"
+                                            />
+                                            <button onClick={() => handleSaveSetting('seo_location_title_template')} className="px-6 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 transition-colors">Kaydet</button>
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="bg-slate-900 rounded-[2rem] p-6 text-white space-y-3">
@@ -200,16 +253,16 @@ export default function SeoLinkManager() {
                                             <label className="text-xs font-black text-gray-400 uppercase tracking-widest px-1">Ayraç (Separator)</label>
                                             <input
                                                 type="text"
-                                                value={srvSep}
-                                                onChange={(e) => handleUpdateSetting('seo_service_location_sep', e.target.value)}
+                                                value={draftSettings['seo_service_location_sep'] || ''}
+                                                onChange={(e) => handleUpdateDraft('seo_service_location_sep', e.target.value)}
                                                 className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-purple-500/10 focus:border-purple-500 outline-none font-mono text-center"
                                             />
                                         </div>
                                         <div className="space-y-2">
                                             <label className="text-xs font-black text-gray-400 uppercase tracking-widest px-1">Sıralama (Order)</label>
                                             <select
-                                                value={srvOrder}
-                                                onChange={(e) => handleUpdateSetting('seo_service_location_order', e.target.value)}
+                                                value={draftSettings['seo_service_location_order'] || ''}
+                                                onChange={(e) => handleUpdateDraft('seo_service_location_order', e.target.value)}
                                                 className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-purple-500/10 focus:border-purple-500 outline-none font-bold appearance-none bg-no-repeat bg-[right_1.25rem_center] bg-[length:1rem_1rem]"
                                                 style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")` }}
                                             >
@@ -220,19 +273,26 @@ export default function SeoLinkManager() {
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-xs font-black text-gray-400 uppercase tracking-widest px-1">Başlık Taslağı</label>
-                                        <input
-                                            type="text"
-                                            value={srvTitleTemplate}
-                                            onChange={(e) => handleUpdateSetting('seo_service_location_title_template', e.target.value)}
-                                            className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-purple-500/10 focus:border-purple-500 outline-none font-bold"
-                                        />
+                                        <div className="flex gap-2">
+                                            <input
+                                                type="text"
+                                                value={draftSettings['seo_service_location_title_template'] || ''}
+                                                onChange={(e) => handleUpdateDraft('seo_service_location_title_template', e.target.value)}
+                                                className="flex-1 px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-purple-500/10 focus:border-purple-500 outline-none font-bold"
+                                            />
+                                            <button onClick={() => {
+                                                handleSaveSetting('seo_service_location_sep');
+                                                handleSaveSetting('seo_service_location_order');
+                                                handleSaveSetting('seo_service_location_title_template');
+                                            }} className="px-6 bg-purple-600 text-white rounded-2xl font-bold hover:bg-purple-700 transition-colors">Kaydet</button>
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="bg-slate-900 rounded-[2rem] p-6 text-white space-y-3">
                                     <h3 className="text-xs font-black text-slate-500 uppercase tracking-widest">Örnek Görünüm</h3>
                                     <div className="bg-white/5 p-4 rounded-xl border border-white/10">
                                         <div className="text-purple-400 font-mono text-xs">
-                                            /{srvOrder === 'service-province' ? `otel-cekimi${srvSep}antalya` : `antalya${srvSep}otel-cekimi`}
+                                            /{getSetting('seo_service_base', 'hizmetlerimiz')}/{srvOrder === 'service-province' ? `otel-cekimi${srvSep}antalya` : `antalya${srvSep}otel-cekimi`}
                                         </div>
                                         <div className="font-bold text-lg mt-1">{srvTitleTemplate.replace('{province}', 'Antalya').replace('{service}', 'Otel Çekimi')}</div>
                                     </div>

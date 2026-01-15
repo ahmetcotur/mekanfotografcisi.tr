@@ -6,25 +6,36 @@ import { motion } from 'framer-motion';
 
 export default function Services() {
     const [services, setServices] = useState([]);
+    const [settings, setSettings] = useState([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
     useEffect(() => {
-        loadServices();
+        loadData();
     }, []);
 
-    const loadServices = async () => {
+    const loadData = async () => {
         try {
-            const response = await api.get('/admin-update.php?table=posts&action=list&post_type=service');
-            if (response.data.success) {
-                setServices(response.data.data || []);
+            const [srvRes, setRes] = await Promise.all([
+                api.get('/admin-update.php?table=posts&action=list&post_type=service&post_status=publish'),
+                api.get('/admin-update.php?table=settings&action=list')
+            ]);
+
+            if (srvRes.data.success) {
+                setServices(srvRes.data.data || []);
+            }
+            if (setRes.data.success) {
+                setSettings(setRes.data.data || []);
             }
         } catch (error) {
-            console.error('Failed to load services:', error);
+            console.error('Failed to load data:', error);
         } finally {
             setLoading(false);
         }
     };
+
+    const getSetting = (key, def) => settings.find(s => s.key === key)?.value || def;
+    const serviceBase = getSetting('seo_service_base', 'hizmetlerimiz');
 
     const handleDelete = async (id) => {
         const result = await Swal.fire({
@@ -82,7 +93,7 @@ export default function Services() {
                                     <div className="text-sm font-semibold text-gray-800">{service.title}</div>
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">
-                                    <div className="text-xs text-blue-500 font-mono">/services/{service.slug}</div>
+                                    <div className="text-xs text-blue-500 font-mono">/{serviceBase}/{service.slug}</div>
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     <span className={`px-3 py-1 rounded-full text-[10px] font-black tracking-widest uppercase ${service.post_status === 'publish'

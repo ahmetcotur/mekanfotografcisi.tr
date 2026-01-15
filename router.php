@@ -173,13 +173,26 @@ if (env('APP_ENV') === 'local' || env('APP_ENV') === 'development') {
 
 // Dynamic Content Lookup
 $slug = trim($requestPath, '/');
+$parts = explode('/', $slug);
+$serviceBase = get_setting('seo_service_base', 'hizmetlerimiz');
+
 if ($slug === '') {
     $post = Post::findBySlug('homepage', $db);
 } else {
     // 1. Try to find existing post
     $post = Post::findBySlug($slug, $db);
 
-    // 2. If not found, try to discover/generate it
+    // 2. Enforce Service Base Prefix
+    if ($post && $post->post_type === 'service') {
+        // Correct path should be {serviceBase}/{slug_without_base}
+        $expectedPath = $serviceBase . '/' . $post->slug;
+        if ($slug !== $expectedPath) {
+            header("Location: /" . $expectedPath, true, 301);
+            exit;
+        }
+    }
+
+    // 3. If not found, try to discover/generate it
     if (!$post) {
         $discoverer = new Core\ContentDiscoverer($db);
         $post = $discoverer->discover($slug);
