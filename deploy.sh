@@ -17,6 +17,8 @@ composer install --no-dev --optimize-autoloader
 echo "🗄️  Running database migrations..."
 psql $DATABASE_URL -f migrations/create_settings_table.sql
 psql $DATABASE_URL -f migrations/create_pexels_images_table.sql
+psql $DATABASE_URL -f scripts/migrations/20260114_006_create_freelancer_applications_table.sql
+psql $DATABASE_URL -f scripts/migrations/20260116_001_create_freelancer_assignment_system.sql
 
 # 4. Set permissions
 echo "🔐 Setting permissions..."
