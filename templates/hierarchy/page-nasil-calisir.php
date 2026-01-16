@@ -78,24 +78,25 @@ $faqItems = [
 ?>
 
 <!-- Hero Section -->
-<section class="relative h-[60vh] min-h-[500px] flex items-center justify-center overflow-hidden bg-slate-950">
+<section
+    class="relative h-[50vh] md:h-[60vh] min-h-[400px] md:min-w-[500px] flex items-center justify-center overflow-hidden bg-slate-950">
     <img src="https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=1920"
         alt="Nasıl Çalışır" class="absolute inset-0 w-full h-full object-cover opacity-40">
     <div class="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/50 to-slate-950"></div>
 
-    <div class="relative z-10 container mx-auto px-4 text-center">
+    <div class="relative z-10 container mx-auto px-4 text-center pt-32 md:pt-0">
         <span class="text-brand-400 font-black tracking-[0.3em] uppercase text-xs mb-6 block">Süreç</span>
-        <h1 class="font-heading font-black text-5xl md:text-7xl text-white mb-6 tracking-tight">
+        <h1 class="font-heading font-black text-4xl md:text-7xl text-white mb-6 tracking-tight">
             Nasıl Çalışır?
         </h1>
-        <p class="text-slate-300 text-xl md:text-2xl font-light max-w-3xl mx-auto leading-relaxed">
+        <p class="text-slate-300 text-lg md:text-2xl font-light max-w-3xl mx-auto leading-relaxed">
             Profesyonel mekan fotoğrafçılığı hizmetimizin adım adım iş akışını keşfedin
         </p>
     </div>
 </section>
 
 <!-- Workflow Timeline -->
-<section class="py-32 bg-white relative overflow-hidden">
+<section class="py-16 md:py-32 bg-white relative overflow-hidden">
     <!-- Decorative elements -->
     <div
         class="absolute top-0 right-0 w-[600px] h-[600px] bg-brand-50 rounded-full blur-[150px] translate-x-1/2 -translate-y-1/2 opacity-50">
@@ -105,10 +106,11 @@ $faqItems = [
     </div>
 
     <div class="container mx-auto px-4 relative z-10">
-        <div class="text-center max-w-3xl mx-auto mb-20">
+        <div class="text-center max-w-3xl mx-auto mb-16 md:mb-20">
             <span class="text-brand-600 font-black tracking-[0.2em] uppercase text-xs mb-6 block">İş Akışı</span>
-            <h2 class="font-heading font-black text-4xl md:text-6xl text-slate-900 mb-8">6 Adımda Mükemmel Sonuç</h2>
-            <p class="text-slate-500 text-xl leading-relaxed">
+            <h2 class="font-heading font-black text-3xl md:text-6xl text-slate-900 mb-6 md:mb-8">6 Adımda Mükemmel Sonuç
+            </h2>
+            <p class="text-slate-500 text-lg md:text-xl leading-relaxed">
                 Teklif talebinden teslimat aşamasına kadar her adımda yanınızdayız
             </p>
         </div>
@@ -123,12 +125,12 @@ $faqItems = [
                         </div>
                     <?php endif; ?>
 
-                    <div class="group flex flex-col md:flex-row gap-8 items-start">
+                    <div class="group flex flex-col md:flex-row gap-6 md:gap-8 items-center md:items-start">
                         <!-- Step number circle -->
                         <div class="flex-shrink-0 relative">
                             <div
-                                class="w-36 h-36 rounded-full bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center shadow-2xl shadow-brand-500/30 group-hover:scale-110 transition-transform duration-500">
-                                <span class="font-heading font-black text-5xl text-white">
+                                class="w-24 h-24 md:w-36 md:h-36 rounded-full bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center shadow-2xl shadow-brand-500/30 group-hover:scale-110 transition-transform duration-500">
+                                <span class="font-heading font-black text-3xl md:text-5xl text-white">
                                     <?= $step['number'] ?>
                                 </span>
                             </div>
@@ -139,22 +141,22 @@ $faqItems = [
 
                         <!-- Content card -->
                         <div
-                            class="flex-1 glass-panel p-10 rounded-4xl border-white/60 group-hover:border-brand-200 transition-all duration-500 hover-lift">
-                            <div class="flex items-start gap-6">
+                            class="flex-1 glass-panel p-6 md:p-10 rounded-3xl md:rounded-4xl border-white/60 group-hover:border-brand-200 transition-all duration-500 hover-lift text-center md:text-left">
+                            <div class="flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-6">
                                 <div
-                                    class="flex-shrink-0 w-16 h-16 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center group-hover:bg-brand-600 group-hover:text-white transition-all duration-500">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round">
+                                    class="flex-shrink-0 w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center group-hover:bg-brand-600 group-hover:text-white transition-all duration-500">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" md:width="28"
+                                        md:height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <?= $step['icon'] ?>
                                     </svg>
                                 </div>
                                 <div class="flex-1">
                                     <h3
-                                        class="text-3xl font-black text-slate-900 mb-4 group-hover:text-brand-600 transition-colors">
+                                        class="text-xl md:text-3xl font-black text-slate-900 mb-3 md:mb-4 group-hover:text-brand-600 transition-colors">
                                         <?= $step['title'] ?>
                                     </h3>
-                                    <p class="text-slate-600 text-lg leading-relaxed">
+                                    <p class="text-slate-600 text-sm md:text-lg leading-relaxed">
                                         <?= $step['description'] ?>
                                     </p>
                                 </div>
@@ -209,21 +211,21 @@ $faqItems = [
 </section>
 
 <!-- CTA Section -->
-<section class="py-32 bg-gradient-to-br from-brand-600 to-brand-800 relative overflow-hidden">
+<section class="py-20 md:py-32 bg-gradient-to-br from-brand-600 to-brand-800 relative overflow-hidden">
     <div class="absolute inset-0 opacity-10">
         <div class="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
         <div class="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
     </div>
 
     <div class="container mx-auto px-4 text-center relative z-10">
-        <h2 class="font-heading font-black text-4xl md:text-6xl text-white mb-8">
+        <h2 class="font-heading font-black text-3xl md:text-6xl text-white mb-6 md:mb-8">
             Projenize Başlayalım
         </h2>
-        <p class="text-brand-100 text-xl md:text-2xl mb-12 max-w-2xl mx-auto leading-relaxed">
+        <p class="text-brand-100 text-lg md:text-2xl mb-10 md:mb-12 max-w-2xl mx-auto leading-relaxed">
             Mekanınızı en iyi şekilde yansıtan profesyonel fotoğraflar için hemen teklif alın
         </p>
         <button onclick="openQuoteWizard()"
-            class="inline-flex items-center gap-4 px-12 py-6 bg-white text-brand-600 rounded-full text-lg font-black uppercase tracking-widest shadow-2xl hover:scale-105 transition-all active:scale-95">
+            class="inline-flex items-center gap-4 px-8 md:px-12 py-5 md:py-6 bg-white text-brand-600 rounded-full text-base md:text-lg font-black uppercase tracking-widest shadow-2xl hover:scale-105 transition-all active:scale-95">
             Ücretsiz Teklif Al
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
