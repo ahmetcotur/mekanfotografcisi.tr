@@ -260,8 +260,8 @@ $schema = [
 
     <?php if (isset($schemaMarkup)): ?>
         <script type="application/ld+json">
-                                                                                                                                    <?= json_encode($schemaMarkup, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>
-                                                                                                                                            </script>
+                                                                                                                                        <?= json_encode($schemaMarkup, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>
+                                                                                                                                                </script>
     <?php endif; ?>
 </head>
 
@@ -273,7 +273,7 @@ $schema = [
 
     <!-- Navigation -->
     <header class="fixed w-full top-0 z-[100] transition-all duration-500" id="main-header">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4 transition-all duration-500" id="header-container">
             <div class="relative glass-panel rounded-3xl px-6 md:px-10 h-20 flex justify-between items-center transition-all duration-500 border-white/40 shadow-xl shadow-slate-900/5"
                 id="header-inner">
 
@@ -480,15 +480,19 @@ $schema = [
         // Header scroll effect
         window.addEventListener('scroll', () => {
             const header = document.getElementById('main-header');
+            const container = document.getElementById('header-container');
             const inner = document.getElementById('header-inner');
             if (window.scrollY > 50) {
-                inner.classList.add('md:rounded-full', 'shadow-2xl');
+                inner.classList.add('shadow-2xl');
                 inner.classList.remove('rounded-3xl', 'shadow-slate-900/5');
-                header.querySelector('.max-w-7xl').style.marginTop = '0';
+                inner.classList.add('rounded-none', 'md:rounded-full');
+                container.classList.remove('max-w-7xl', 'mt-4', 'px-4', 'sm:px-6', 'lg:px-8');
+                container.classList.add('max-w-full', 'px-0');
             } else {
-                inner.classList.remove('md:rounded-full', 'shadow-2xl');
+                inner.classList.remove('shadow-2xl', 'rounded-none', 'md:rounded-full');
                 inner.classList.add('rounded-3xl', 'shadow-slate-900/5');
-                header.querySelector('.max-w-7xl').style.marginTop = '1rem';
+                container.classList.add('max-w-7xl', 'mt-4', 'px-4', 'sm:px-6', 'lg:px-8');
+                container.classList.remove('max-w-full', 'px-0');
             }
         });
     </script>
