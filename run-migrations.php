@@ -36,12 +36,27 @@ foreach ($migrations as $migration) {
     try {
         $sql = file_get_contents($file);
 
-        // Execute the SQL
-        $db->getConnection()->exec($sql);
+        // Split SQL into individual statements
+        // This is a simple split, assuming no semicolons inside strings
+        $statements = array_filter(array_map('trim', explode(';', $sql)));
+
+        $pdo = $db->getConnection();
+        $pdo->beginTransaction();
+
+        foreach ($statements as $stmt) {
+            if (empty($stmt))
+                continue;
+            $pdo->exec($stmt);
+        }
+
+        $pdo->commit();
 
         echo "✅ Success: $migration\n\n";
         $success++;
     } catch (Exception $e) {
+        if (isset($pdo) && $pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
         echo "❌ Failed: $migration\n";
         echo "   Error: " . $e->getMessage() . "\n\n";
         $failed++;
