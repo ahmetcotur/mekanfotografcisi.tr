@@ -32,6 +32,8 @@ WHERE NOT EXISTS (
     SELECT slug FROM posts WHERE slug = 'gizlilik-politikasi'
 ) LIMIT 1;
 
+-- STATEMENT
+
 INSERT INTO posts (title, slug, content, post_type, post_status, created_at, updated_at)
 SELECT * FROM (SELECT 
     'Kullanım Şartları', 
@@ -58,6 +60,8 @@ WHERE NOT EXISTS (
     SELECT slug FROM posts WHERE slug = 'kullanim-sartlari'
 ) LIMIT 1;
 
+-- STATEMENT
+
 INSERT INTO posts (title, slug, content, post_type, post_status, created_at, updated_at)
 SELECT * FROM (SELECT 
     'Çerez Politikası', 
@@ -70,6 +74,7 @@ SELECT * FROM (SELECT
     <p>Çerezler, web sitelerini ziyaret ettiğinizde tarayıcınız aracılığıyla cihazınıza kaydedilen küçük metin dosyalarıdır.</p>
     
     <h3>2. Kullandığımız Çerez Türleri</h3>
+    <p>Web sitemizde çeşitli amaçlarla çerezler kullanılabilir.</p>
     <ul>
         <li><strong>Zorunlu Çerezler:</strong> Web sitesinin düzgün çalışması için gereklidir.</li>
         <li><strong>Analitik Çerezler:</strong> Ziyaretçilerin siteyi nasıl kullandığını anlamamıza yardımcı olur.</li>
