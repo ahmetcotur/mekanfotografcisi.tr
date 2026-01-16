@@ -24,7 +24,7 @@ require_once __DIR__ . '/includes/helpers.php';
 require_once __DIR__ . '/scripts/run_migrations.php';
 
 // Sync Database Migrations (Low overhead check)
-run_migrations();
+// run_migrations(); // Disabled for production stability
 
 use Core\Post;
 use Core\TemplateLoader;
