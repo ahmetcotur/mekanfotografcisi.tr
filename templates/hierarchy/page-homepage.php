@@ -147,11 +147,17 @@ $content = str_replace('rounded-2xl', 'rounded-full', $content);
 // Force button shadows to be premium brand shadows
 $content = str_replace('shadow-[0_20px_50px_rgba(14,165,233,0.4)]', 'shadow-2xl shadow-brand-500/50', $content);
 
+// FIX: Add top padding to Hero SECTION on mobile to prevent overlap and change alignment
+$content = str_replace(
+    'class="relative min-h-[95vh] flex items-center justify-center overflow-hidden bg-slate-900"',
+    'class="relative min-h-[95vh] flex items-start md:items-center justify-center overflow-hidden bg-slate-900 pt-40 md:pt-0"',
+    $content
+);
+
 // FIX: Add top padding to Hero container on mobile to prevent overlap with fixed header
-// identifying class: "relative z-10 container mx-auto px-4 overflow-visible py-20"
 $content = preg_replace(
-    '/class="relative z-10 container mx-auto px-4 overflow-visible\s+py-20"/i',
-    'class="relative z-10 container mx-auto px-4 overflow-visible pt-64 pb-20 md:pt-20 md:pb-20"',
+    '/class\s*=\s*["\']relative\s+z-10\s+container\s+mx-auto\s+px-4\s+overflow-visible\s+py-20["\']/i',
+    'class="relative z-10 container mx-auto px-4 overflow-visible pt-10 pb-20 md:pt-0 md:pb-0"',
     $content
 );
 // Remove the old GooeyText script from content
