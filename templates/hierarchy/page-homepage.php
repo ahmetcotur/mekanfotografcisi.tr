@@ -194,6 +194,10 @@ echo do_shortcode($content);
 ?>
 
 <!-- Dynamic Slider Logic Footer -->
+<script>
+    window.HERO_VARIANTS_1 = <?= json_encode(get_setting('hero_text_variants_1', '')) ?>;
+    window.HERO_VARIANTS_2 = <?= json_encode(get_setting('hero_text_variants_2', '')) ?>;
+</script>
 <script src="/assets/js/react/hero-effect.iife.js"></script>
 <script>
     (function () {

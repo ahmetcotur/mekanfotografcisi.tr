@@ -13,6 +13,7 @@ export default function Settings() {
         { id: 'contact', label: 'İletişim', icon: '📞' },
         { id: 'social', label: 'Sosyal Medya', icon: '🌐' },
         { id: 'style', label: 'Renk & Stil', icon: '🎨' },
+        { id: 'hero', label: 'Hero Ayarları', icon: '✨' },
     ];
 
     useEffect(() => {
@@ -247,6 +248,35 @@ export default function Settings() {
 
                             <div className="col-span-full mt-4 p-4 bg-gray-50 rounded-2xl">
                                 <p className="text-sm text-gray-500">Not: Renk değişikliklerinin sitede aktif olması için CSS değişkenlerinin ayarlanmış olması gerekir.</p>
+                            </div>
+                        </div>
+                    )}
+
+                    {activeTab === 'hero' && (
+                        <div className="space-y-8">
+                            <div>
+                                <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                    <span className="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center text-sm">1</span>
+                                    Dönen Metin Ayarları (Animated Text)
+                                </h3>
+                                <div className="grid md:grid-cols-2 gap-6 p-6 bg-slate-50 rounded-3xl border border-slate-100">
+                                    <div className="space-y-1">
+                                        {renderField('hero_text_variants_1', '1. Kelime Varyasyonları (Beyaz)', 'textarea', 'Örn: Mekanınızı,Otelinizi,Restoranınızı')}
+                                        <p className="text-[11px] text-gray-400 font-medium px-1 italic">Virgülle ayırarak yazın. Örn: Mekanınızı, Otelinizi, Villanızı</p>
+                                    </div>
+                                    <div className="space-y-1">
+                                        {renderField('hero_text_variants_2', '2. Kelime Varyasyonları (Mavi/İtalik)', 'textarea', 'Örn: Sanata,Markaya,Satışa')}
+                                        <p className="text-[11px] text-gray-400 font-medium px-1 italic">Virgülle ayırarak yazın. Örn: Sanata, Markaya, Hikayeye</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="p-4 bg-amber-50 rounded-2xl border border-amber-100 flex gap-4 items-start">
+                                <span className="text-xl">💡</span>
+                                <div className="text-sm text-amber-800 leading-relaxed">
+                                    <strong>İpucu:</strong> Her iki kutudaki kelime sayısının eşit olması (örn: ikisinde de 5 kelime) animasyonun daha senkronize çalışmasını sağlar.
+                                    Metinler her 4 saniyede bir sırayla değişecektir.
+                                </div>
                             </div>
                         </div>
                     )}

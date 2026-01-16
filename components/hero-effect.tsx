@@ -9,8 +9,23 @@ export function HeroEffect() {
     const [suffixIndex, setSuffixIndex] = useState(0);
     const [key, setKey] = useState(0);
 
-    const prefixes = ["Mekanınızı", "Otelinizi", "Restoranınızı", "Villanızı", "Ofisinizi"];
-    const suffixes = ["Sanata", "Markaya", "Satışa", "Hikayeye", "Prestije"];
+    // Dynamic variants from window (injected by PHP template)
+    const getVariants = (index: number) => {
+        const globalKey = `HERO_VARIANTS_${index}` as unknown as keyof Window;
+        const globalVal = (window as any)[globalKey];
+
+        if (globalVal && typeof globalVal === 'string' && globalVal.length > 0) {
+            return globalVal.split(',').map((s: string) => s.trim()).filter((s: string) => s.length > 0);
+        }
+
+        // Fallbacks
+        return index === 1
+            ? ["Mekanınızı", "Otelinizi", "Restoranınızı", "Villanızı", "Ofisinizi"]
+            : ["Sanata", "Markaya", "Satışa", "Hikayeye", "Prestije"];
+    };
+
+    const prefixes = getVariants(1);
+    const suffixes = getVariants(2);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -19,7 +34,7 @@ export function HeroEffect() {
             setKey(prev => prev + 1);
         }, 4000);
         return () => clearInterval(interval);
-    }, []);
+    }, [prefixes.length, suffixes.length]);
 
     return (
         <div className="flex flex-col items-center justify-center text-center overflow-visible">
