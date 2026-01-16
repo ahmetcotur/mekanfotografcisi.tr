@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($isNewFile) {
         $headers = ['Tarih', 'Ad Soyad', 'E-posta', 'Telefon', 'Hizmet', 'Lokasyon', 'Mesaj', 'IP Adresi'];
         $fp = fopen($csvFile, 'a');
-        fputcsv($fp, $headers);
+        fputcsv($fp, $headers, ',', '"', '\\');
         fclose($fp);
     }
 
@@ -99,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Verileri CSV'ye ekle
     $fp = fopen($csvFile, 'a');
     if ($fp) {
-        fputcsv($fp, $csvData);
+        fputcsv($fp, $csvData, ',', '"', '\\');
         fclose($fp);
     }
 
@@ -244,7 +244,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_GET['clear']) && $_GET['clear'] === 'true') {
         $fp = fopen($csvFile, 'w');
         $headers = ['Tarih', 'Ad Soyad', 'E-posta', 'Telefon', 'Hizmet', 'Lokasyon', 'Mesaj', 'IP Adresi'];
-        fputcsv($fp, $headers);
+        fputcsv($fp, $headers, ',', '"', '\\');
         fclose($fp);
         header('Location: ?token=' . urlencode($adminToken) . '&password=' . urlencode($adminPassword) . '&cleared=true');
         exit;
