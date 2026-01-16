@@ -10,6 +10,8 @@ SET content = REGEXP_REPLACE(
 )
 WHERE slug = 'homepage';
 
+-- STATEMENT
+
 -- Now add the freelancer section only once, right after the CTA section
 UPDATE posts 
 SET content = REPLACE(
@@ -20,6 +22,8 @@ SET content = REPLACE(
 <section class="py-32 relative bg-slate-900" id="iletisim">'
 )
 WHERE slug = 'homepage';
+
+-- STATEMENT
 
 -- Add freelancer section after the closing of CTA section (id="iletisim")
 UPDATE posts 
