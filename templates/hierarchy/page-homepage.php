@@ -106,7 +106,7 @@ HTML;
 $content = $post->content;
 
 // Find and replace the services grid section
-$pattern = '/<!-- Services Preview -->.*?<\/section>/s';
+$pattern = '/<!-- Services Preview.*?<\/section>/s';
 $replacement = <<<HTML
 <!-- Services Preview -->
 <section class="py-32 bg-white" id="hizmetler">
