@@ -174,6 +174,13 @@ $content = str_replace(
     $content
 );
 
+// Feature: Limit text width for workflow descriptions
+$content = str_replace(
+    'class="text-slate-500 text-base leading-relaxed font-medium"',
+    'class="text-slate-500 text-base leading-relaxed font-medium max-w-xs mx-auto"',
+    $content
+);
+
 echo do_shortcode($content);
 ?>
 
