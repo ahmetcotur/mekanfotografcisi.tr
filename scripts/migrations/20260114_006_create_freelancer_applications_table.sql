@@ -17,11 +17,17 @@ CREATE TABLE IF NOT EXISTS freelancer_applications (
     notes TEXT
 );
 
+-- STATEMENT
+
 -- Create index on status for filtering
 CREATE INDEX IF NOT EXISTS idx_freelancer_applications_status ON freelancer_applications(status);
 
+-- STATEMENT
+
 -- Create index on created_at for sorting
 CREATE INDEX IF NOT EXISTS idx_freelancer_applications_created_at ON freelancer_applications(created_at DESC);
+
+-- STATEMENT
 
 -- Add comment
 COMMENT ON TABLE freelancer_applications IS 'Stores freelancer photographer applications';
