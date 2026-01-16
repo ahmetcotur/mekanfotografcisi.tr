@@ -16,9 +16,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Yanıtın JSON olduğunu belirt
     header('Content-Type: application/json');
 
-    // Hataları bastır (JSON çıktısını bozmasın)
-    error_reporting(0);
-    ini_set('display_errors', 0);
+    // Enable error reporting for debugging
+    error_reporting(E_ALL);
+    ini_set('display_errors', 1);
+    ini_set('log_errors', 1);
 
     // Form verilerini al
     $data = json_decode(file_get_contents('php://input'), true);
