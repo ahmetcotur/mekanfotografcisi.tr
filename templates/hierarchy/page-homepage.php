@@ -149,9 +149,9 @@ $content = str_replace('shadow-[0_20px_50px_rgba(14,165,233,0.4)]', 'shadow-2xl 
 
 // FIX: Add top padding to Hero container on mobile to prevent overlap with fixed header
 // identifying class: "relative z-10 container mx-auto px-4 overflow-visible py-20"
-$content = str_replace(
-    'class="relative z-10 container mx-auto px-4 overflow-visible py-20"',
-    'class="relative z-10 container mx-auto px-4 overflow-visible pt-48 pb-20 md:pt-20 md:pb-20"',
+$content = preg_replace(
+    '/class="relative z-10 container mx-auto px-4 overflow-visible\s+py-20"/i',
+    'class="relative z-10 container mx-auto px-4 overflow-visible pt-64 pb-20 md:pt-20 md:pb-20"',
     $content
 );
 // Remove the old GooeyText script from content
