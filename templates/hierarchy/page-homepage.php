@@ -147,6 +147,9 @@ $content = str_replace('rounded-2xl', 'rounded-full', $content);
 // Force button shadows to be premium brand shadows
 $content = str_replace('shadow-[0_20px_50px_rgba(14,165,233,0.4)]', 'shadow-2xl shadow-brand-500/50', $content);
 
+// FIX: Improved readability for CTA section subtitle on dark background
+$content = str_replace('text-brand-100 mb-16', 'text-slate-200 mb-16', $content);
+
 // FIX: Add top padding to Hero SECTION on mobile to prevent overlap and change alignment
 $content = str_replace(
     'class="relative min-h-[95vh] flex items-center justify-center overflow-hidden bg-slate-900"',
