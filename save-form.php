@@ -16,10 +16,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Yanıtın JSON olduğunu belirt
     header('Content-Type: application/json');
 
-    // Enable error reporting for debugging
-    error_reporting(E_ALL);
-    ini_set('display_errors', 1);
-    ini_set('log_errors', 1);
+    // Hataları bastır (JSON çıktısını bozmasın)
+    error_reporting(0);
+    ini_set('display_errors', 0);
 
     // Form verilerini al
     $data = json_decode(file_get_contents('php://input'), true);
@@ -124,28 +123,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         error_log("Quote DB insertion failed: " . $e->getMessage());
     }
 
-    // E-posta bildirimini gönder
-    try {
-        require_once __DIR__ . '/vendor/autoload.php';
-        $mailService = new \Core\MailService();
+    // E-posta bildirimini gönder (Opsiyonel)
+    if (file_exists(__DIR__ . '/vendor/autoload.php')) {
+        try {
+            require_once __DIR__ . '/vendor/autoload.php';
 
-        $to = "info@mekanfotografcisi.tr";
-        $isWizard = !empty($data['wizard_details']);
-        $subject = $isWizard ? "Yeni Teklif İstemi (Sihirbaz) - " . $name : "Yeni İletişim Formu Mesajı - " . $name;
+            // Core\MailService sınıfının varlığını kontrol et
+            if (class_exists('\\Core\\MailService')) {
+                $mailService = new \Core\MailService();
 
-        $emailContent = "Merhaba,\n\nWeb sitenizden yeni bir form gönderildi.\n\n";
-        $emailContent .= "Tarih: " . $date . "\n";
-        $emailContent .= "Ad Soyad: " . $name . "\n";
-        $emailContent .= "E-posta: " . $email . "\n";
-        $emailContent .= "Telefon: " . $phone . "\n";
-        $emailContent .= "Hizmet: " . $service . "\n";
-        $emailContent .= "Lokasyon: " . $location . "\n";
-        $emailContent .= "Mesaj: " . $message . "\n";
-        $emailContent .= "IP Adresi: " . $ipAddress . "\n";
+                $to = "info@mekanfotografcisi.tr";
+                $isWizard = !empty($data['wizard_details']);
+                $subject = $isWizard ? "Yeni Teklif İstemi (Sihirbaz) - " . $name : "Yeni İletişim Formu Mesajı - " . $name;
 
-        $mailService->send($to, $subject, $emailContent, $email);
-    } catch (Exception $e) {
-        error_log("Email sending failed: " . $e->getMessage());
+                $emailContent = "Merhaba,\n\nWeb sitenizden yeni bir form gönderildi.\n\n";
+                $emailContent .= "Tarih: " . $date . "\n";
+                $emailContent .= "Ad Soyad: " . $name . "\n";
+                $emailContent .= "E-posta: " . $email . "\n";
+                $emailContent .= "Telefon: " . $phone . "\n";
+                $emailContent .= "Hizmet: " . $service . "\n";
+                $emailContent .= "Lokasyon: " . $location . "\n";
+                $emailContent .= "Mesaj: " . $message . "\n";
+                $emailContent .= "IP Adresi: " . $ipAddress . "\n";
+
+                $mailService->send($to, $subject, $emailContent, $email);
+            }
+        } catch (Exception $e) {
+            // Mail gönderilemezse logla ama işlemi durdurma
+            error_log("Email sending failed (Optional): " . $e->getMessage());
+        }
     }
 
     // Başarılı yanıt döndür
