@@ -46,6 +46,18 @@ $serviceImages = [
 // Default fallback image
 $defaultImage = 'https://images.pexels.com/photos/7045926/pexels-photo-7045926.jpeg';
 
+// Fail-safe: If no services found in DB, populate with defaults
+if (empty($services)) {
+    $services = [
+        ['title' => 'Mimari Fotoğrafçılık', 'slug' => 'mimari-fotografcilik', 'short_intro' => 'Yapıların estetiğini ve mimari detaylarını profesyonelce yansıtıyoruz.'],
+        ['title' => 'İç Mekan Fotoğrafçılığı', 'slug' => 'ic-mekan-fotografciligi', 'short_intro' => 'Mekanların atmosferini ve derinliğini en doğru ışıkla aktarıyoruz.'],
+        ['title' => 'Otel Fotoğrafçılığı', 'slug' => 'otel-fotografciligi', 'short_intro' => 'Misafirlerinize konforu ve lüksü hissettiren etkileyici görseller.'],
+        ['title' => 'Emlak Fotoğrafçılığı', 'slug' => 'emlak-fotografciligi', 'short_intro' => 'Gayrimenkullerinizi hızlı satışa dönüştüren profesyonel çekimler.'],
+        ['title' => 'Yemek Fotoğrafçılığı', 'slug' => 'yemek-fotografciligi', 'short_intro' => 'Lezzeti görselleştiren, iştah kabartan menü ve sunum çekimleri.'],
+        ['title' => 'Drone Çekimi', 'slug' => 'hava-cekimleri', 'short_intro' => 'Projelerinizi gökyüzünden, benzersiz açılarla görüntüleyin.']
+    ];
+}
+
 // Build services HTML
 $servicesHtml = '';
 $serviceCount = 0;
@@ -136,13 +148,12 @@ $content = str_replace('rounded-2xl', 'rounded-full', $content);
 $content = str_replace('shadow-[0_20px_50px_rgba(14,165,233,0.4)]', 'shadow-2xl shadow-brand-500/50', $content);
 
 // FIX: Add top padding to Hero container on mobile to prevent overlap with fixed header
-// identifying class: "relative z-10 container mx-auto px-4 overflow-visible"
+// identifying class: "relative z-10 container mx-auto px-4 overflow-visible py-20"
 $content = str_replace(
-    'class="relative z-10 container mx-auto px-4 overflow-visible"',
-    'class="relative z-10 container mx-auto px-4 overflow-visible pt-40 pb-20 md:pt-0 md:pb-0"',
+    'class="relative z-10 container mx-auto px-4 overflow-visible py-20"',
+    'class="relative z-10 container mx-auto px-4 overflow-visible pt-48 pb-20 md:pt-20 md:pb-20"',
     $content
 );
-
 // Remove the old GooeyText script from content
 $newContent = preg_replace('/<script>.*?window\.initGooeyText.*?<\/script>/s', '', $content);
 if ($newContent !== null) {
