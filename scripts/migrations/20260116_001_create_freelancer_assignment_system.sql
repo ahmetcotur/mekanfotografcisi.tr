@@ -2,20 +2,11 @@
 -- Creates tables and columns needed for the freelancer job assignment feature
 
 -- 1. Add working_regions column to freelancer_applications if it doesn't exist
-DO $$ 
-BEGIN
-    IF NOT EXISTS (
-        SELECT 1 FROM information_schema.columns 
-        WHERE table_name = 'freelancer_applications' 
-        AND column_name = 'working_regions'
-    ) THEN
-        ALTER TABLE freelancer_applications 
-        ADD COLUMN working_regions JSONB DEFAULT '[]';
+ALTER TABLE freelancer_applications ADD COLUMN IF NOT EXISTS working_regions JSONB DEFAULT '[]';
         
-        COMMENT ON COLUMN freelancer_applications.working_regions IS 
-        'Stores regions where freelancer can work. Format: [{"province_id": 34, "province_name": "İstanbul", "districts": [1, 2, 3]}]';
-    END IF;
-END $$;
+COMMENT ON COLUMN freelancer_applications.working_regions IS 
+'Stores regions where freelancer can work. Format: [{"province_id": 34, "province_name": "İstanbul", "districts": [1, 2, 3]}]';
+
 
 -- 2. Create quote_assignments table if it doesn't exist
 CREATE TABLE IF NOT EXISTS quote_assignments (
