@@ -41,6 +41,9 @@ export default function Dashboard() {
                 <Link to="/services">
                     <StatCard title="Aktif Hizmet" value={stats?.stats?.services || 0} icon="📷" color="blue" />
                 </Link>
+                <Link to="/blog">
+                    <StatCard title="Blog Yazısı" value={stats?.stats?.blog_posts || 0} icon="✍️" color="amber" />
+                </Link>
                 <Link to="/seo-pages">
                     <StatCard title="SEO Sayfası" value={stats?.stats?.seo_pages || 0} icon="🌐" color="green" />
                 </Link>
@@ -51,7 +54,7 @@ export default function Dashboard() {
                     <StatCard title="Yeni Talep" value={stats?.stats?.new_quotes || 0} icon="🔔" color="red" />
                 </Link>
                 <Link to="/freelancers">
-                    <StatCard title="Freelancer Başvuru" value={stats?.stats?.total_freelancers || 0} icon="👷" color="amber" />
+                    <StatCard title="Freelancer Başvuru" value={stats?.stats?.total_freelancers || 0} icon="👷" color="green" />
                 </Link>
             </div>
 
@@ -107,7 +110,9 @@ export default function Dashboard() {
                         {stats?.recent_pages?.map((page) => (
                             <div key={page.id} className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-2xl transition-colors border border-transparent hover:border-gray-100">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-lg">{page.post_type === 'service' ? '📷' : '📄'}</div>
+                                    <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-lg">
+                                        {page.post_type === 'service' ? '📷' : page.post_type === 'blog' ? '✍️' : '📄'}
+                                    </div>
                                     <div>
                                         <div className="text-sm font-bold text-gray-800">{page.title}</div>
                                         <div className="text-[10px] text-gray-400 uppercase font-bold tracking-widest">{page.post_type}</div>
