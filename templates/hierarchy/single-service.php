@@ -204,6 +204,26 @@ $serviceName = $post->title;
                             </div>
                         </div>
                     </div>
+
+                    <!-- Service Areas Link -->
+                    <div
+                        class="bg-white p-10 rounded-5xl border border-slate-100 shadow-[0_32px_64px_-20px_rgba(0,0,0,0.06)] relative overflow-hidden group">
+                        <div class="relative z-10">
+                            <h4 class="font-black text-slate-900 text-xl tracking-tight mb-4">Hizmet Bölgelerimiz</h4>
+                            <p class="text-slate-500 text-sm mb-6 leading-relaxed">Antalya ve çevresinde profesyonel
+                                mekan çekimleri yapıyoruz.</p>
+                            <a href="/hizmet-bolgeleri"
+                                class="flex items-center justify-between font-black text-brand-600 text-sm uppercase tracking-wider hover:text-brand-700 transition-colors">
+                                <span>Tüm Bölgeleri Gör</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M5 12h14" />
+                                    <path d="m12 5 7 7-7 7" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </aside>
         </div>

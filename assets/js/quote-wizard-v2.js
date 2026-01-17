@@ -200,9 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // Dynamic Fields based on Type
 const serviceQuestions = {
     'mimari': [
-        { label: 'Tahmini Metrekare (m²)', name: 'area_size', type: 'number', placeholder: 'Örn: 150', required: true },
-        { label: 'Mekan Tipi', name: 'space_type', type: 'select', options: ['Bağımsız Villa', 'Daire / Rezidans', 'Ofis / İş Yeri', 'Mağaza / Showroom', 'Restoran / Cafe', 'Fabrika / Endüstriyel', 'Diğer'], required: true },
-        { label: 'Eşya Durumu', name: 'furnished', type: 'select', options: ['Tam Eşyalı', 'Kısmi Eşyalı', 'Boş / Natamam'] }
+        { label: 'Çekim projenizin boyutu hakkında lütfen detaylıca bilgi veriniz.', name: 'project_size_detail', type: 'textarea', placeholder: 'Örn: 4+1 Villa, yaklaşık 250 m2, tüm odalar ve dış çekim dahil...', required: true }
     ],
     'otel': [
         { label: 'Toplam Oda Sayısı', name: 'total_rooms', type: 'number', placeholder: 'Örn: 50' },
@@ -234,6 +232,8 @@ function setupStep2() {
         if (q.type === 'select') {
             let opts = q.options.map(o => `<option value="${o}">${o}</option>`).join('');
             input = `<select name="${q.name}" ${q.required ? 'required' : ''} class="w-full rounded-xl border-slate-200 shadow-sm focus:border-brand-500 py-3 px-4 transition-all">${opts}</select>`;
+        } else if (q.type === 'textarea') {
+            input = `<textarea name="${q.name}" ${q.required ? 'required' : ''} placeholder="${q.placeholder || ''}" rows="3" class="w-full rounded-xl border-slate-200 shadow-sm focus:border-brand-500 py-3 px-4 transition-all"></textarea>`;
         } else {
             input = `<input type="${q.type}" name="${q.name}" ${q.required ? 'required' : ''} placeholder="${q.placeholder || ''}" class="w-full rounded-xl border-slate-200 shadow-sm focus:border-brand-500 py-3 px-4 transition-all">`;
         }

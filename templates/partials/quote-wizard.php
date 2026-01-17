@@ -276,7 +276,7 @@ $customColorRgbString = implode(', ', $customColorRgb);
                                     <label
                                         class="block text-sm font-extrabold text-slate-700 mb-3 uppercase tracking-wider">Işık
                                         Tercihi</label>
-                                    <div class="grid grid-cols-2 gap-4">
+                                    <div class="grid grid-cols-1 gap-3">
                                         <label
                                             class="relative flex cursor-pointer rounded-2xl glass-card p-4 hover:bg-white/50 transition-all has-[:checked]:bg-brand-500 has-[:checked]:text-white">
                                             <input type="radio" name="preferred_time" value="sabah" class="sr-only">
@@ -286,6 +286,12 @@ $customColorRgbString = implode(', ', $customColorRgb);
                                             class="relative flex cursor-pointer rounded-2xl glass-card p-4 hover:bg-white/50 transition-all has-[:checked]:bg-brand-500 has-[:checked]:text-white">
                                             <input type="radio" name="preferred_time" value="aksam" class="sr-only">
                                             <span class="text-sm font-bold mx-auto">Gün Batımı / Gece</span>
+                                        </label>
+                                        <label
+                                            class="relative flex cursor-pointer rounded-2xl glass-card p-4 hover:bg-white/50 transition-all has-[:checked]:bg-brand-500 has-[:checked]:text-white">
+                                            <input type="radio" name="preferred_time" value="flash" class="sr-only">
+                                            <span class="text-sm font-bold mx-auto">Flash / Sürekli Işık
+                                                Çözümleri</span>
                                         </label>
                                     </div>
                                 </div>
