@@ -205,17 +205,92 @@ $serviceName = $post->title;
                         </div>
                     </div>
 
-                    <!-- Service Areas Link -->
+                    <!-- Service Areas Accordion -->
                     <div
-                        class="bg-white p-10 rounded-5xl border border-slate-100 shadow-[0_32px_64px_-20px_rgba(0,0,0,0.06)] relative overflow-hidden group">
+                        class="bg-white p-8 rounded-5xl border border-slate-100 shadow-[0_32px_64px_-20px_rgba(0,0,0,0.06)] relative overflow-hidden group">
                         <div class="relative z-10">
-                            <h4 class="font-black text-slate-900 text-xl tracking-tight mb-4">Hizmet Bölgelerimiz</h4>
-                            <p class="text-slate-500 text-sm mb-6 leading-relaxed">Antalya ve çevresinde profesyonel
-                                mekan çekimleri yapıyoruz.</p>
+                            <h4 class="font-black text-slate-900 text-xl tracking-tight mb-2">Hizmet Bölgelerimiz</h4>
+                            <p class="text-slate-500 text-sm mb-8 leading-relaxed font-medium">Antalya ve Muğla
+                                genelinde profesyonel çekim hizmeti veriyoruz.</p>
+
+                            <div class="space-y-3">
+                                <!-- Antalya -->
+                                <div
+                                    class="location-accordion-item border border-slate-100 rounded-3xl overflow-hidden transition-all duration-500">
+                                    <button onclick="toggleLocationAccordion(this)"
+                                        class="w-full flex items-center justify-between p-5 bg-slate-50 hover:bg-brand-50 transition-colors group/btn">
+                                        <div class="flex items-center gap-4">
+                                            <div
+                                                class="w-10 h-10 rounded-2xl bg-white shadow-sm flex items-center justify-center text-lg group-hover/btn:scale-110 transition-transform">
+                                                📍</div>
+                                            <span class="font-bold text-slate-900">Antalya</span>
+                                        </div>
+                                        <svg class="w-5 h-5 text-slate-400 transition-transform duration-500 transform"
+                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </button>
+                                    <div
+                                        class="accordion-content grid grid-rows-[0fr] transition-[grid-template-rows] duration-500 ease-in-out bg-white">
+                                        <div class="overflow-hidden">
+                                            <div class="p-6 grid grid-cols-2 gap-x-4 gap-y-3">
+                                                <?php
+                                                $antalyaDistricts = ['Kaş', 'Kalkan', 'Alanya', 'Kemer', 'Belek', 'Manavgat', 'Muratpaşa', 'Konyaaltı', 'Lara', 'Side'];
+                                                foreach ($antalyaDistricts as $district): ?>
+                                                    <a href="/hizmet-bolgesi/antalya/<?= to_permalink($district) ?>"
+                                                        class="text-[11px] font-bold text-slate-500 hover:text-brand-600 transition-colors flex items-center gap-2 group/link">
+                                                        <span
+                                                            class="w-1.5 h-1.5 rounded-full bg-slate-200 group-hover/link:bg-brand-500 transition-colors"></span>
+                                                        <?= $district ?>
+                                                    </a>
+                                                <?php endforeach; ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Muğla -->
+                                <div
+                                    class="location-accordion-item border border-slate-100 rounded-3xl overflow-hidden transition-all duration-500">
+                                    <button onclick="toggleLocationAccordion(this)"
+                                        class="w-full flex items-center justify-between p-5 bg-slate-50 hover:bg-brand-50 transition-colors group/btn">
+                                        <div class="flex items-center gap-4">
+                                            <div
+                                                class="w-10 h-10 rounded-2xl bg-white shadow-sm flex items-center justify-center text-lg group-hover/btn:scale-110 transition-transform">
+                                                📍</div>
+                                            <span class="font-bold text-slate-900">Muğla</span>
+                                        </div>
+                                        <svg class="w-5 h-5 text-slate-400 transition-transform duration-500 transform"
+                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </button>
+                                    <div
+                                        class="accordion-content grid grid-rows-[0fr] transition-[grid-template-rows] duration-500 ease-in-out bg-white">
+                                        <div class="overflow-hidden">
+                                            <div class="p-6 grid grid-cols-2 gap-x-4 gap-y-3">
+                                                <?php
+                                                $muglaDistricts = ['Fethiye', 'Bodrum', 'Marmaris', 'Datça', 'Göcek', 'Ortaca', 'Dalaman'];
+                                                foreach ($muglaDistricts as $district): ?>
+                                                    <a href="/hizmet-bolgesi/mugla/<?= to_permalink($district) ?>"
+                                                        class="text-[11px] font-bold text-slate-500 hover:text-brand-600 transition-colors flex items-center gap-2 group/link">
+                                                        <span
+                                                            class="w-1.5 h-1.5 rounded-full bg-slate-200 group-hover/link:bg-brand-500 transition-colors"></span>
+                                                        <?= $district ?>
+                                                    </a>
+                                                <?php endforeach; ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <a href="/hizmet-bolgeleri"
-                                class="flex items-center justify-between font-black text-brand-600 text-sm uppercase tracking-wider hover:text-brand-700 transition-colors">
+                                class="mt-8 flex items-center justify-center gap-3 w-full py-5 bg-slate-900 text-white font-black rounded-2xl shadow-xl hover:bg-slate-800 transition-all active:scale-95 text-[10px] uppercase tracking-widest border border-white/5">
                                 <span>Tüm Bölgeleri Gör</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
                                     stroke-linejoin="round">
                                     <path d="M5 12h14" />
@@ -229,6 +304,33 @@ $serviceName = $post->title;
         </div>
     </div>
 </main>
+
+<script>
+    function toggleLocationAccordion(btn) {
+        const parent = btn.closest('.location-accordion-item');
+        const content = parent.querySelector('.accordion-content');
+        const svg = btn.querySelector('svg');
+        const allItems = document.querySelectorAll('.location-accordion-item');
+
+        const isOpen = content.classList.contains('grid-rows-[1fr]');
+
+        // Close others
+        allItems.forEach(item => {
+            item.querySelector('.accordion-content').classList.remove('grid-rows-[1fr]');
+            item.querySelector('.accordion-content').classList.add('grid-rows-[0fr]');
+            item.querySelector('svg').classList.remove('rotate-180');
+            item.classList.remove('ring-4', 'ring-brand-500/10', 'border-brand-200', 'shadow-lg');
+        });
+
+        // Toggle current
+        if (!isOpen) {
+            content.classList.remove('grid-rows-[0fr]');
+            content.classList.add('grid-rows-[1fr]');
+            svg.classList.add('rotate-180');
+            parent.classList.add('ring-4', 'ring-brand-500/10', 'border-brand-200', 'shadow-lg');
+        }
+    }
+</script>
 
 <?php
 // Include Other Services logic
