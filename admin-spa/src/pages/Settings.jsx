@@ -14,6 +14,7 @@ export default function Settings() {
         { id: 'social', label: 'Sosyal Medya', icon: '🌐' },
         { id: 'style', label: 'Renk & Stil', icon: '🎨' },
         { id: 'hero', label: 'Hero Ayarları', icon: '✨' },
+        { id: 'ai', label: 'AI Ayarları', icon: '🤖' },
     ];
 
     useEffect(() => {
@@ -276,6 +277,41 @@ export default function Settings() {
                                 <div className="text-sm text-amber-800 leading-relaxed">
                                     <strong>İpucu:</strong> Her iki kutudaki kelime sayısının eşit olması (örn: ikisinde de 5 kelime) animasyonun daha senkronize çalışmasını sağlar.
                                     Metinler her 4 saniyede bir sırayla değişecektir.
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {activeTab === 'ai' && (
+                        <div className="space-y-8">
+                            <div className="bg-purple-50 p-6 rounded-3xl border border-purple-100 mb-6">
+                                <div className="flex gap-4 items-start">
+                                    <span className="text-2xl mt-1">✨</span>
+                                    <div>
+                                        <h3 className="font-bold text-purple-900 mb-1">Yapay Zeka Entegrasyonu</h3>
+                                        <p className="text-sm text-purple-800/80 leading-relaxed">
+                                            İçerik üretiminde OpenAI teknolojisini kullanıyoruz. Blog yazıları, SEO açıklamaları ve sayfa içerikleri bu API üzerinden profesyonelce üretilmektedir.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="grid md:grid-cols-2 gap-6">
+                                <div className="space-y-1">
+                                    {renderField('openai_api_key', 'OpenAI API Anahtarı', 'password', 'sk-proj-...')}
+                                    <p className="text-[10px] text-gray-400 px-1">Anahtarınız güvenli bir şekilde saklanır ve sadece sunucu tarafında kullanılır.</p>
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">OpenAI Model</label>
+                                    <select
+                                        value={settings['openai_model'] || 'gpt-4o-mini'}
+                                        onChange={(e) => handleChange('openai_model', e.target.value)}
+                                        className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none transition-all"
+                                    >
+                                        <option value="gpt-4o-mini">GPT-4o Mini (Hızlı ve Ekonomik - Önerilen)</option>
+                                        <option value="gpt-4o">GPT-4o (En Yüksek Kalite)</option>
+                                    </select>
+                                    <p className="text-[10px] text-gray-400 px-1">Özellikle blog yazıları için 4o-mini hem kaliteli hem de ekonomiktir.</p>
                                 </div>
                             </div>
                         </div>
