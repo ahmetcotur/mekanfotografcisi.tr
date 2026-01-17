@@ -36,6 +36,9 @@ $requestPath = parse_url($requestUri, PHP_URL_PATH) ?: '/';
 $requestPath = str_replace('/index.php', '', $requestPath);
 $requestPath = trim($requestPath, '/');
 
+// Debug logging
+file_put_contents(__DIR__ . '/debug_log.txt', "[" . date('Y-m-d H:i:s') . "] Path: " . $requestPath . "\n", FILE_APPEND);
+
 // 1. Explicit Routing for SEO files
 if ($requestPath === 'sitemap.xml') {
     require_once __DIR__ . '/sitemap.php';
