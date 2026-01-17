@@ -238,7 +238,7 @@ $serviceName = $post->title;
                                                 <?php
                                                 $antalyaDistricts = ['Kaş', 'Kalkan', 'Alanya', 'Kemer', 'Belek', 'Manavgat', 'Muratpaşa', 'Konyaaltı', 'Lara', 'Side'];
                                                 foreach ($antalyaDistricts as $district): ?>
-                                                    <a href="/hizmet-bolgesi/antalya/<?= to_permalink($district) ?>"
+                                                    <a href="/hizmet-bolgeleri/antalya/<?= to_permalink($district) ?>"
                                                         class="text-[11px] font-bold text-slate-500 hover:text-brand-600 transition-colors flex items-center gap-2 group/link">
                                                         <span
                                                             class="w-1.5 h-1.5 rounded-full bg-slate-200 group-hover/link:bg-brand-500 transition-colors"></span>
@@ -274,7 +274,7 @@ $serviceName = $post->title;
                                                 <?php
                                                 $muglaDistricts = ['Fethiye', 'Bodrum', 'Marmaris', 'Datça', 'Göcek', 'Ortaca', 'Dalaman'];
                                                 foreach ($muglaDistricts as $district): ?>
-                                                    <a href="/hizmet-bolgesi/mugla/<?= to_permalink($district) ?>"
+                                                    <a href="/hizmet-bolgeleri/mugla/<?= to_permalink($district) ?>"
                                                         class="text-[11px] font-bold text-slate-500 hover:text-brand-600 transition-colors flex items-center gap-2 group/link">
                                                         <span
                                                             class="w-1.5 h-1.5 rounded-full bg-slate-200 group-hover/link:bg-brand-500 transition-colors"></span>
