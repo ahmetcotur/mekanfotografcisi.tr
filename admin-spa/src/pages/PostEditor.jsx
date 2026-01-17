@@ -24,7 +24,6 @@ import 'tinymce/plugins/fullscreen';
 import 'tinymce/plugins/insertdatetime';
 import 'tinymce/plugins/media';
 import 'tinymce/plugins/table';
-import 'tinymce/plugins/help';
 import 'tinymce/plugins/wordcount';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -251,7 +250,6 @@ export default function PostEditor() {
                                     </div>
                                     <Editor
                                         init={{
-                                            base_url: '/admin',
                                             height: 600,
                                             menubar: true,
                                             license_key: 'gpl',

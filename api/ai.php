@@ -49,16 +49,17 @@ HEDEF ANAHTAR KELİMELER: '{$keywords}'
 {$context}
 
 ÖNEMLİ KURALLAR:
-1. Bu bir blog yazısıdır. Okuyuculara derinlemesine bilgi veren, sektörel gelişmeleri anlatan, rehber niteliğinde ve en az {$wordCount} kelimeden oluşan KAPSAMLI bir içerik üretmelisin.
-2. Yazı akıcı, profesyonel ve SEO dostu olmalıdır.
-3. İçerik içerisinde mekanfotografcisi.tr sitesindeki yukarıda listelenen hizmetlerden EN AZ 2 TANESİNE doğal bir şekilde atıfta bulun ve belirtilen linklere YÖNLENDİRME (link) yap.
+1. Bu bir blog yazısıdır. Okuyuculara derinlemesine bilgi veren, sektörel gelişmeleri anlatan, rehber niteliğinde ve KESİNLİKLE EN AZ 1500 kelimeden oluşan ÇOK KAPSAMLI bir içerik üretmelisin. (İçeriği alt başlıklarla, listelerle ve detaylı açıklamalarla zenginleştir).
+2. Yazı akıcı, profesyonel, samimi ve SEO dostu olmalıdır.
+3. İçerik içerisinde mekanfotografcisi.tr sitesinden ve yukarıda listelenen hizmetlerimizden EN AZ 2 TANESİNE doğal bir şekilde atıfta bulun ve bu hizmetlere ait linkleri (örn: <a href=\"/otel-fotograf-cekimi\">Otel Fotoğraf Çekimi</a>) yazı içinde kullan.
 4. Yazı başlığını (H1) en başta belirt.
-5. Eğer sana bir başlık verilmediyse (boşsa), konuya uygun ilgi çekici bir başlık üret.
-6. Yanıtını şu JSON formatında döndür (Başka hiçbir metin ekleme):
+5. Eğer sana bir başlık verilmediyse (boşsa), konuya uygun ilgi çekici ve tık odaklı bir başlık üret.
+6. Yanıtını MUTLAKA şu JSON formatında döndür (Başka hiçbir giriş veya çıkış metni ekleme):
    {
      \"title\": \"Buraya oluşturduğun veya sana verilen başlık gelecek\",
-     \"content\": \"Buraya HTML formatında içerik gelecek (p, h2, h3, ul, li etiketleri ile)\"
+     \"content\": \"Buraya HTML formatında içerik gelecek (p, h2, h3, ul, li, a etiketleri ile)\"
    }
+7. Yazı sonunda bir 'Sıkça Sorulan Sorular' bölümü ekleyerek içeriği uzatabilirsin.
 ";
         } else {
             $prompt = "Sen bir profesyonel SEO uzmanı ve mekan fotoğrafçılığı konusunda uzman bir içerik yazarısın. 
