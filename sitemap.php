@@ -134,8 +134,20 @@ try {
         }
     }
 
-    // 4. SEO Pages (Landing Pages)
-    $seoPages = $db->query("SELECT slug, updated_at, type FROM seo_pages WHERE published = true");
+    // 4. SEO Pages (Landing Pages) - Filtered by location active status
+    $seoPagesSql = "
+        SELECT s.slug, s.updated_at, s.type 
+        FROM seo_pages s
+        LEFT JOIN locations_province p ON s.province_id = p.id
+        LEFT JOIN locations_district d ON s.district_id = d.id
+        WHERE s.published = true 
+        AND (
+            (s.type = 'province' AND (p.is_active = true OR p.is_active = 'true'))
+            OR (s.type = 'district' AND (d.is_active = true OR d.is_active = 'true'))
+            OR (s.type NOT IN ('province', 'district'))
+        )
+    ";
+    $seoPages = $db->query($seoPagesSql);
     foreach ($seoPages as $page) {
         $slug = ltrim($page['slug'], '/');
         $slug = str_replace('locations/', $locationBase . '/', $slug);
