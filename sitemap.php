@@ -93,6 +93,16 @@ try {
         add_url($urls, $loc, date('Y-m-d', strtotime($p['updated_at'])), $freq, $priority, $images);
     }
 
+    // 1.5. Blog Archive & Posts
+    add_url($urls, 'https://mekanfotografcisi.tr/blog', date('Y-m-d'), 'weekly', '0.8');
+    $blogPosts = $db->query("SELECT slug, updated_at, gallery_folder_id FROM posts WHERE post_type = 'blog' AND post_status = 'publish'");
+    foreach ($blogPosts as $bp) {
+        $slug = ltrim($bp['slug'], '/');
+        $loc = 'https://mekanfotografcisi.tr/blog/' . $slug;
+        $images = get_folder_images($db, $bp['gallery_folder_id']);
+        add_url($urls, $loc, date('Y-m-d', strtotime($bp['updated_at'])), 'monthly', '0.7', $images);
+    }
+
     // 2. Active Services from services table
     $activeServices = $db->query("SELECT slug, updated_at, image, gallery_images FROM services WHERE is_active = true OR is_active = 'true'");
     foreach ($activeServices as $s) {
