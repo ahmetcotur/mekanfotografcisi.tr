@@ -5,6 +5,7 @@ require_once __DIR__ . '/middleware.php';
 require_once __DIR__ . '/../includes/database.php';
 
 addCorsHeaders();
+file_put_contents('/tmp/api_debug.log', date('[Y-m-d H:i:s] ') . "API Request Start: " . $_SERVER['REQUEST_URI'] . "\n", FILE_APPEND);
 $user = requireAuth();
 
 try {
@@ -62,7 +63,9 @@ try {
             $where['select'] = $data['select'];
         }
 
+        file_put_contents('/tmp/api_debug.log', date('[Y-m-d H:i:s] ') . "About to query table=$table with where=" . json_encode($where) . "\n", FILE_APPEND);
         $items = $db->select($table, $where);
+        file_put_contents('/tmp/api_debug.log', date('[Y-m-d H:i:s] ') . "Query successful, got " . count($items) . " items\n", FILE_APPEND);
         echo json_encode(['success' => true, 'data' => $items ?: []]);
         exit;
 
@@ -299,6 +302,7 @@ try {
 } catch (Exception $e) {
     http_response_code(400);
     error_log("API Error: " . $e->getMessage() . " in " . $e->getFile() . ":" . $e->getLine());
+    file_put_contents('/tmp/api_debug.log', date('[Y-m-d H:i:s] ') . "EXCEPTION: " . $e->getMessage() . " in " . $e->getFile() . ":" . $e->getLine() . "\n", FILE_APPEND);
     file_put_contents(__DIR__ . '/../debug_log.txt', date('[Y-m-d H:i:s] ') . "API Error: " . $e->getMessage() . "\n" . print_r($data, true) . "\n", FILE_APPEND);
     echo json_encode(['success' => false, 'error' => $e->getMessage()]);
 }
