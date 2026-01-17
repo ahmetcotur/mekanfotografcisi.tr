@@ -16,7 +16,8 @@ export default function Sidebar() {
         { path: '/freelancers', icon: '👷', label: 'Freelancer Başvuruları' },
         { path: '/media', icon: '🖼️', label: 'Medya' },
         { path: '/pexels', icon: '🌄', label: 'Pexels Koleksiyon' },
-        { path: '/settings', icon: '⚙️', label: 'Ayarlar' }
+        { path: '/settings', icon: '⚙️', label: 'Ayarlar' },
+        { path: '/settings-ai', icon: '🤖', label: 'AI Ayarları' }
     ];
 
     return (

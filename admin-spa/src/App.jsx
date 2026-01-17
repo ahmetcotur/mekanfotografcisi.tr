@@ -12,6 +12,7 @@ import Media from './pages/Media';
 import Pexels from './pages/Pexels';
 import PostEditor from './pages/PostEditor';
 import Settings from './pages/Settings';
+import AiSettings from './pages/AiSettings';
 import SeoLinkManager from './pages/SeoLinkManager';
 import FreelancerApplications from './pages/FreelancerApplications';
 import Layout from './components/Layout';
@@ -51,6 +52,7 @@ function App() {
             <Route path="/media" element={<Media />} />
             <Route path="/pexels" element={<Pexels />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/settings-ai" element={<AiSettings />} />
           </Route>
         </Route>
 
