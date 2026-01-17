@@ -36,6 +36,18 @@ $requestPath = parse_url($requestUri, PHP_URL_PATH) ?: '/';
 $requestPath = str_replace('/index.php', '', $requestPath);
 $requestPath = trim($requestPath, '/');
 
+// 1. Explicit Routing for SEO files
+if ($requestPath === 'sitemap.xml') {
+    require_once __DIR__ . '/sitemap.php';
+    exit;
+}
+
+if ($requestPath === 'robots.txt') {
+    header('Content-Type: text/plain; charset=utf-8');
+    readfile(__DIR__ . '/robots.txt');
+    exit;
+}
+
 // CRITICAL: Static files MUST be handled BEFORE anything else
 if (preg_match('/\.(css|js|jpg|jpeg|png|gif|svg|webp|ico|woff|woff2|ttf|eot|pdf|xml|txt)$/i', $requestPath)) {
     return false;
