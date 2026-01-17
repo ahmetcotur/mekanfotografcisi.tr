@@ -22,6 +22,9 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     
+    # Sitemap rewrite
+    RewriteRule ^sitemap\.xml$ sitemap.php [L]
+
     # Route everything through index.php
     RewriteRule ^(.*)$ index.php [QSA,L]
 </IfModule>

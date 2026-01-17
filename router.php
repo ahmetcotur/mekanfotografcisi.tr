@@ -59,6 +59,13 @@ if (strpos($requestPath, 'services/') === 0) {
     exit;
 }
 
+// Redirect locations/* to hizmet-bolgeleri/*
+if (strpos($requestPath, 'locations/') === 0) {
+    $newPath = str_replace('locations/', 'hizmet-bolgeleri/', $requestPath);
+    header("Location: /" . $newPath, true, 301);
+    exit;
+}
+
 // Global Session (Ensures consistency across /login, /admin, and site)
 if (session_status() === PHP_SESSION_NONE) {
     // CRITICAL: Set explicit session save path for nginx/PHP-FPM
