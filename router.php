@@ -37,7 +37,8 @@ $requestPath = str_replace('/index.php', '', $requestPath);
 $requestPath = trim($requestPath, '/');
 
 // Debug logging
-file_put_contents(__DIR__ . '/debug_log.txt', "[" . date('Y-m-d H:i:s') . "] Path: " . $requestPath . "\n", FILE_APPEND);
+$logData = "[" . date('Y-m-d H:i:s') . "] Path: " . $requestPath . " | URI: " . $_SERVER['REQUEST_URI'] . " | Query: " . ($_SERVER['QUERY_STRING'] ?? '') . "\n";
+file_put_contents(__DIR__ . '/debug_log.txt', $logData, FILE_APPEND);
 
 // 1. Explicit Routing for SEO files
 if ($requestPath === 'sitemap.xml') {
