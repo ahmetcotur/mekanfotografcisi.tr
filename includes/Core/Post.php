@@ -17,6 +17,7 @@ class Post
     public $post_status;
     public $parent_id;
     public $menu_order;
+    public $featured_image;
     public $gallery_folder_id;
     public $created_at;
     public $updated_at;

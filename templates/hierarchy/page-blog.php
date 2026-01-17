@@ -62,7 +62,7 @@ $heroImage = $randomPhoto ? $randomPhoto['src'] : 'https://images.pexels.com/pho
                     $postDate = date('d.m.Y', strtotime($post['created_at']));
 
                     // Try to find an image in meta or use random
-                    $postImage = 'https://images.pexels.com/photos/7045926/pexels-photo-7045926.jpeg'; // Default
+                    $postImage = !empty($post['featured_image']) ? $post['featured_image'] : 'https://images.pexels.com/photos/7045926/pexels-photo-7045926.jpeg'; // Default
                     ?>
                     <article
                         class="group relative bg-white rounded-5xl overflow-hidden shadow-[0_32px_64px_-20px_rgba(0,0,0,0.06)] border border-slate-100 flex flex-col hover-lift">

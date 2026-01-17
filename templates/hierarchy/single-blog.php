@@ -9,6 +9,7 @@ $randomPhoto = get_random_pexels_photo();
 $heroImage = $randomPhoto ? $randomPhoto['src'] : 'https://images.pexels.com/photos/2079246/pexels-photo-2079246.jpeg';
 $postTitle = $post->title;
 $postDate = date('d.m.Y', strtotime($post->created_at));
+$heroImage = !empty($post->featured_image) ? $post->featured_image : $heroImage;
 ?>
 
 <!-- Blog Hero -->

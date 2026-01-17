@@ -49,6 +49,7 @@ export default function PostEditor() {
         excerpt: '',
         post_status: 'draft',
         post_type: getInitialType(),
+        featured_image: '',
         gallery_folder_id: ''
     });
     const [folders, setFolders] = useState([]);
@@ -134,6 +135,10 @@ export default function PostEditor() {
         });
 
         if (keywords === undefined) return;
+
+        // Fix for TinyMCE URL issues: convert absolute URLs to root-relative if they match current domain
+        // (Actually TinyMCE config below takes care of most of it, but we can pre-process too if needed)
+
         if (!post.title && !keywords) {
             Swal.fire('Hata', 'Lütfen en azından bir konu veya başlık belirtin.', 'warning');
             return;
@@ -255,6 +260,9 @@ export default function PostEditor() {
                                             license_key: 'gpl',
                                             promotion: false,
                                             branding: false,
+                                            relative_urls: false,
+                                            remove_script_host: false,
+                                            convert_urls: true,
                                             plugins: [
                                                 'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
                                                 'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
@@ -280,6 +288,68 @@ export default function PostEditor() {
                                         }
                                         /* If the 'Finish setting up' is a dialog, this might be tricky, but usually it's a notification or promo */
                                     `}</style>
+                                </div>
+
+                                <div className="space-y-6">
+                                    <h3 className="text-lg font-bold text-gray-800">Kapak Görseli</h3>
+                                    <p className="text-xs text-gray-400">Blog listesinde ve paylaşım kartlarında görünecek ana görsel.</p>
+
+                                    <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100 space-y-4">
+                                        <div className="aspect-video bg-white rounded-xl border border-gray-200 overflow-hidden flex items-center justify-center relative group">
+                                            {post.featured_image ? (
+                                                <>
+                                                    <img src={post.featured_image} alt="Kapak" className="w-full h-full object-cover" />
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setPost({ ...post, featured_image: '' })}
+                                                        className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
+                                                    >✕</button>
+                                                </>
+                                            ) : (
+                                                <div className="text-gray-300 text-center">
+                                                    <span className="text-3xl block mb-2">🖼️</span>
+                                                    <span className="text-[10px] font-bold uppercase tracking-widest">Görsel Yok</span>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        <div className="space-y-3">
+                                            <input
+                                                type="text"
+                                                value={post.featured_image || ''}
+                                                onChange={(e) => setPost({ ...post, featured_image: e.target.value })}
+                                                placeholder="Görsel URL (örn: /uploads/abc.jpg)"
+                                                className="w-full px-4 py-2 border border-gray-200 rounded-xl text-xs outline-none focus:border-blue-500 transition-all font-medium text-gray-600"
+                                            />
+
+                                            <label className="block w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-[10px] font-black uppercase text-center cursor-pointer hover:bg-gray-50 transition-all shadow-sm border-dashed">
+                                                📤 Görsel Yükle
+                                                <input
+                                                    type="file"
+                                                    className="hidden"
+                                                    accept="image/*"
+                                                    onChange={async (e) => {
+                                                        const file = e.target.files[0];
+                                                        if (!file) return;
+                                                        const formData = new FormData();
+                                                        formData.append('file', file);
+                                                        formData.append('action', 'upload');
+                                                        try {
+                                                            const res = await api.post('/media.php', formData, {
+                                                                headers: { 'Content-Type': 'multipart/form-data' }
+                                                            });
+                                                            if (res.data.success) {
+                                                                setPost({ ...post, featured_image: res.data.data.public_url });
+                                                                Swal.fire({ title: 'Yüklendi', icon: 'success', toast: true, position: 'top-end', timer: 2000, showConfirmButton: false });
+                                                            }
+                                                        } catch (err) {
+                                                            Swal.fire('Hata', 'Yükleme başarısız', 'error');
+                                                        }
+                                                    }}
+                                                />
+                                            </label>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </motion.div>

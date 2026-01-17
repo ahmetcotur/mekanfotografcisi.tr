@@ -153,6 +153,7 @@ try {
             'excerpt' => $data['excerpt'] ?? '',
             'post_type' => $post_type,
             'post_status' => $post_status,
+            'featured_image' => $data['featured_image'] ?? null,
             'gallery_folder_id' => !empty($data['gallery_folder_id']) ? $data['gallery_folder_id'] : null,
             'updated_at' => date('Y-m-d H:i:s')
         ];
