@@ -123,15 +123,10 @@ export default function PostEditor() {
     };
 
     const handleAiGenerate = async () => {
-        if (!post.title) {
-            Swal.fire('Eksik Bilgi', 'Lütfen önce bir sayfa başlığı girin.', 'warning');
-            return;
-        }
-
         const { value: keywords } = await Swal.fire({
             title: 'AI İçerik Oluştur',
             input: 'text',
-            inputLabel: 'Odaklanılacak Anahtar Kelimeler (opsiyonel)',
+            inputLabel: post.post_type === 'blog' && !post.title ? 'Yazı Konusu veya Anahtar Kelimeler' : 'Odaklanılacak Anahtar Kelimeler (opsiyonel)',
             inputPlaceholder: 'otel çekimi, mimari fotoğrafçılık...',
             showCancelButton: true,
             confirmButtonText: 'Üret',
@@ -140,6 +135,10 @@ export default function PostEditor() {
         });
 
         if (keywords === undefined) return;
+        if (!post.title && !keywords) {
+            Swal.fire('Hata', 'Lütfen en azından bir konu veya başlık belirtin.', 'warning');
+            return;
+        }
 
         setGenerating(true);
         try {
@@ -152,7 +151,11 @@ export default function PostEditor() {
             });
 
             if (response.data.success) {
-                setPost(prev => ({ ...prev, content: response.data.content }));
+                if (response.data.title) {
+                    setPost(prev => ({ ...prev, title: response.data.title, content: response.data.content }));
+                } else {
+                    setPost(prev => ({ ...prev, content: response.data.content }));
+                }
                 Swal.fire({ title: 'İçerik Üretildi', icon: 'success', timer: 1500, showConfirmButton: false });
             }
         } catch (error) {
@@ -248,6 +251,7 @@ export default function PostEditor() {
                                     </div>
                                     <Editor
                                         init={{
+                                            base_url: '/admin',
                                             height: 600,
                                             menubar: true,
                                             license_key: 'gpl',
@@ -256,12 +260,12 @@ export default function PostEditor() {
                                             plugins: [
                                                 'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
                                                 'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                                                'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
+                                                'insertdatetime', 'media', 'table', 'code', 'wordcount'
                                             ],
                                             toolbar: 'undo redo | blocks | ' +
                                                 'bold italic forecolor | alignleft aligncenter ' +
                                                 'alignright alignjustify | borderless_table | bullist numlist outdent indent | ' +
-                                                'removeformat | help',
+                                                'removeformat',
                                             content_style: 'body { font-family:Inter,Helvetica,Arial,sans-serif; font-size:16px; line-height:1.6; padding: 20px; } h2 { font-weight: 800; color: #1e293b; } p { color: #475569; }',
                                             skin: 'oxide',
                                             content_css: 'default'

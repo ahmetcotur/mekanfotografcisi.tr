@@ -31,15 +31,34 @@ try {
         $existingContent = $data['existing_content'] ?? '';
         $type = $data['type'] ?? 'page';
 
-        if ($type === 'blog') {
-            $prompt = "Sen bir profesyonel blog yazarı ve mekan fotoğrafçılığı konusunda uzman bir içerik üreticisisin. 
+        // Fetch active services for interlinking context
+        $services = $db->select('posts', ['post_type' => 'service', 'post_status' => 'publish']);
+        $serviceLinks = [];
+        foreach ($services as $s) {
+            $serviceLinks[] = "- {$s['title']}: https://mekanfotografcisi.tr/{$s['slug']}";
+        }
+        $context = "Mevcut Hizmetlerimiz ve Linkleri:\n" . implode("\n", $serviceLinks);
 
-BLOG BAŞLIĞI: '{$title}'
+        if ($type === 'blog') {
+            $wordCount = 1500;
+            $prompt = "Sen bir profesyonel blog yazarı ve mekan fotoğrafçılığı konusunda uzman bir içerik üreticisisin. 
+            
+BELİRTİLEN KONU/BAŞLIK: '" . ($title ?: $keywords) . "'
 HEDEF ANAHTAR KELİMELER: '{$keywords}'
 
-ÖNEMLİ: Bu bir blog yazısıdır. Okuyuculara bilgi veren, sektörel gelişmeleri anlatan veya rehber niteliğinde bir içerik üretmelisin. 
-İçerik bilgilendirici, ilgi çekici ve SEO uyumlu olmalıdır. Mekan fotoğrafçılığı sektöründeki trendlerden, ipuçlarından veya teknik bilgilerden bahsetmelisin.
+{$context}
 
+ÖNEMLİ KURALLAR:
+1. Bu bir blog yazısıdır. Okuyuculara derinlemesine bilgi veren, sektörel gelişmeleri anlatan, rehber niteliğinde ve en az {$wordCount} kelimeden oluşan KAPSAMLI bir içerik üretmelisin.
+2. Yazı akıcı, profesyonel ve SEO dostu olmalıdır.
+3. İçerik içerisinde mekanfotografcisi.tr sitesindeki yukarıda listelenen hizmetlerden EN AZ 2 TANESİNE doğal bir şekilde atıfta bulun ve belirtilen linklere YÖNLENDİRME (link) yap.
+4. Yazı başlığını (H1) en başta belirt.
+5. Eğer sana bir başlık verilmediyse (boşsa), konuya uygun ilgi çekici bir başlık üret.
+6. Yanıtını şu JSON formatında döndür (Başka hiçbir metin ekleme):
+   {
+     \"title\": \"Buraya oluşturduğun veya sana verilen başlık gelecek\",
+     \"content\": \"Buraya HTML formatında içerik gelecek (p, h2, h3, ul, li etiketleri ile)\"
+   }
 ";
         } else {
             $prompt = "Sen bir profesyonel SEO uzmanı ve mekan fotoğrafçılığı konusunda uzman bir içerik yazarısın. 
@@ -72,11 +91,23 @@ HEDEF ANAHTAR KELİMELER: '{$keywords}'
 
         $response = callOpenAI($apiKey, $model, $prompt);
 
-        // Sanitize response: Strip markdown code blocks and wrapping quotes
-        $cleanContent = preg_replace('/^```[a-z]*\s?|\s?```$/i', '', trim($response));
-        $cleanContent = preg_replace('/^"|"$/', '', $cleanContent);
+        if ($type === 'blog') {
+            // Clean up JSON if LLM added markdown backticks
+            $jsonStr = preg_replace('/```json\s*|\s*```/', '', $response);
+            $decoded = json_decode($jsonStr, true);
+            if ($decoded) {
+                echo json_encode(['success' => true, 'title' => $decoded['title'], 'content' => $decoded['content']]);
+            } else {
+                // Fallback if JSON decoding fails
+                echo json_encode(['success' => true, 'content' => $response]);
+            }
+        } else {
+            // Sanitize response: Strip markdown code blocks and wrapping quotes
+            $cleanContent = preg_replace('/^```[a-z]*\s?|\s?```$/i', '', trim($response));
+            $cleanContent = preg_replace('/^"|"$/', '', $cleanContent);
 
-        echo json_encode(['success' => true, 'content' => $cleanContent]);
+            echo json_encode(['success' => true, 'content' => $cleanContent]);
+        }
 
     } elseif ($action === 'suggest-urls') {
         $industry = $data['industry'] ?? 'mekan fotoğrafçılığı';
