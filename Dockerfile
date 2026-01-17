@@ -15,6 +15,9 @@ ENV PHP_DISP_ERRORS=1
 # Copy project files
 COPY . /app/
 
+# Make migration script executable
+RUN chmod +x /app/scripts/run-migrations.sh
+
 # Remove default nginx welcome pages to avoid confusion
 RUN rm -rf /usr/share/nginx/html/* && \
     rm -f /etc/nginx/conf.d/default.conf
@@ -22,4 +25,5 @@ RUN rm -rf /usr/share/nginx/html/* && \
 # Re-ensure permissions
 RUN chown -R application:application /app
 
-# The webdevops/php-nginx image automatically handles Nginx and PHP-FPM startup
+# Set custom entrypoint that runs migrations
+ENTRYPOINT ["/app/scripts/docker-entrypoint.sh"]
