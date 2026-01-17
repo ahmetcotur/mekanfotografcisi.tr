@@ -42,6 +42,7 @@ file_put_contents(__DIR__ . '/debug_log.txt', $logData, FILE_APPEND);
 
 // 1. Explicit Routing for SEO files
 if ($requestPath === 'sitemap.xml') {
+    die("SITEMAP XML HIT");
     require_once __DIR__ . '/sitemap.php';
     exit;
 }
