@@ -261,7 +261,8 @@ export default function PostEditor() {
                                             promotion: false,
                                             branding: false,
                                             relative_urls: false,
-                                            remove_script_host: false,
+                                            remove_script_host: true,
+                                            document_base_url: '/',
                                             convert_urls: true,
                                             plugins: [
                                                 'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',

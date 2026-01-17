@@ -57,7 +57,7 @@ try {
 
         // Optimize: for posts list, don't fetch full content by default
         if ($table === 'posts' && !isset($data['select'])) {
-            $where['select'] = 'id, title, slug, post_type, post_status, updated_at, created_at, excerpt, gallery_folder_id';
+            $where['select'] = 'id, title, slug, post_type, post_status, updated_at, created_at, excerpt, featured_image, gallery_folder_id';
         } elseif (isset($data['select'])) {
             $where['select'] = $data['select'];
         }
