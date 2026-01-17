@@ -9,6 +9,10 @@
 require_once __DIR__ . '/includes/database.php';
 require_once __DIR__ . '/includes/helpers.php';
 
+// Enable error reporting for debugging
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
 // Set content type to XML
 header('Content-Type: application/xml; charset=utf-8');
 
