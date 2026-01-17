@@ -361,20 +361,21 @@ $schema = [
                 <!-- Desktop Menu -->
                 <nav class="hidden md:flex gap-1 items-center">
                     <a href="/"
-                        class="px-5 py-2 text-sm font-bold text-slate-600 hover:text-brand-600 transition-all rounded-full hover:bg-brand-50 items-center gap-1.5 <?= ($_SERVER['REQUEST_URI'] == '/') ? 'text-brand-600 bg-brand-50' : '' ?>">Ana
-                        Sayfa</a>
-
-                    <a href="/hizmetlerimiz"
-                        class="px-5 py-2 text-sm font-bold text-slate-600 hover:text-brand-600 transition-all rounded-full hover:bg-brand-50 <?= ($_SERVER['REQUEST_URI'] == '/hizmetlerimiz') ? 'text-brand-600 bg-brand-50' : '' ?>">Hizmetler</a>
+                        class="px-5 py-2 text-sm font-bold text-slate-600 hover:text-brand-600 transition-all rounded-full hover:bg-brand-50 items-center gap-1.5 <?= ($_SERVER['REQUEST_URI'] == '/') ? 'text-brand-600 bg-brand-50' : '' ?>">Anasayfa</a>
 
                     <a href="/nasil-calisir"
                         class="px-5 py-2 text-sm font-bold text-slate-600 hover:text-brand-600 transition-all rounded-full hover:bg-brand-50 <?= ($_SERVER['REQUEST_URI'] == '/nasil-calisir') ? 'text-brand-600 bg-brand-50' : '' ?>">Nasıl
                         Çalışır?</a>
 
-                    <a href="/portfolio"
-                        class="px-5 py-2 text-sm font-bold text-slate-600 hover:text-brand-600 transition-all rounded-full hover:bg-brand-50">Portfolyo</a>
+                    <a href="/hizmetlerimiz"
+                        class="px-5 py-2 text-sm font-bold text-slate-600 hover:text-brand-600 transition-all rounded-full hover:bg-brand-50 <?= ($_SERVER['REQUEST_URI'] == '/hizmetlerimiz') ? 'text-brand-600 bg-brand-50' : '' ?>">Hizmetler</a>
+
                     <a href="/hizmet-bolgeleri"
                         class="px-5 py-2 text-sm font-bold text-slate-600 hover:text-brand-600 transition-all rounded-full hover:bg-brand-50">Bölgeler</a>
+
+                    <a href="/portfolio"
+                        class="px-5 py-2 text-sm font-bold text-slate-600 hover:text-brand-600 transition-all rounded-full hover:bg-brand-50">Portfolyo</a>
+
                     <a href="/blog"
                         class="px-5 py-2 text-sm font-bold text-slate-600 hover:text-brand-600 transition-all rounded-full hover:bg-brand-50 <?= (strpos($_SERVER['REQUEST_URI'], '/blog') === 0) ? 'text-brand-600 bg-brand-50' : '' ?>">Blog</a>
                 </nav>
@@ -413,22 +414,7 @@ $schema = [
                             <polyline points="9 22 9 12 15 12 15 22" />
                         </svg>
                     </div>
-                    Ana Sayfa
-                </a>
-
-                <a href="/hizmetlerimiz"
-                    class="flex items-center gap-4 px-6 py-4 text-base font-bold text-slate-700 hover:bg-brand-50 hover:text-brand-600 rounded-3xl transition-all group">
-                    <div
-                        class="w-10 h-10 rounded-2xl bg-slate-50 text-slate-400 flex items-center justify-center group-hover:bg-brand-200/50 group-hover:text-brand-600 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect width="7" height="7" x="3" y="3" rx="1" />
-                            <rect width="7" height="7" x="14" y="3" rx="1" />
-                            <rect width="7" height="7" x="14" y="14" rx="1" />
-                            <rect width="7" height="7" x="3" y="14" rx="1" />
-                        </svg>
-                    </div>
-                    Hizmetlerimiz
+                    Anasayfa
                 </a>
 
                 <a href="/nasil-calisir"
@@ -444,6 +430,34 @@ $schema = [
                     Nasıl Çalışır?
                 </a>
 
+                <a href="/hizmetlerimiz"
+                    class="flex items-center gap-4 px-6 py-4 text-base font-bold text-slate-700 hover:bg-brand-50 hover:text-brand-600 rounded-3xl transition-all group">
+                    <div
+                        class="w-10 h-10 rounded-2xl bg-slate-50 text-slate-400 flex items-center justify-center group-hover:bg-brand-200/50 group-hover:text-brand-600 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="7" height="7" x="3" y="3" rx="1" />
+                            <rect width="7" height="7" x="14" y="3" rx="1" />
+                            <rect width="7" height="7" x="14" y="14" rx="1" />
+                            <rect width="7" height="7" x="3" y="14" rx="1" />
+                        </svg>
+                    </div>
+                    Hizmetler
+                </a>
+
+                <a href="/hizmet-bolgeleri"
+                    class="flex items-center gap-4 px-6 py-4 text-base font-bold text-slate-700 hover:bg-brand-50 hover:text-brand-600 rounded-3xl transition-all group">
+                    <div
+                        class="w-10 h-10 rounded-2xl bg-slate-50 text-slate-400 flex items-center justify-center group-hover:bg-brand-200/50 group-hover:text-brand-600 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z" />
+                            <circle cx="12" cy="10" r="3" />
+                        </svg>
+                    </div>
+                    Bölgeler
+                </a>
+
                 <a href="/portfolio"
                     class="flex items-center gap-4 px-6 py-4 text-base font-bold text-slate-700 hover:bg-brand-50 hover:text-brand-600 rounded-3xl transition-all group">
                     <div
@@ -457,8 +471,7 @@ $schema = [
                     </div>
                     Portfolyo
                 </a>
-                Bölgeler
-                </a>
+
                 <a href="/blog"
                     class="flex items-center gap-4 px-6 py-4 text-base font-bold text-slate-700 hover:bg-brand-50 hover:text-brand-600 rounded-3xl transition-all group">
                     <div
