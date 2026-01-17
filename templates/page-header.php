@@ -260,8 +260,8 @@ $schema = [
 
     <?php if (isset($schemaMarkup)): ?>
         <script type="application/ld+json">
-                                                                                                                                        <?= json_encode($schemaMarkup, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>
-                                                                                                                                                </script>
+                                                                                                                                            <?= json_encode($schemaMarkup, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>
+                                                                                                                                                    </script>
     <?php endif; ?>
 </head>
 
@@ -375,6 +375,8 @@ $schema = [
                         class="px-5 py-2 text-sm font-bold text-slate-600 hover:text-brand-600 transition-all rounded-full hover:bg-brand-50">Portfolyo</a>
                     <a href="/hizmet-bolgeleri"
                         class="px-5 py-2 text-sm font-bold text-slate-600 hover:text-brand-600 transition-all rounded-full hover:bg-brand-50">Bölgeler</a>
+                    <a href="/blog"
+                        class="px-5 py-2 text-sm font-bold text-slate-600 hover:text-brand-600 transition-all rounded-full hover:bg-brand-50 <?= (strpos($_SERVER['REQUEST_URI'], '/blog') === 0) ? 'text-brand-600 bg-brand-50' : '' ?>">Blog</a>
                 </nav>
 
                 <div class="hidden md:flex items-center gap-4">
@@ -455,17 +457,19 @@ $schema = [
                     </div>
                     Portfolyo
                 </a>
-                <a href="/hizmet-bolgeleri"
+                Bölgeler
+                </a>
+                <a href="/blog"
                     class="flex items-center gap-4 px-6 py-4 text-base font-bold text-slate-700 hover:bg-brand-50 hover:text-brand-600 rounded-3xl transition-all group">
                     <div
                         class="w-10 h-10 rounded-2xl bg-slate-50 text-slate-400 flex items-center justify-center group-hover:bg-brand-200/50 group-hover:text-brand-600 transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="10" r="3" />
-                            <path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z" />
+                            <path d="M12 20h9" />
+                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
                         </svg>
                     </div>
-                    Bölgeler
+                    Blog
                 </a>
                 <div class="pt-6 px-2">
                     <button onclick="openQuoteWizard()"

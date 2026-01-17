@@ -31,7 +31,18 @@ try {
         $existingContent = $data['existing_content'] ?? '';
         $type = $data['type'] ?? 'page';
 
-        $prompt = "Sen bir profesyonel SEO uzmanı ve mekan fotoğrafçılığı konusunda uzman bir içerik yazarısın. 
+        if ($type === 'blog') {
+            $prompt = "Sen bir profesyonel blog yazarı ve mekan fotoğrafçılığı konusunda uzman bir içerik üreticisisin. 
+
+BLOG BAŞLIĞI: '{$title}'
+HEDEF ANAHTAR KELİMELER: '{$keywords}'
+
+ÖNEMLİ: Bu bir blog yazısıdır. Okuyuculara bilgi veren, sektörel gelişmeleri anlatan veya rehber niteliğinde bir içerik üretmelisin. 
+İçerik bilgilendirici, ilgi çekici ve SEO uyumlu olmalıdır. Mekan fotoğrafçılığı sektöründeki trendlerden, ipuçlarından veya teknik bilgilerden bahsetmelisin.
+
+";
+        } else {
+            $prompt = "Sen bir profesyonel SEO uzmanı ve mekan fotoğrafçılığı konusunda uzman bir içerik yazarısın. 
 
 SAYFA BAŞLIĞI: '{$title}'
 HEDEF ANAHTAR KELİMELER: '{$keywords}'
@@ -42,8 +53,12 @@ HEDEF ANAHTAR KELİMELER: '{$keywords}'
 - 'Mimari Fotoğrafçılık' ise → Bina ve yapı çekimleri, iç mekan detayları, perspektif ve ışık kullanımı gibi konulara odaklan.
 - 'Otel Fotoğrafçılığı' ise → Otel odaları, lobiler, restoran alanları, havuz ve spa çekimleri gibi konulara odaklan.
 
-" . (!empty($existingContent) ? "Aşağıda mevcut bir içerik var. Lütfen bu içeriği temel alarak SEO açısından güçlendir, daha kapsamlı hale getir (en az 400-500 kelimeye tamamla) ve profesyonel bir dille yeniden düzenle:\n\n{$existingContent}\n\n" : "") . "
-Lütfen aşağıdaki kurallara uyarak içerik üret:
+";
+        }
+
+        $prompt .= (!empty($existingContent) ? "Aşağıda mevcut bir içerik var. Lütfen bu içeriği temel alarak SEO açısından güçlendir, daha kapsamlı hale getir (en az 400-500 kelimeye tamamla) ve profesyonel bir dille yeniden düzenle:\n\n{$existingContent}\n\n" : "");
+
+        $prompt .= "Lütfen aşağıdaki kurallara uyarak içerik üret:
 1. İçerik HTML formatında olmalı (sadece p, h2, h3, ul, li etiketlerini kullan).
 2. Başlığı (Sayfa Başlığını) içeriğin en başında tekrar etme, doğrudan konuya gir.
 3. En az 3 alt başlık (h2) kullan ve her biri '{$title}' hizmetinin farklı bir yönünü açıklasın.

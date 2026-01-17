@@ -214,6 +214,16 @@ if ($slug === '') {
         }
     }
 
+    // 3. Enforce Blog Prefix
+    if ($post && $post->post_type === 'blog') {
+        $cleanSlug = preg_replace('/^blog\//', '', $post->slug);
+        $expectedPath = 'blog/' . $cleanSlug;
+        if ($slug !== $expectedPath) {
+            header("Location: /" . $expectedPath, true, 301);
+            exit;
+        }
+    }
+
     // 3. If not found, try to discover/generate it
     if (!$post) {
         $discoverer = new Core\ContentDiscoverer($db);

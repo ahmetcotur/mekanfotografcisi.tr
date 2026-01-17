@@ -48,6 +48,10 @@ class TemplateLoader
             $hierarchy[] = "single-location.php";
             $hierarchy[] = "single-seo_page.php"; // Added specific template
             $hierarchy[] = "single.php";
+        } elseif ($type === 'blog') {
+            $hierarchy[] = "single-blog-{$slug}.php";
+            $hierarchy[] = "single-blog.php";
+            $hierarchy[] = "single.php";
         }
 
         $hierarchy[] = "singular.php";

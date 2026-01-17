@@ -66,8 +66,8 @@ class Post
             } catch (\Exception $e) {
             }
 
-            // Clean the slug: remove the dynamic prefix or legacy 'services/'
-            $cleanSlug = preg_replace('/^(' . preg_quote($serviceBase, '/') . '\/|services\/)/', '', $slug);
+            // Clean the slug: remove the dynamic prefix or legacy 'services/' or 'blog/'
+            $cleanSlug = preg_replace('/^(' . preg_quote($serviceBase, '/') . '\/|services\/|blog\/)/', '', $slug);
             if ($cleanSlug !== $slug) {
                 $results = $db->select('posts', [
                     'slug' => $cleanSlug,

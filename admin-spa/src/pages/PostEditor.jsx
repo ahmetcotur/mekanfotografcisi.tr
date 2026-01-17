@@ -29,9 +29,19 @@ import 'tinymce/plugins/wordcount';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function PostEditor() {
-    const { id, type } = useParams();
+    const { id, type: typeParam } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
     const isNew = !id;
+
+    // Determine initial post type from URL path
+    const getInitialType = () => {
+        if (typeParam) return typeParam;
+        const path = location.pathname;
+        if (path.includes('/blog')) return 'blog';
+        if (path.includes('/services')) return 'service';
+        return 'page';
+    };
 
     const [post, setPost] = useState({
         title: '',
@@ -39,7 +49,7 @@ export default function PostEditor() {
         content: '',
         excerpt: '',
         post_status: 'draft',
-        post_type: type || 'page',
+        post_type: getInitialType(),
         gallery_folder_id: ''
     });
     const [folders, setFolders] = useState([]);
@@ -101,7 +111,10 @@ export default function PostEditor() {
                     showConfirmButton: false
                 });
                 if (isNew) {
-                    navigate(`/${post.post_type === 'service' ? 'services' : 'pages'}`);
+                    let redirectPath = '/pages';
+                    if (post.post_type === 'service') redirectPath = '/services';
+                    if (post.post_type === 'blog') redirectPath = '/blog';
+                    navigate(redirectPath);
                 }
             }
         } catch (error) {

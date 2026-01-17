@@ -7,6 +7,7 @@ export default function Sidebar() {
     const menuItems = [
         { path: '/dashboard', icon: '📊', label: 'Dashboard' },
         { path: '/pages', icon: '📄', label: 'Sayfalar' },
+        { path: '/blog', icon: '✍️', label: 'Blog' },
         { path: '/services', icon: '📷', label: 'Hizmetler' },
         { path: '/locations', icon: '📍', label: 'Lokasyonlar' },
         { path: '/seo-links', icon: '🔗', label: 'SEO Link Yönetimi' },

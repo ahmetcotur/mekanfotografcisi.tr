@@ -4,6 +4,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Locations from './pages/Locations';
 import Services from './pages/Services';
+import Blog from './pages/Blog';
 import Pages from './pages/Pages';
 import SeoPages from './pages/SeoPages';
 import Quotes from './pages/Quotes';
@@ -40,6 +41,9 @@ function App() {
             <Route path="/services" element={<Services />} />
             <Route path="/services/new" element={<PostEditor />} />
             <Route path="/services/edit/:id" element={<PostEditor />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/new" element={<PostEditor />} />
+            <Route path="/blog/edit/:id" element={<PostEditor />} />
             <Route path="/seo-pages" element={<SeoPages />} />
             <Route path="/seo-links" element={<SeoLinkManager />} />
             <Route path="/quotes" element={<Quotes />} />
