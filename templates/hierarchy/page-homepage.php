@@ -191,6 +191,30 @@ $content = str_replace(
     $content
 );
 
+// FIX: Dynamic Stats for "Aktif İl" and "Aktif İlçe"
+try {
+    $provCountRaw = $db->query('SELECT COUNT(*) as c FROM locations_province WHERE is_active=true');
+    $provCount = $provCountRaw[0]['c'] ?? 8;
+    
+    $distCountRaw = $db->query('SELECT COUNT(*) as c FROM locations_district WHERE is_active=true');
+    $distCount = $distCountRaw[0]['c'] ?? 846;
+
+    $content = preg_replace(
+        '/(<div[^>]*>)\d+(<\/div>\s*<div[^>]*>Aktif İlçe<\/div>)/is',
+        '${1}' . $distCount . '$2',
+        $content
+    );
+
+    $content = preg_replace(
+        '/(<div[^>]*>)\d+(<\/div>\s*<div[^>]*>Aktif İl<\/div>)/is',
+        '${1}' . $provCount . '$2',
+        $content
+    );
+} catch (Exception $e) {
+    // Log exception safely or just let the fallback handle it
+    error_log("Failed to load dynamic stats: " . $e->getMessage());
+}
+
 echo do_shortcode($content);
 ?>
 
