@@ -45,7 +45,7 @@ export function HeroEffect() {
                         key={`prefix-${key}`}
                         per='word'
                         preset='blur'
-                        className="text-white text-5xl md:text-7xl lg:text-9xl font-black tracking-tighter"
+                        className="text-white text-4xl md:text-6xl lg:text-8xl font-black tracking-tighter"
                     >
                         {prefixes[prefixIndex]}
                     </TextEffect>
@@ -55,7 +55,7 @@ export function HeroEffect() {
                         key={`suffix-${key}`}
                         per='word'
                         preset='slide'
-                        className="text-brand-500 font-black italic text-6xl md:text-8xl lg:text-[10rem] tracking-tighter leading-none drop-shadow-2xl"
+                        className="text-brand-500 font-black italic text-5xl md:text-7xl lg:text-[8rem] tracking-tighter leading-none drop-shadow-2xl"
                     >
                         {suffixes[suffixIndex]}
                     </TextEffect>
@@ -67,7 +67,7 @@ export function HeroEffect() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-                className="text-white text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight drop-shadow-2xl"
+                className="text-white text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight drop-shadow-2xl"
             >
                 Dönüştürüyoruz
             </motion.div>
