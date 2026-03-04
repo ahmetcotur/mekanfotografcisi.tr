@@ -1,7 +1,12 @@
 FROM webdevops/php-nginx:8.1-alpine
 
-# Install PostgreSQL extensions and client
-RUN apk add --no-cache postgresql-dev postgresql-client && \
+# Install PostgreSQL extensions and client with retries and reliable mirror
+RUN set -ux && \
+    sed -i 's/dl-cdn.alpinelinux.org/uk.alpinelinux.org/g' /etc/apk/repositories && \
+    apk update && \
+    apk add --no-cache --retry 5 \
+    postgresql-dev \
+    postgresql-client && \
     docker-php-ext-install pdo_pgsql
 
 # Set working directory

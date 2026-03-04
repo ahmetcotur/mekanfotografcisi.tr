@@ -1,0 +1,33 @@
+.git
+.gitignore
+.dockerignore
+.vscode
+.env
+.env.local
+.env.example
+node_modules
+npm-debug.log
+yarn-error.log
+docker-compose*.yml
+Dockerfile
+README.md
+COOLIFY_DEPLOYMENT.md
+DEPLOYMENT.md
+QA_CHECKLIST*
+SETUP_SUMMARY.md
+HOMEPAGE_PRESERVATION_REPORT.md
+scripts/*.sql
+data/*.json
+*.bak
+*.sql
+*.log
+debug_*.php
+check-env.php
+test_db*.php
+list-tables.php
+auto_login.php
+apply_sql.php
+migrate_content.php
+redesign_content.php
+# Keep only necessary runtime files
+# If you have specific build artifacts for the SPA, they should be included only if you don't build them in Docker
