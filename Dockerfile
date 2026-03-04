@@ -4,7 +4,7 @@ FROM webdevops/php-nginx:8.1-alpine
 RUN set -ux && \
     sed -i 's/dl-cdn.alpinelinux.org/uk.alpinelinux.org/g' /etc/apk/repositories && \
     apk update && \
-    apk add --no-cache --retry 5 \
+    apk add --no-cache \
     postgresql-dev \
     postgresql-client && \
     docker-php-ext-install pdo_pgsql
