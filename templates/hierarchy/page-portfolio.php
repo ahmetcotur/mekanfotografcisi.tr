@@ -23,6 +23,14 @@ if (empty($allPhotos)) {
 $heroPhoto = get_random_pexels_photo();
 $heroImage = $heroPhoto ? $heroPhoto['src'] : 'https://images.pexels.com/photos/313782/pexels-photo-313782.jpeg';
 
+// Shuffle the array so that photos from the same properties/shoots don't clump together
+if (!empty($allPhotos)) {
+    shuffle($allPhotos);
+    // Optional: Limit to a reasonable number to keep performance snappy, or keep all if preferred.
+    // For now, let's show top 45 to ensure highly varied and fast-loading grid
+    $allPhotos = array_slice($allPhotos, 0, 45);
+}
+
 include __DIR__ . '/../page-header.php';
 ?>
 
