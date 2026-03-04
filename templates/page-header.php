@@ -105,8 +105,8 @@ $schema = [
 
     <script src="https://cdn.tailwindcss.com"></script>
     <?php
-    $primaryColor = get_setting('primary_color', '#0ea5e9'); // Default Sky 500
-    $secondaryColor = get_setting('secondary_color', '#0284c7'); // Default Sky 600
+    $primaryColor = get_setting('primary_color', '#f97316'); // Default Orange 500
+    $secondaryColor = get_setting('secondary_color', '#ea580c'); // Default Orange 600
     // Check for custom overrides if they exist
     $customColor = get_setting('customcolor');
     if (!empty($customColor)) {
@@ -260,8 +260,8 @@ $schema = [
 
     <?php if (isset($schemaMarkup)): ?>
         <script type="application/ld+json">
-                                                                                                                                            <?= json_encode($schemaMarkup, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>
-                                                                                                                                                    </script>
+                                                                                                                                                <?= json_encode($schemaMarkup, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>
+                                                                                                                                                        </script>
     <?php endif; ?>
 </head>
 
@@ -353,8 +353,8 @@ $schema = [
                     }
 
                     :root {
-                        --brand-rgb: 37, 99, 235;
-                        /* Blue 600 default, should be dynamic if possible */
+                        --brand-rgb: 249, 115, 22;
+                        /* Orange 500 default, should be dynamic if possible */
                     }
                 </style>
 

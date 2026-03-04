@@ -174,7 +174,7 @@ if ($newContent !== null) {
 // Container
 $content = str_replace(
     'class="grid md:grid-cols-4 gap-16 relative"',
-    'class="flex md:grid md:grid-cols-4 overflow-x-auto snap-x gap-6 md:gap-16 pb-8 md:pb-0 relative -mx-4 px-4 md:mx-0 md:px-0"',
+    'class="flex md:grid md:grid-cols-4 overflow-x-auto snap-x gap-6 md:gap-16 pb-12 pt-12 -mt-12 md:pb-0 md:pt-0 md:mt-0 relative -mx-4 px-4 md:mx-0 md:px-0 scroll-pt-12"',
     $content
 );
 // Items
@@ -187,7 +187,7 @@ $content = str_replace(
 // Feature: Limit text width for workflow descriptions
 $content = str_replace(
     'class="text-slate-500 text-base leading-relaxed font-medium"',
-    'class="text-slate-500 text-base leading-relaxed font-medium max-w-xs mx-auto"',
+    'class="text-brand-600 text-base leading-relaxed font-bold max-w-xs mx-auto"',
     $content
 );
 
@@ -444,14 +444,25 @@ if (strpos($content, 'freelancer-basvuru') === false):
     </div>
 
     <script>     // Modal Logic     const modal = document.getElementById('freelancer-modal');     const modalContent = document.getElementById('freelancer-modal-content');
-         function openFreelancerModal() {         modal.classList.remove('hidden');         // Small delay to allow display:block to apply before opacity transition         setTimeout(() => {             modal.classList.remove('opacity-0');             modalContent.classList.remove('translate-y-full', 'scale-95');             modalContent.classList.add('md:translate-y-0', 'scale-100');         }, 10);         document.body.style.overflow = 'hidden';     }
-         function closeFreelancerModal() {         modal.classList.add('opacity-0');         modalContent.classList.add('translate-y-full', 'scale-95');         modalContent.classList.remove('md:translate-y-0', 'scale-100');
-             setTimeout(() => {             modal.classList.add('hidden');             document.body.style.overflow = '';         }, 300);     }
-         document.addEventListener("DOMContentLoaded", function () {         const form = document.getElementById("freelancer-form");         const successMessage = document.getElementById("freelancer-success");
-             if (form) {             form.addEventListener("submit", async function (e) {                 e.preventDefault();                 // Original submission logic...                 const formData = new FormData(form);                 const data = {                     name: formData.get("name"),                     email: formData.get("email"),                     phone: formData.get("phone"),                     city: formData.get("city"),                     experience: formData.get("experience"),                     specialization: formData.getAll("specialization[]"),                     portfolio: formData.get("portfolio"),                     message: formData.get("message"),                     type: "freelancer_application"                 };
-                     if (data.specialization.length === 0) {                     alert("Lütfen en az bir uzmanlık alanı seçiniz.");                     return;                 }
-                     try {                     const response = await fetch("/api/freelancer-application.php", {                         method: "POST",                         headers: { "Content-Type": "application/json" },                         body: JSON.stringify(data)                     });
-                         if (response.ok) {                         form.style.display = "none";                         successMessage.classList.remove("hidden");                         successMessage.classList.add("flex");                     } else {                         alert("Bir hata oluştu.");                     }                 } catch (error) {                     console.error(error);                     alert("Bir hata oluştu.");                 }             });         }     });
+        function openFreelancerModal() {
+            modal.classList.remove('hidden');         // Small delay to allow display:block to apply before opacity transition         setTimeout(() => {             modal.classList.remove('opacity-0');             modalContent.classList.remove('translate-y-full', 'scale-95');             modalContent.classList.add('md:translate-y-0', 'scale-100');         }, 10);         document.body.style.overflow = 'hidden';     }
+            function closeFreelancerModal() {
+                modal.classList.add('opacity-0'); modalContent.classList.add('translate-y-full', 'scale-95'); modalContent.classList.remove('md:translate-y-0', 'scale-100');
+                setTimeout(() => { modal.classList.add('hidden'); document.body.style.overflow = ''; }, 300);
+            }
+            document.addEventListener("DOMContentLoaded", function () {
+                const form = document.getElementById("freelancer-form"); const successMessage = document.getElementById("freelancer-success");
+                if (form) {
+                    form.addEventListener("submit", async function (e) {
+                        e.preventDefault();                 // Original submission logic...                 const formData = new FormData(form);                 const data = {                     name: formData.get("name"),                     email: formData.get("email"),                     phone: formData.get("phone"),                     city: formData.get("city"),                     experience: formData.get("experience"),                     specialization: formData.getAll("specialization[]"),                     portfolio: formData.get("portfolio"),                     message: formData.get("message"),                     type: "freelancer_application"                 };
+                        if (data.specialization.length === 0) { alert("Lütfen en az bir uzmanlık alanı seçiniz."); return; }
+                        try {
+                            const response = await fetch("/api/freelancer-application.php", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
+                            if (response.ok) { form.style.display = "none"; successMessage.classList.remove("hidden"); successMessage.classList.add("flex"); } else { alert("Bir hata oluştu."); }
+                        } catch (error) { console.error(error); alert("Bir hata oluştu."); }
+                    });
+                }
+            });
     </script>
 <?php endif; ?>
 
