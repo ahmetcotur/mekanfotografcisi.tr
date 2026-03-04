@@ -562,8 +562,8 @@ a {
 /* ======= HERO SECTİON ======= */
 .hero {
     min-height: 70vh;
-    max-height: 85vh;
-    padding: 140px 0 100px;
+    max-height: 80vh;
+    padding: 100px 0 80px;
     background: var(--gradient-hero), url('../images/hero-bg.jpg');
     background-size: cover;
     background-position: center;

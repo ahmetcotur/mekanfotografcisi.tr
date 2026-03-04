@@ -83,19 +83,17 @@ foreach ($services as $index => $service) {
             <!-- Service: {$serviceName} -->
             <div class="group relative bg-slate-900 rounded-3xl h-[450px] overflow-hidden shadow-2xl hover-lift min-w-[85vw] md:min-w-[350px] snap-center shrink-0">
                 <img src="{$serviceImage}" alt="{$serviceName}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110 opacity-60">
-                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/40 to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/60 to-transparent"></div>
                 
-                <div class="absolute inset-0 p-8 flex flex-col justify-end transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500">
-                    <div class="bg-white/10 backdrop-blur-md border border-white/10 p-6 rounded-2xl">
-                        <div class="w-12 h-1 bg-brand-500 mb-6 rounded-full overflow-hidden">
-                            <div class="w-full h-full bg-white -translate-x-full group-hover:translate-x-0 transition-transform duration-700"></div>
-                        </div>
-                        <h3 class="text-2xl font-black text-white mb-4 tracking-tight">{$serviceName}</h3>
-                        <p class="text-slate-200 text-xs font-medium leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">{$serviceIntro}</p>
-                        <a href="/hizmetlerimiz/{$serviceSlug}" class="mt-4 inline-flex items-center gap-2 text-white font-bold text-[10px] uppercase tracking-widest group/btn border border-white/20 px-4 py-2 rounded-full hover:bg-white hover:text-brand-900 transition-all">
-                            Detaylar <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="group-hover/btn:translate-x-2 transition-transform"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                        </a>
+                <div class="absolute inset-0 p-8 flex flex-col justify-end transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                    <div class="w-10 h-1 bg-brand-500 mb-5 rounded-full overflow-hidden">
+                        <div class="w-full h-full bg-white -translate-x-full group-hover:translate-x-0 transition-transform duration-700"></div>
                     </div>
+                    <h3 class="text-2xl font-black text-white mb-3 tracking-tight drop-shadow-lg">{$serviceName}</h3>
+                    <p class="text-slate-300 text-sm font-medium leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 drop-shadow-md">{$serviceIntro}</p>
+                    <a href="/hizmetlerimiz/{$serviceSlug}" class="mt-5 w-fit inline-flex items-center gap-2 text-white font-bold text-[10px] uppercase tracking-widest group/btn border border-white/30 px-5 py-2.5 rounded-full hover:bg-white hover:text-slate-900 transition-all">
+                        Detaylar <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="group-hover/btn:translate-x-2 transition-transform"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    </a>
                 </div>
             </div>
 HTML;
@@ -109,12 +107,12 @@ $content = $post->content;
 $pattern = '/<!-- Services Preview.*?<\/section>/s';
 $replacement = <<<HTML
 <!-- Services Preview -->
-<section class="py-20 bg-white" id="hizmetler">
+<section class="py-16 bg-white" id="hizmetler">
     <div class="container mx-auto px-4">
-        <div class="text-center max-w-4xl mx-auto mb-24">
-             <span class="text-brand-600 font-black tracking-[0.2em] uppercase text-xs mb-6 block">Kategoriler</span>
-            <h2 class="font-heading font-black text-3xl md:text-5xl text-slate-900 mb-8">Neler Yapıyoruz??</h2>
-            <p class="text-slate-500 text-xl lg:text-2xl font-light leading-relaxed">Her mekanın kendine has bir dili vardır. Biz o dili görselleştiriyoruz.</p>
+        <div class="text-center max-w-4xl mx-auto mb-20">
+             <span class="text-brand-600 font-extrabold tracking-[0.2em] uppercase text-[10px] mb-4 block">Kategoriler</span>
+            <h2 class="font-heading font-black text-3xl md:text-4xl text-slate-900 mb-6">Neler Yapıyoruz?</h2>
+            <p class="text-slate-500 text-lg lg:text-xl font-light leading-relaxed">Her mekanın kendine has bir dili vardır. Biz o dili görselleştiriyoruz.</p>
         </div>
         
         <div class="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-8 hide-scrollbar -mx-4 px-4 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-10 md:overflow-visible md:pb-0 md:mx-0 md:px-0">
@@ -153,7 +151,7 @@ $content = str_replace('text-brand-100 mb-16', 'text-slate-200 mb-16', $content)
 // FIX: Add top padding to Hero SECTION on mobile to prevent overlap and change alignment
 $content = str_replace(
     'class="relative min-h-[95vh] flex items-center justify-center overflow-hidden bg-slate-900"',
-    'class="relative min-h-[95vh] flex items-start md:items-center justify-center overflow-hidden bg-slate-900 pt-52 pb-20 md:pt-32 md:pb-32"',
+    'class="relative min-h-[95vh] flex items-start md:items-center justify-center overflow-hidden bg-slate-900 pt-52 pb-16 md:pt-24 md:pb-20"',
     $content
 );
 
