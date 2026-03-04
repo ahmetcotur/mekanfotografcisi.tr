@@ -191,45 +191,6 @@ $content = str_replace(
     $content
 );
 
-// FIX: Dynamic Stats for "Aktif İl" and "Aktif İlçe"
-try {
-    $allProvinces = $db->select('locations_province', ['limit' => 200]);
-    $activeProvinces = [];
-    foreach ($allProvinces as $p) {
-        $isActive = $p['is_active'] ?? false;
-        if ($isActive === true || $isActive === 't' || $isActive === 'true' || $isActive === 1 || $isActive === '1') {
-            $activeProvinces[$p['id']] = $p;
-        }
-    }
-    
-    $allDistricts = $db->select('locations_district', ['limit' => 2000]);
-    $activeDistrictsCount = 0;
-    foreach ($allDistricts as $d) {
-        $isDistActive = $d['is_active'] ?? false;
-        $isActive = ($isDistActive === true || $isDistActive === 't' || $isDistActive === 'true' || $isDistActive === 1 || $isDistActive === '1');
-        if ($isActive && isset($activeProvinces[$d['province_id']])) {
-            $activeDistrictsCount++;
-        }
-    }
-
-    $provCount = count($activeProvinces);
-    $distCount = $activeDistrictsCount;
-
-    $content = preg_replace(
-        '/(<div[^>]*>)\d+(<\/div>\s*<div[^>]*>Aktif İlçe<\/div>)/is',
-        '${1}' . $distCount . '$2',
-        $content
-    );
-
-    $content = preg_replace(
-        '/(<div[^>]*>)\d+(<\/div>\s*<div[^>]*>Aktif İl<\/div>)/is',
-        '${1}' . $provCount . '$2',
-        $content
-    );
-} catch (Exception $e) {
-    error_log("Failed to load dynamic stats: " . $e->getMessage());
-}
-
 echo do_shortcode($content);
 ?>
 

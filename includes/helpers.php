@@ -405,16 +405,46 @@ function do_shortcode($content)
         return $count;
     }, $content);
 
+    static $locationStats = null;
+
+    $getLocationStats = function () use ($db, &$locationStats) {
+        if ($locationStats !== null)
+            return $locationStats;
+
+        $allProvinces = $db->select('locations_province', ['limit' => 200]);
+        $activeProvinces = [];
+        foreach ($allProvinces as $p) {
+            $isActive = $p['is_active'] ?? false;
+            if ($isActive === true || $isActive === 't' || $isActive === 'true' || $isActive === 1 || $isActive === '1') {
+                $activeProvinces[$p['id']] = $p;
+            }
+        }
+
+        $allDistricts = $db->select('locations_district', ['limit' => 2000]);
+        $activeDistrictsCount = 0;
+        foreach ($allDistricts as $d) {
+            $isDistActive = $d['is_active'] ?? false;
+            $isActive = ($isDistActive === true || $isDistActive === 't' || $isDistActive === 'true' || $isDistActive === 1 || $isDistActive === '1');
+            if ($isActive && isset($activeProvinces[$d['province_id']])) {
+                $activeDistrictsCount++;
+            }
+        }
+
+        $locationStats = [
+            'provinces' => count($activeProvinces),
+            'districts' => $activeDistrictsCount
+        ];
+        return $locationStats;
+    };
+
     // [stat_provinces] - Total active provinces
-    $content = preg_replace_callback('/\[stat_provinces\]/', function () use ($db) {
-        $count = $db->query("SELECT count(*) as total FROM locations_province WHERE is_active = true OR is_active = 'true'")[0]['total'] ?? 0;
-        return $count;
+    $content = preg_replace_callback('/\[stat_provinces\]/', function () use ($getLocationStats) {
+        return $getLocationStats()['provinces'];
     }, $content);
 
     // [stat_districts] - Total active districts
-    $content = preg_replace_callback('/\[stat_districts\]/', function () use ($db) {
-        $count = $db->query("SELECT count(*) as total FROM locations_district WHERE is_active = true OR is_active = 'true'")[0]['total'] ?? 0;
-        return $count;
+    $content = preg_replace_callback('/\[stat_districts\]/', function () use ($getLocationStats) {
+        return $getLocationStats()['districts'];
     }, $content);
 
     // [stat_projects] - Project count from settings
