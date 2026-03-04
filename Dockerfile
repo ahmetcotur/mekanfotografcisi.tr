@@ -1,13 +1,23 @@
 FROM webdevops/php-nginx:8.1-alpine
 
-# Install PostgreSQL extensions and client with retries and reliable mirror
-RUN set -ux && \
-    sed -i 's/dl-cdn.alpinelinux.org/uk.alpinelinux.org/g' /etc/apk/repositories && \
+# Install PostgreSQL extensions and client with redundant mirrors and manual dependency management
+RUN printf "https://dl-cdn.alpinelinux.org/alpine/v3.21/main\nhttps://dl-cdn.alpinelinux.org/alpine/v3.21/community\nhttps://uk.alpinelinux.org/alpine/v3.21/main\nhttps://uk.alpinelinux.org/alpine/v3.21/community\nhttps://dl-4.alpinelinux.org/alpine/v3.21/main\nhttps://dl-4.alpinelinux.org/alpine/v3.21/community" > /etc/apk/repositories && \
     apk update && \
     apk add --no-cache \
+    autoconf \
+    dpkg-dev \
+    dpkg \
+    file \
+    g++ \
+    gcc \
+    libc-dev \
+    make \
+    pkgconf \
+    re2c \
     postgresql-dev \
     postgresql-client && \
-    docker-php-ext-install pdo_pgsql
+    docker-php-ext-install pdo_pgsql && \
+    apk del autoconf dpkg-dev dpkg file g++ gcc libc-dev make pkgconf re2c
 
 # Set working directory
 WORKDIR /app
