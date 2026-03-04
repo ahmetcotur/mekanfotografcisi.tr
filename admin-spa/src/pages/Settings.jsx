@@ -297,21 +297,52 @@ export default function Settings() {
                             </div>
 
                             <div className="grid md:grid-cols-2 gap-6">
-                                <div className="space-y-1">
-                                    {renderField('openai_api_key', 'OpenAI API Anahtarı', 'password', 'sk-proj-...')}
-                                    <p className="text-[10px] text-gray-400 px-1">Anahtarınız güvenli bir şekilde saklanır ve sadece sunucu tarafında kullanılır.</p>
+                                <div className="space-y-4">
+                                    <div className="space-y-1">
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">AI Sağlayıcı</label>
+                                        <select
+                                            value={settings['ai_provider'] || 'openai'}
+                                            onChange={(e) => {
+                                                const newProvider = e.target.value;
+                                                handleChange('ai_provider', newProvider);
+                                                handleChange('openai_model', newProvider === 'openrouter' ? 'google/gemini-2.5-flash-free' : 'gpt-4o-mini');
+                                            }}
+                                            className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none transition-all font-bold"
+                                        >
+                                            <option value="openai">OpenAI (Standart)</option>
+                                            <option value="openrouter">OpenRouter (Çoklu Model / Ücretsiz Modeller)</option>
+                                        </select>
+                                    </div>
+                                    <div className="space-y-1">
+                                        {renderField('openai_api_key', 'API Anahtarı', 'password', settings['ai_provider'] === 'openrouter' ? 'sk-or-v1-...' : 'sk-proj-...')}
+                                        <p className="text-[10px] text-gray-400 px-1">Anahtarınız güvenli bir şekilde saklanır ve sadece sunucu tarafında kullanılır.</p>
+                                    </div>
                                 </div>
                                 <div className="space-y-1">
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">OpenAI Model</label>
-                                    <select
-                                        value={settings['openai_model'] || 'gpt-4o-mini'}
-                                        onChange={(e) => handleChange('openai_model', e.target.value)}
-                                        className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none transition-all"
-                                    >
-                                        <option value="gpt-4o-mini">GPT-4o Mini (Hızlı ve Ekonomik - Önerilen)</option>
-                                        <option value="gpt-4o">GPT-4o (En Yüksek Kalite)</option>
-                                    </select>
-                                    <p className="text-[10px] text-gray-400 px-1">Özellikle blog yazıları için 4o-mini hem kaliteli hem de ekonomiktir.</p>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Model Seçimi</label>
+                                    {settings['ai_provider'] === 'openrouter' ? (
+                                        <input
+                                            type="text"
+                                            value={settings['openai_model'] || ''}
+                                            onChange={(e) => handleChange('openai_model', e.target.value)}
+                                            className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none transition-all font-bold"
+                                            placeholder="google/gemini-2.5-flash-free"
+                                        />
+                                    ) : (
+                                        <select
+                                            value={settings['openai_model'] || 'gpt-4o-mini'}
+                                            onChange={(e) => handleChange('openai_model', e.target.value)}
+                                            className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none transition-all"
+                                        >
+                                            <option value="gpt-4o-mini">GPT-4o Mini (Hızlı ve Ekonomik - Önerilen)</option>
+                                            <option value="gpt-4o">GPT-4o (En Yüksek Kalite)</option>
+                                        </select>
+                                    )}
+                                    <p className="text-[10px] text-gray-400 px-1">
+                                        {settings['ai_provider'] === 'openrouter'
+                                            ? "Örn: google/gemini-2.5-flash-free, meta-llama/llama-3-8b-instruct:free"
+                                            : "Özellikle blog yazıları için 4o-mini hem kaliteli hem de ekonomiktir."}
+                                    </p>
                                 </div>
                             </div>
                         </div>

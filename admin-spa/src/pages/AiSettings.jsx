@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 
 export default function AiSettings() {
     const [settings, setSettings] = useState({
+        ai_provider: 'openai',
         openai_api_key: '',
         openai_model: 'gpt-4o-mini'
     });
@@ -25,6 +26,7 @@ export default function AiSettings() {
                     });
                 });
                 setSettings({
+                    ai_provider: flatSettings.ai_provider || 'openai',
                     openai_api_key: flatSettings.openai_api_key || '',
                     openai_model: flatSettings.openai_model || 'gpt-4o-mini'
                 });
@@ -84,30 +86,65 @@ export default function AiSettings() {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                <div className="space-y-6">
                     <div className="space-y-3">
-                        <label className="block text-xs font-black text-gray-400 uppercase tracking-widest ml-1">OpenAI API Key</label>
+                        <label className="block text-xs font-black text-gray-400 uppercase tracking-widest ml-1">AI Sağlayıcı</label>
+                        <select
+                            value={settings.ai_provider}
+                            onChange={(e) => {
+                                const newProvider = e.target.value;
+                                setSettings({
+                                    ...settings,
+                                    ai_provider: newProvider,
+                                    // Reset model if switching providers to ensure valid defaults
+                                    openai_model: newProvider === 'openrouter' ? 'google/gemini-2.5-flash-free' : 'gpt-4o-mini'
+                                });
+                            }}
+                            className="w-full px-6 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-purple-500/10 focus:border-purple-500 transition-all outline-none font-bold text-gray-800"
+                        >
+                            <option value="openai">OpenAI (Standart)</option>
+                            <option value="openrouter">OpenRouter (Çoklu Model / Ücretsiz Modeller)</option>
+                        </select>
+                        <p className="text-[10px] text-gray-400 px-1 font-medium">Hangi AI altyapısını kullanacağınızı seçin.</p>
+                    </div>
+
+                    <div className="space-y-3">
+                        <label className="block text-xs font-black text-gray-400 uppercase tracking-widest ml-1">API Key</label>
                         <input
                             type="password"
                             value={settings.openai_api_key}
                             onChange={(e) => setSettings({ ...settings, openai_api_key: e.target.value })}
                             className="w-full px-6 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-purple-500/10 focus:border-purple-500 transition-all outline-none font-mono text-sm"
-                            placeholder="sk-proj-..."
+                            placeholder={settings.ai_provider === 'openrouter' ? "sk-or-v1-..." : "sk-proj-..."}
                         />
                         <p className="text-[10px] text-gray-400 px-1 font-medium">Key'iniz sunucu tarafında güvenle saklanır.</p>
                     </div>
 
                     <div className="space-y-3">
                         <label className="block text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Model Seçimi</label>
-                        <select
-                            value={settings.openai_model}
-                            onChange={(e) => setSettings({ ...settings, openai_model: e.target.value })}
-                            className="w-full px-6 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-purple-500/10 focus:border-purple-500 transition-all outline-none font-bold text-gray-800"
-                        >
-                            <option value="gpt-4o-mini">GPT-4o Mini (Hızlı & Ekonomik - Önerilen)</option>
-                            <option value="gpt-4o">GPT-4o (En Yüksek Kalite)</option>
-                        </select>
-                        <p className="text-[10px] text-gray-400 px-1 font-medium">Blog yazıları için 4o-mini mükemmel sonuç verir.</p>
+                        {settings.ai_provider === 'openrouter' ? (
+                            <input
+                                type="text"
+                                value={settings.openai_model}
+                                onChange={(e) => setSettings({ ...settings, openai_model: e.target.value })}
+                                className="w-full px-6 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-purple-500/10 focus:border-purple-500 transition-all outline-none font-bold text-gray-800"
+                                placeholder="google/gemini-2.5-flash-free"
+                            />
+                        ) : (
+                            <select
+                                value={settings.openai_model}
+                                onChange={(e) => setSettings({ ...settings, openai_model: e.target.value })}
+                                className="w-full px-6 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-purple-500/10 focus:border-purple-500 transition-all outline-none font-bold text-gray-800"
+                            >
+                                <option value="gpt-4o-mini">GPT-4o Mini (Hızlı & Ekonomik - Önerilen)</option>
+                                <option value="gpt-4o">GPT-4o (En Yüksek Kalite)</option>
+                            </select>
+                        )}
+                        <p className="text-[10px] text-gray-400 px-1 font-medium">
+                            {settings.ai_provider === 'openrouter'
+                                ? "Örn: google/gemini-2.5-flash-free, meta-llama/llama-3-8b-instruct:free"
+                                : "Blog yazıları için 4o-mini mükemmel sonuç verir."}
+                        </p>
                     </div>
                 </div>
 

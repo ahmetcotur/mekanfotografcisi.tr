@@ -12,12 +12,13 @@ $user = requireAuth();
 $db = new DatabaseClient();
 
 // Get settings
+$aiProvider = getSetting($db, 'ai_provider', 'openai');
 $apiKey = getSetting($db, 'openai_api_key');
 $model = getSetting($db, 'openai_model', 'gpt-4o-mini');
 
 if (empty($apiKey)) {
     http_response_code(400);
-    echo json_encode(['success' => false, 'error' => 'OpenAI API Anahtarı ayarlanmamış. Lütfen ayarlardan ekleyin.']);
+    echo json_encode(['success' => false, 'error' => 'API Anahtarı ayarlanmamış. Lütfen AI ayarlardan ekleyin.']);
     exit;
 }
 
@@ -90,7 +91,7 @@ HEDEF ANAHTAR KELİMELER: '{$keywords}'
 9. Eğer uygunsa, buton veya dikkat çekici alanlar için şu sınıfları kullanabilirsin:
    - Fiyat Teklifi Butonu: <a href=\"#\" onclick=\"openQuoteWizard('mimari')\" class=\"inline-block px-8 py-4 bg-brand-600 hover:bg-brand-500 text-white rounded-2xl font-black shadow-xl transition-all\">Hemen Fiyat Al</a>";
 
-        $response = callOpenAI($apiKey, $model, $prompt);
+        $response = callOpenAI($aiProvider, $apiKey, $model, $prompt);
 
         if ($type === 'blog') {
             // Clean up JSON if LLM added markdown backticks
@@ -117,7 +118,7 @@ HEDEF ANAHTAR KELİMELER: '{$keywords}'
 Öneriler sadece slug formatında olsun (örn: antalya-otel-cekimi). 
 Sadece JSON listesi olarak döndür: [\"slug1\", \"slug2\"]";
 
-        $response = callOpenAI($apiKey, $model, $prompt);
+        $response = callOpenAI($aiProvider, $apiKey, $model, $prompt);
         // Clean up JSON if LLM added markdown backticks
         $jsonStr = preg_replace('/```json\s*|\s*```/', '', $response);
         echo json_encode(['success' => true, 'suggestions' => json_decode($jsonStr, true)]);
@@ -131,11 +132,14 @@ Sadece JSON listesi olarak döndür: [\"slug1\", \"slug2\"]";
 }
 
 /**
- * Call OpenAI API
+/**
+ * Call OpenAI / OpenRouter API
  */
-function callOpenAI($apiKey, $model, $prompt)
+function callOpenAI($aiProvider, $apiKey, $model, $prompt)
 {
-    $url = 'https://api.openai.com/v1/chat/completions';
+    $url = $aiProvider === 'openrouter'
+        ? 'https://openrouter.ai/api/v1/chat/completions'
+        : 'https://api.openai.com/v1/chat/completions';
 
     $postData = [
         'model' => $model,
@@ -146,14 +150,21 @@ function callOpenAI($apiKey, $model, $prompt)
         'temperature' => 0.7
     ];
 
+    $headers = [
+        'Content-Type: application/json',
+        'Authorization: Bearer ' . $apiKey
+    ];
+
+    if ($aiProvider === 'openrouter') {
+        $headers[] = 'HTTP-Referer: https://mekanfotografcisi.tr';
+        $headers[] = 'X-Title: Mekan Fotografcisi';
+    }
+
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postData));
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        'Content-Type: application/json',
-        'Authorization: Bearer ' . $apiKey
-    ]);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
     $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);

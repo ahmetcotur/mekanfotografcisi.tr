@@ -92,6 +92,7 @@ export default function SeoLinkManager() {
     const srvOrder = getSetting('seo_service_location_order', 'province-service');
     const srvTitleTemplate = getSetting('seo_service_location_title_template', '{province} {service}');
 
+    const aiProvider = getSetting('ai_provider', 'openai');
     const aiKey = getSetting('openai_api_key', '');
     const aiModel = getSetting('openai_model', 'gpt-4o-mini');
     const srvLocMetaDesc = getSetting('seo_service_location_meta_desc_template', '');
@@ -336,33 +337,61 @@ export default function SeoLinkManager() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <div className="space-y-4">
                                     <div className="space-y-2">
-                                        <label className="text-xs font-black text-gray-400 uppercase tracking-widest px-1">OpenAI API Key</label>
+                                        <label className="text-xs font-black text-gray-400 uppercase tracking-widest px-1">AI Sağlayıcı</label>
+                                        <select
+                                            value={aiProvider}
+                                            onChange={(e) => {
+                                                const newProvider = e.target.value;
+                                                handleUpdateSetting('ai_provider', newProvider);
+                                                handleUpdateSetting('openai_model', newProvider === 'openrouter' ? 'google/gemini-2.5-flash-free' : 'gpt-4o-mini');
+                                            }}
+                                            className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-purple-500/10 focus:border-purple-500 outline-none font-bold appearance-none bg-no-repeat bg-[right_1.25rem_center] bg-[length:1rem_1rem]"
+                                            style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")` }}
+                                        >
+                                            <option value="openai">OpenAI (Standart)</option>
+                                            <option value="openrouter">OpenRouter (Çoklu Model / Ücretsiz Modeller)</option>
+                                        </select>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-black text-gray-400 uppercase tracking-widest px-1">API Key</label>
                                         <input
                                             type="password"
                                             value={aiKey}
                                             onChange={(e) => handleUpdateSetting('openai_api_key', e.target.value)}
                                             className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-purple-500/10 focus:border-purple-500 outline-none font-mono text-sm"
-                                            placeholder="sk-..."
+                                            placeholder={aiProvider === 'openrouter' ? "sk-or-v1-..." : "sk-..."}
                                         />
                                     </div>
-                                    <div className="space-y-2">
-                                        <label className="text-xs font-black text-gray-400 uppercase tracking-widest px-1">Model</label>
-                                        <select
-                                            value={aiModel}
-                                            onChange={(e) => handleUpdateSetting('openai_model', e.target.value)}
-                                            className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-purple-500/10 focus:border-purple-500 outline-none font-bold appearance-none bg-no-repeat bg-[right_1.25rem_center] bg-[length:1rem_1rem]"
-                                            style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")` }}
-                                        >
-                                            <option value="gpt-4o-mini">GPT-4o Mini</option>
-                                            <option value="gpt-4o">GPT-4o</option>
-                                            <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
-                                        </select>
-                                    </div>
                                 </div>
-                                <div className="flex items-center justify-center p-6 border-2 border-dashed border-gray-200 rounded-[2rem]">
-                                    <div className="text-center">
-                                        <div className="text-3xl mb-2">🤖</div>
-                                        <p className="text-xs text-gray-500 max-w-[200px]">OpenAI entegrasyonu ile içerik ve URL önerileri alabilirsiniz.</p>
+                                <div className="space-y-4">
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-black text-gray-400 uppercase tracking-widest px-1">Model Seçimi</label>
+                                        {aiProvider === 'openrouter' ? (
+                                            <input
+                                                type="text"
+                                                value={aiModel}
+                                                onChange={(e) => handleUpdateSetting('openai_model', e.target.value)}
+                                                className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-purple-500/10 focus:border-purple-500 outline-none font-bold"
+                                                placeholder="google/gemini-2.5-flash-free"
+                                            />
+                                        ) : (
+                                            <select
+                                                value={aiModel}
+                                                onChange={(e) => handleUpdateSetting('openai_model', e.target.value)}
+                                                className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-purple-500/10 focus:border-purple-500 outline-none font-bold appearance-none bg-no-repeat bg-[right_1.25rem_center] bg-[length:1rem_1rem]"
+                                                style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")` }}
+                                            >
+                                                <option value="gpt-4o-mini">GPT-4o Mini</option>
+                                                <option value="gpt-4o">GPT-4o</option>
+                                                <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                                            </select>
+                                        )}
+                                    </div>
+                                    <div className="flex items-center justify-center p-6 border-2 border-dashed border-gray-200 rounded-[2rem]">
+                                        <div className="text-center">
+                                            <div className="text-3xl mb-2">🤖</div>
+                                            <p className="text-xs text-gray-500 max-w-[200px]">AI entegrasyonu ile URL önerileri ve içerik taslakları oluşturabilirsiniz.</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
