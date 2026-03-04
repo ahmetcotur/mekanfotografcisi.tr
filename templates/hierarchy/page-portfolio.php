@@ -67,7 +67,8 @@ include __DIR__ . '/../page-header.php';
                 <?php foreach ($allPhotos as $photo): ?>
                     <div
                         class="break-inside-avoid group relative rounded-4xl overflow-hidden cursor-pointer shadow-2xl hover-lift border border-slate-100">
-                        <a href="<?= htmlspecialchars($photo['url']) ?>" target="_blank" rel="noopener" class="block">
+                        <a href="<?= htmlspecialchars($photo['src']) ?>" class="block portfolio-lightbox"
+                            data-gallery="portfolio-gallery" data-title="<?= htmlspecialchars($photo['alt']) ?>">
                             <img src="<?= htmlspecialchars($photo['src']) ?>" alt="<?= htmlspecialchars($photo['alt']) ?>"
                                 loading="lazy"
                                 class="w-full h-auto object-cover transform transition-transform duration-1000 group-hover:scale-110">
@@ -76,7 +77,7 @@ include __DIR__ . '/../page-header.php';
                                 class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end justify-center p-8">
                                 <span
                                     class="px-8 py-3 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-2xl font-black text-sm uppercase tracking-widest transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                                    İncele
+                                    Büyüt
                                 </span>
                             </div>
                         </a>
@@ -121,5 +122,36 @@ include __DIR__ . '/../page-header.php';
 
     </div>
 </section>
+
+<!-- GLightbox for Portfolio -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
+<script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+<style>
+    .glightbox-clean .gslide-description {
+        background: transparent;
+        text-align: center;
+    }
+
+    .glightbox-clean .gslide-title {
+        color: white;
+        font-family: 'Inter', sans-serif;
+        font-weight: 900;
+        font-size: 1.5rem;
+        text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+</style>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        if (typeof GLightbox !== 'undefined') {
+            const lightbox = GLightbox({
+                selector: '.portfolio-lightbox',
+                touchNavigation: true,
+                loop: true,
+                zoomable: true,
+                descPosition: 'bottom'
+            });
+        }
+    });
+</script>
 
 <?php include __DIR__ . '/../page-footer.php'; ?>
