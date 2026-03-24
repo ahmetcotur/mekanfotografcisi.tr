@@ -279,7 +279,7 @@
     </script>
 <?php endif; ?>
     <!-- Voyn Widget -->
-    <script src="https://lead.ahmetcotur.com/widget/widget.js?v=4" data-site-key="<?= getenv('LEADS_SITE_KEY') ?: 'mekanfotografcisi_tr' ?>"></script>
+    <script src="https://lead.ahmetcotur.com/widget/widget.js?v=4" data-site-key="<?= getenv('LEADS_SITE_KEY') ?: 'site_mekan_8342' ?>"></script>
 </body>
 
 </html>
