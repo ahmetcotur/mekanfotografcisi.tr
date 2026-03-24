@@ -310,7 +310,7 @@ function submitQuote() {
                     
                     <div class="bg-slate-50 border border-brand-100 rounded-2xl p-4 mb-8">
                         <span class="text-xs text-slate-400 uppercase font-bold tracking-widest block mb-1">Teklif Numaranız</span>
-                        <span class="text-2xl font-black text-brand-600 tracking-tighter">${data.quote_number || '#' + data.quote_id}</span>
+                        <span class="text-2xl font-black text-brand-600 tracking-tighter">${data.quote_number || '#' + data.id}</span>
                     </div>
 
                     <button onclick="closeQuoteWizard()" class="px-8 py-3 bg-slate-100 font-bold rounded-xl hover:bg-slate-200">Kapat</button>
