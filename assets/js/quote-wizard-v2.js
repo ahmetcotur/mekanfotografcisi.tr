@@ -252,25 +252,38 @@ function submitQuote() {
     // Configure Data
     const formData = new FormData(document.getElementById('quote-form'));
 
-    // Base data
+    // Construct meaningful summary for the CRM
+    let summary = `Hizmet: ${formData.get('service_type')}\n`;
+    if (formData.get('project_desc')) summary += `Not: ${formData.get('project_desc')}\n`;
+    
+    // Form fields to exclude from dynamic summary loop (they are added manually or handled differently)
+    const baseFields = ['name', 'email', 'phone', 'location', 'service_type', 'project_desc', 'preferred_date', 'preferred_time', 'urgency'];
+    
+    for (let [key, value] of formData.entries()) {
+        if (!baseFields.includes(key) && value) {
+            summary += `${key}: ${value}\n`;
+        }
+    }
+    
+    if (formData.get('preferred_date')) summary += `Tarih: ${formData.get('preferred_date')}\n`;
+    if (formData.get('preferred_time')) summary += `Işık: ${formData.get('preferred_time')}\n`;
+    if (formData.get('urgency')) summary += `Aciliyet: ${formData.get('urgency')}`;
+
     const payload = {
         name: formData.get('name'),
         email: formData.get('email'),
         phone: formData.get('phone'),
         location: formData.get('location'),
         service: formData.get('service_type'),
-        message: formData.get('project_desc') || 'Sihirbaz üzerinden detaylı teklif isteği.'
+        message: summary.trim()
     };
 
-    // Extract dynamic fields for "Wizard Details"
-    const wizardDetails = {};
-    const baseFields = ['name', 'email', 'phone', 'location', 'service_type', 'project_desc'];
+    // Flatten all fields into payload for detailed view
     for (let [key, value] of formData.entries()) {
-        if (!baseFields.includes(key)) {
-            wizardDetails[key] = value;
+        if (!['name', 'email', 'phone', 'location', 'service_type', 'project_desc'].includes(key)) {
+            payload[key] = value;
         }
     }
-    payload.wizard_details = wizardDetails;
 
     // Send to Local Save
     fetch('/save-form.php', {
@@ -286,7 +299,7 @@ function submitQuote() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify({
-            site_key: window.LEADS_SITE_KEY || 'site_mekan_8342',
+            website_uuid: window.LEADS_WEBSITE_UUID || '1be2f821-28cd-4c86-aeb0-dabe0c05aa0a',
             business_name: payload.name,
             email: payload.email,
             phone: payload.phone,
