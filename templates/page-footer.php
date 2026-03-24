@@ -275,7 +275,7 @@
     </script>
 <?php endif; ?>
     <!-- Voyn Widget -->
-    <script src="/widget/widget.js" data-site-key="mekanfotografcisi_tr"></script>
+    <script src="/widget/widget.js?v=2" data-site-key="mekanfotografcisi_tr"></script>
 </body>
 
 </html>
