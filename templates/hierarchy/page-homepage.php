@@ -443,26 +443,77 @@ if (strpos($content, 'freelancer-basvuru') === false):
         </div>
     </div>
 
-    <script>     // Modal Logic     const modal = document.getElementById('freelancer-modal');     const modalContent = document.getElementById('freelancer-modal-content');
+    <script>
+        // Modal Logic
+        const modal = document.getElementById('freelancer-modal');
+        const modalContent = document.getElementById('freelancer-modal-content');
+
         function openFreelancerModal() {
-            modal.classList.remove('hidden');         // Small delay to allow display:block to apply before opacity transition         setTimeout(() => {             modal.classList.remove('opacity-0');             modalContent.classList.remove('translate-y-full', 'scale-95');             modalContent.classList.add('md:translate-y-0', 'scale-100');         }, 10);         document.body.style.overflow = 'hidden';     }
-            function closeFreelancerModal() {
-                modal.classList.add('opacity-0'); modalContent.classList.add('translate-y-full', 'scale-95'); modalContent.classList.remove('md:translate-y-0', 'scale-100');
-                setTimeout(() => { modal.classList.add('hidden'); document.body.style.overflow = ''; }, 300);
+            modal.classList.remove('hidden');
+            // Small delay to allow display:block to apply before opacity transition
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modalContent.classList.remove('translate-y-full', 'scale-95');
+                modalContent.classList.add('md:translate-y-0', 'scale-100');
+            }, 10);
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeFreelancerModal() {
+            modal.classList.add('opacity-0');
+            modalContent.classList.add('translate-y-full', 'scale-95');
+            modalContent.classList.remove('md:translate-y-0', 'scale-100');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                document.body.style.overflow = '';
+            }, 300);
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.getElementById("freelancer-form");
+            const successMessage = document.getElementById("freelancer-success");
+            if (form) {
+                form.addEventListener("submit", async function (e) {
+                    e.preventDefault();
+                    // Original submission logic...
+                    const formData = new FormData(form);
+                    const data = {
+                        name: formData.get("name"),
+                        email: formData.get("email"),
+                        phone: formData.get("phone"),
+                        city: formData.get("city"),
+                        experience: formData.get("experience"),
+                        specialization: formData.getAll("specialization[]"),
+                        portfolio: formData.get("portfolio"),
+                        message: formData.get("message"),
+                        type: "freelancer_application"
+                    };
+
+                    if (data.specialization.length === 0) {
+                        alert("Lütfen en az bir uzmanlık alanı seçiniz.");
+                        return;
+                    }
+
+                    try {
+                        const response = await fetch("/api/freelancer-application.php", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(data)
+                        });
+                        if (response.ok) {
+                            form.style.display = "none";
+                            successMessage.classList.remove("hidden");
+                            successMessage.classList.add("flex");
+                        } else {
+                            alert("Bir hata oluştu.");
+                        }
+                    } catch (error) {
+                        console.error(error);
+                        alert("Bir hata oluştu.");
+                    }
+                });
             }
-            document.addEventListener("DOMContentLoaded", function () {
-                const form = document.getElementById("freelancer-form"); const successMessage = document.getElementById("freelancer-success");
-                if (form) {
-                    form.addEventListener("submit", async function (e) {
-                        e.preventDefault();                 // Original submission logic...                 const formData = new FormData(form);                 const data = {                     name: formData.get("name"),                     email: formData.get("email"),                     phone: formData.get("phone"),                     city: formData.get("city"),                     experience: formData.get("experience"),                     specialization: formData.getAll("specialization[]"),                     portfolio: formData.get("portfolio"),                     message: formData.get("message"),                     type: "freelancer_application"                 };
-                        if (data.specialization.length === 0) { alert("Lütfen en az bir uzmanlık alanı seçiniz."); return; }
-                        try {
-                            const response = await fetch("/api/freelancer-application.php", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
-                            if (response.ok) { form.style.display = "none"; successMessage.classList.remove("hidden"); successMessage.classList.add("flex"); } else { alert("Bir hata oluştu."); }
-                        } catch (error) { console.error(error); alert("Bir hata oluştu."); }
-                    });
-                }
-            });
+        });
     </script>
 <?php endif; ?>
 
