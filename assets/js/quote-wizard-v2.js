@@ -290,7 +290,8 @@ function submitQuote() {
             business_name: payload.name,
             email: payload.email,
             phone: payload.phone,
-            details: payload
+            details: payload,
+            page_url: window.location.href
         })
     })
         .then(r => r.json())
