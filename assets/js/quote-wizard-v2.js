@@ -272,13 +272,26 @@ function submitQuote() {
     }
     payload.wizard_details = wizardDetails;
 
-    // Send
+    // Send to Local Save
     fetch('/save-form.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(payload)
+    });
+
+    // Send to Central CRM
+    fetch(window.LEADS_API_URL || 'https://lead.ahmetcotur.com/api/leads/form', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+            site_key: window.LEADS_SITE_KEY || 'site_mekan_8342',
+            business_name: payload.name,
+            email: payload.email,
+            phone: payload.phone,
+            details: payload
+        })
     })
         .then(r => r.json())
         .then(data => {

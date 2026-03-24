@@ -159,6 +159,10 @@
 </footer>
 
 <!-- JavaScript -->
+<script>
+    window.LEADS_SITE_KEY = "<?= getenv('LEADS_SITE_KEY') ?: 'site_mekan_8342' ?>";
+    window.LEADS_API_URL = "<?= getenv('LEADS_API_URL') ?: 'https://lead.ahmetcotur.com/api/leads/form' ?>";
+</script>
 <script src="/assets/js/main.js?v=<?= time() ?>"></script>
 
 <!-- SweetAlert2 for Frontend Modals -->
@@ -275,7 +279,7 @@
     </script>
 <?php endif; ?>
     <!-- Voyn Widget -->
-    <script src="/widget/widget.js?v=2" data-site-key="mekanfotografcisi_tr"></script>
+    <script src="https://lead.ahmetcotur.com/widget/widget.js" data-site-key="<?= getenv('LEADS_SITE_KEY') ?: 'site_mekan_8342' ?>"></script>
 </body>
 
 </html>
