@@ -1,23 +1,7 @@
 FROM webdevops/php-nginx:8.1-alpine
 
-# Install PostgreSQL extensions and client with redundant mirrors and manual dependency management
-RUN printf "https://dl-cdn.alpinelinux.org/alpine/v3.21/main\nhttps://dl-cdn.alpinelinux.org/alpine/v3.21/community\nhttps://uk.alpinelinux.org/alpine/v3.21/main\nhttps://uk.alpinelinux.org/alpine/v3.21/community\nhttps://dl-4.alpinelinux.org/alpine/v3.21/main\nhttps://dl-4.alpinelinux.org/alpine/v3.21/community" > /etc/apk/repositories && \
-    apk update && \
-    apk add --no-cache \
-    autoconf \
-    dpkg-dev \
-    dpkg \
-    file \
-    g++ \
-    gcc \
-    libc-dev \
-    make \
-    pkgconf \
-    re2c \
-    postgresql-dev \
-    postgresql-client && \
-    docker-php-ext-install pdo_pgsql && \
-    apk del autoconf dpkg-dev dpkg file g++ gcc libc-dev make pkgconf re2c
+# Install PostgreSQL client for running migrations (Note: webdevops/php-nginx already includes pdo_pgsql)
+RUN apk update && apk add --no-cache postgresql-client
 
 # Set working directory
 WORKDIR /app
