@@ -154,6 +154,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
+    // Form kaydedildikten sonra n8n'e de gönder
+    $preferred_date = isset($data['shoot_date']) ? sanitizeString($data['shoot_date']) : (isset($data['preferred_date']) ? sanitizeString($data['preferred_date']) : '');
+    $webhook_data = json_encode([
+        'source'       => 'form',
+        'website_uuid' => '1be2f821-28cd-4c86-aeb0-dabe0c05aa0a',
+        'name'         => $name,
+        'phone'        => $phone,
+        'email'        => $email,
+        'form_message' => $message,
+        'service'      => $service,
+        'location'     => $location,
+        'shoot_date'   => $preferred_date,
+        'page_url'     => $_SERVER['HTTP_REFERER'] ?? ''
+    ]);
+
+    $ch = curl_init('https://n8n.ahmetcotur.com/webhook/chat');
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $webhook_data);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+    curl_exec($ch);
+    curl_close($ch);
+
     // Başarılı yanıt döndür
     echo json_encode([
         'success' => true,
