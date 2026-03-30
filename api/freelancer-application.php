@@ -64,6 +64,22 @@ try {
     // Insert into database
     $result = $db->insert('freelancer_applications', $applicationData);
 
+    // Form kaydedildikten sonra n8n'e de gönder
+    $webhook_data = json_encode(array_merge($data, [
+        'source'       => 'freelancer_application',
+        'website_uuid' => env('LEADS_WEBSITE_UUID', '1be2f821-28cd-4c86-aeb0-dabe0c05aa0a'),
+        'page_url'     => $_SERVER['HTTP_REFERER'] ?? ''
+    ]));
+
+    $ch = curl_init(env('LEADS_API_URL', 'https://n8n.ahmetcotur.com/webhook/chat'));
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $webhook_data);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+    curl_exec($ch);
+    curl_close($ch);
+
     // Send email notification
     $to = env('ADMIN_EMAIL', 'info@mekanfotografcisi.tr');
     $subject = 'Yeni Freelancer Başvurusu - ' . $data['name'];
