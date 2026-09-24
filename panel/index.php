@@ -6,6 +6,8 @@
  * stored in localStorage (mf_token) - same pattern admin-spa uses server-side
  * via bearer token, just without a build step.
  */
+require_once __DIR__ . '/../includes/database.php';
+
 $pageTitle = 'Fotoğrafçı Paneli';
 $pageDescription = 'Açık çekim taleplerini görüntüleyin, işlerinizi yönetin ve profilinizi güncelleyin.';
 $pageRobots = 'noindex, follow';

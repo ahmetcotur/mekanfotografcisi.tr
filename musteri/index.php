@@ -4,6 +4,8 @@
  * Lists the logged-in client's own quote requests and who's handling them.
  * Same client-side JWT-guard pattern as /panel.
  */
+require_once __DIR__ . '/../includes/database.php';
+
 $pageTitle = 'Taleplerim';
 $pageDescription = 'Çekim taleplerinizi ve durumlarını görüntüleyin.';
 $pageRobots = 'noindex, follow';

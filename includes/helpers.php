@@ -89,6 +89,7 @@ function get_random_pexels_photo()
 {
     static $pexelsService = null;
     if ($pexelsService === null) {
+        require_once __DIR__ . '/Core/PexelsService.php';
         $pexelsService = new \Core\PexelsService();
     }
     $photo = $pexelsService->getRandomPhoto();
@@ -110,6 +111,7 @@ function get_random_pexels_photos($count = 3)
 {
     static $pexelsService = null;
     if ($pexelsService === null) {
+        require_once __DIR__ . '/Core/PexelsService.php';
         $pexelsService = new \Core\PexelsService();
     }
     $photos = $pexelsService->getRandomPhotosBatch($count);
