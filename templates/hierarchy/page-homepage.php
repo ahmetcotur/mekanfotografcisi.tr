@@ -1,35 +1,25 @@
 <?php
 /**
- * Homepage template with dynamic hero slider and services
+ * Homepage.
+ *
+ * Built entirely from this template (the old version string-patched the
+ * `homepage` post's stored HTML with ~15 regexes, which broke whenever that
+ * HTML changed). $post is still used for the SEO title/description fallback.
  */
 $pageTitle = 'Mekan Fotoğrafçısı Bul veya Fotoğrafçı Olarak Katıl';
 $pageDescription = 'Mekanını çektirmek isteyenler için bölgesine ve kategorisine uygun fotoğrafçı bulma, fotoğrafçılar için ise açık çekim taleplerine erişme platformu.';
 include __DIR__ . '/../page-header.php';
 
-// Prepare Pexels Slider Images
-require_once __DIR__ . '/../../includes/Core/PexelsService.php';
-$pexels = new \Core\PexelsService();
-$sliderPhotos = $pexels->getRandomPhotos(5);
-$sliderImagesJson = json_encode(array_map(function ($p) {
-    return $p['src'];
-}, $sliderPhotos));
+global $db;
+if (!$db) {
+    $db = new DatabaseClient();
+}
 
-// Fetch services from database
-require_once __DIR__ . '/../../includes/database.php';
-$db = new DatabaseClient();
-// Fetch all active services from posts table
-$services = $db->select('posts', [
-    'post_type' => 'service',
-    'post_status' => 'publish',
-    'limit' => 50,
-    'order' => 'title'
-]);
+$services = published_services($db);
 
-// Fetch a few approved + public photographers for the homepage highlight strip.
 // Guarded: is_public/rating_avg only exist once the marketplace migrations
-// (scripts/migrations/20260201_*) have been applied. A page-breaking query
-// here (and the homepage is too important to risk that) would rather just
-// skip the section than crash the whole page.
+// (scripts/migrations/20260201_*) have been applied. Skip the section rather
+// than take the homepage down.
 $featuredPhotographers = [];
 try {
     $featuredPhotographers = $db->select('freelancer_applications', [
@@ -42,586 +32,290 @@ try {
     error_log('Featured photographers fetch failed (migrations pending?): ' . $e->getMessage());
 }
 
-// Service images mapping (Pexels URLs from the current homepage)
-$serviceImages = [
-    'mimari-fotografcilik' => 'https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg',
-    'ic-mekan-fotografciligi' => 'https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg',
-    'otel-fotografciligi' => 'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg',
-    'emlak-fotografciligi' => 'https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg',
-    'otel-restoran-fotografciligi' => 'https://images.pexels.com/photos/67468/pexels-photo-67468.jpeg',
-    'yemek-fotografciligi' => 'https://images.pexels.com/photos/67468/pexels-photo-67468.jpeg',
-    'villa-fotografciligi' => 'https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg',
-    'yat-fotografciligi' => 'https://images.pexels.com/photos/7045926/pexels-photo-7045926.jpeg',
-    'butik-otel-fotografciligi' => 'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg',
-    'lifestyle-fotografciligi' => 'https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg',
-    'konut-projeleri-fotografciligi' => 'https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg',
-    'ofis-fotografciligi' => 'https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg',
-    'is-merkezi-fotografciligi' => 'https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg',
-    'ticari-alan-fotografciligi' => 'https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg',
-    'pansiyon-fotografciligi' => 'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg',
-    'termal-tesis-fotografciligi' => 'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg',
+$activeProvinces = [];
+try {
+    $activeProvinces = $db->select('locations_province', ['is_active' => true, 'order' => 'name ASC', 'limit' => 100]);
+} catch (Exception $e) {
+    error_log('Homepage provinces fetch failed: ' . $e->getMessage());
+}
+
+// Photos: curated Pexels set from the admin, local files as a fallback.
+$photos = array_values(array_filter(array_map('photo_src', get_random_pexels_photos(12))));
+$localPhotos = ['/assets/images/hero-bg.jpg', '/assets/images/portfolio-1.jpg', '/assets/images/portfolio-2.jpg', '/assets/images/portfolio-3.jpg', '/assets/images/portfolio-4.jpg', '/assets/images/portfolio-6.jpg'];
+$photoAt = function ($i) use ($photos, $localPhotos) {
+    return $photos[$i] ?? $localPhotos[$i % count($localPhotos)];
+};
+
+$serviceIcons = ['otel' => 'hotel', 'pansiyon' => 'hotel', 'termal' => 'hotel', 'yemek' => 'utensils', 'restoran' => 'utensils', 'emlak' => 'home', 'villa' => 'home', 'konut' => 'home', 'yat' => 'sparkles', 'ofis' => 'briefcase', 'is-merkezi' => 'briefcase', 'ticari' => 'briefcase', 'mimari' => 'building', 'lifestyle' => 'sparkles'];
+$serviceIcon = function ($slug) use ($serviceIcons) {
+    foreach ($serviceIcons as $needle => $icon) {
+        if (strpos($slug, $needle) !== false) {
+            return $icon;
+        }
+    }
+    return 'camera';
+};
+$serviceHref = function ($slug) {
+    return '/hizmetlerimiz/' . preg_replace('#^hizmetlerimiz/#', '', $slug);
+};
+
+$faqs = [
+    ['Teklif almak ücretli mi?', 'Hayır. Talep oluşturmak ve teklif almak ücretsizdir; gelen tekliflerden birini kabul etmek zorunda değilsin.'],
+    ['Fotoğrafçılar nasıl seçiliyor?', 'Kolektife katılan her fotoğrafçının başvurusu ve portfolyosu incelenir. Onaylanan fotoğrafçılar profillerinde uzmanlık alanlarını, çalıştıkları bölgeleri ve müşteri değerlendirmelerini gösterir.'],
+    ['Talebim kimlere iletiliyor?', 'Talebin, çekim yerine ve istediğin hizmete göre eşleşen fotoğrafçılara iletilir. İletişim bilgilerin yalnızca bu fotoğrafçılarla paylaşılır.'],
+    ['Fotoğrafları ne zaman teslim alırım?', 'Çoğu mekan çekimi 2-4 iş günü içinde düzenlenmiş olarak teslim edilir. Kesin süreyi çekim öncesinde fotoğrafçınla netleştirirsin.'],
 ];
-
-// Default fallback image
-$defaultImage = 'https://images.pexels.com/photos/7045926/pexels-photo-7045926.jpeg';
-
-// Fail-safe: If no services found in DB, populate with defaults
-if (empty($services)) {
-    $services = [
-        ['title' => 'Mimari Fotoğrafçılık', 'slug' => 'mimari-fotografcilik', 'short_intro' => 'Yapıların estetiğini ve mimari detaylarını profesyonelce yansıtıyoruz.'],
-        ['title' => 'İç Mekan Fotoğrafçılığı', 'slug' => 'ic-mekan-fotografciligi', 'short_intro' => 'Mekanların atmosferini ve derinliğini en doğru ışıkla aktarıyoruz.'],
-        ['title' => 'Otel Fotoğrafçılığı', 'slug' => 'otel-fotografciligi', 'short_intro' => 'Misafirlerinize konforu ve lüksü hissettiren etkileyici görseller.'],
-        ['title' => 'Emlak Fotoğrafçılığı', 'slug' => 'emlak-fotografciligi', 'short_intro' => 'Gayrimenkullerinizi hızlı satışa dönüştüren profesyonel çekimler.'],
-        ['title' => 'Yemek Fotoğrafçılığı', 'slug' => 'yemek-fotografciligi', 'short_intro' => 'Lezzeti görselleştiren, iştah kabartan menü ve sunum çekimleri.'],
-        ['title' => 'Drone Çekimi', 'slug' => 'hava-cekimleri', 'short_intro' => 'Projelerinizi gökyüzünden, benzersiz açılarla görüntüleyin.']
-    ];
-}
-
-// Build services HTML
-$servicesHtml = '';
-$serviceCount = 0;
-// Fetch Pexels photos for services
-require_once __DIR__ . '/../../includes/Core/PexelsService.php';
-$pexelsService = new \Core\PexelsService();
-$servicePhotos = $pexelsService->getRandomPhotos(count($services));
-
-foreach ($services as $index => $service) {
-    if ($serviceCount >= 24)
-        break; // Limit to 24 services max
-
-    $serviceName = htmlspecialchars($service['title']);
-    $serviceSlug = htmlspecialchars($service['slug']);
-    $serviceIntro = htmlspecialchars($service['short_intro'] ?? 'Profesyonel fotoğrafçılık hizmeti.');
-
-    // Get Pexels photo
-    $photo = $servicePhotos[$index] ?? null;
-    $serviceImage = $photo ? ($photo['src'] ?? $photo['src']['large']) : ($serviceImages[$serviceSlug] ?? $defaultImage);
-
-    // Replace service card glass styling
-    $servicesHtml .= <<<HTML
-            <!-- Service: {$serviceName} -->
-            <div class="group relative bg-slate-900 rounded-2xl h-[340px] overflow-hidden shadow-xl hover-lift min-w-[80vw] md:min-w-[300px] snap-center shrink-0">
-                <img src="{$serviceImage}" alt="{$serviceName}" loading="lazy" class="absolute inset-0 w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110 opacity-60">
-                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/60 to-transparent"></div>
-
-                <div class="absolute inset-0 p-6 flex flex-col justify-end transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                    <div class="w-8 h-1 bg-brand-500 mb-3 rounded-full overflow-hidden">
-                        <div class="w-full h-full bg-white -translate-x-full group-hover:translate-x-0 transition-transform duration-700"></div>
-                    </div>
-                    <h3 class="text-xl font-black text-white mb-2 tracking-tight drop-shadow-lg">{$serviceName}</h3>
-                    <p class="text-slate-300 text-sm font-medium leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 drop-shadow-md">{$serviceIntro}</p>
-                    <a href="/hizmetlerimiz/{$serviceSlug}" class="mt-4 w-fit inline-flex items-center gap-2 text-white font-bold text-[10px] uppercase tracking-widest group/btn border border-white/30 px-4 py-2 rounded-full hover:bg-white hover:text-slate-900 transition-all">
-                        Detaylar <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="group-hover/btn:translate-x-2 transition-transform"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                    </a>
-                </div>
-            </div>
-HTML;
-    $serviceCount++;
-}
-
-// Get the content and replace the services section
-$content = $post->content;
-
-// Find and replace the services grid section
-$pattern = '/<!-- Services Preview.*?<\/section>/s';
-$replacement = <<<HTML
-<!-- Services Preview -->
-<section class="py-14 bg-white" id="hizmetler">
-    <div class="container mx-auto px-4">
-        <div class="text-center max-w-4xl mx-auto mb-12">
-             <span class="text-brand-600 font-extrabold tracking-[0.2em] uppercase text-[10px] mb-4 block">Kategoriler</span>
-            <h2 class="font-heading font-black text-2xl md:text-4xl text-slate-900 mb-4">Neler Yapıyoruz?</h2>
-            <p class="text-slate-500 text-base lg:text-lg font-light leading-relaxed">Her mekanın kendine has bir dili vardır. Biz o dili görselleştiriyoruz.</p>
-        </div>
-
-        <div class="flex overflow-x-auto snap-x snap-mandatory gap-5 pb-8 hide-scrollbar -mx-4 px-4 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-6 md:overflow-visible md:pb-0 md:mx-0 md:px-0">
-{$servicesHtml}        </div>
-    </div>
-</section>
-HTML;
-
-$newContent = preg_replace($pattern, $replacement, $content);
-if ($newContent !== null) {
-    $content = $newContent;
-}
-
-// Remove any existing freelancer sections from content to avoid duplication
-$content = preg_replace('/<section[^>]*id="freelancer-basvuru"[^>]*>.*?<\/section>/s', '', $content);
-$content = preg_replace('/<section[^>]*class="[^"]*bg-gradient-to-br from-slate-50 to-white[^"]*"[^>]*>.*?<\/section>/s', '', $content);
-
-// Replace the entire H1 content with the React mount point for a unified experience
-// This refined pattern removes any static "Dönüştürüyoruz" or other content inside the H1
-$heroPattern = '/(<h1[^>]*>).*?(<\/h1>)/s';
-$content = preg_replace($heroPattern, '$1<div id="hero-effect-root" class="overflow-visible flex items-center justify-center"></div>$2', $content);
-
-// Force sub-header text to be solid brand color and bold
-$content = str_replace('text-brand-300', 'text-brand-500 font-bold', $content);
-$content = str_replace('text-brand-400', 'text-brand-500 font-bold', $content);
-
-// Feature: Rounder Hero Buttons
-$content = str_replace('rounded-2xl', 'rounded-full', $content);
-
-// Force button shadows to be premium brand shadows
-$content = str_replace('shadow-[0_20px_50px_rgba(14,165,233,0.4)]', 'shadow-2xl shadow-brand-500/50', $content);
-
-// FIX: Improved readability for CTA section subtitle on dark background
-$content = str_replace('text-brand-100 mb-16', 'text-slate-200 mb-16', $content);
-
-// FEATURE: Reduce the hero subtitle "Mekanlarınızın ruhunu..." font size
-$content = str_replace('text-xl md:text-2xl lg:text-3xl text-slate-200/90 max-w-4xl mx-auto mb-16 leading-relaxed font-light drop-shadow-md', 'text-lg md:text-xl lg:text-2xl text-slate-200/90 max-w-3xl mx-auto mb-16 leading-relaxed font-light drop-shadow-md', $content);
-
-// FIX: Add top padding to Hero SECTION on mobile to prevent overlap and change alignment.
-// Also scales the hero down from a near-full-viewport block to something less
-// oversized (min-h-[95vh] felt bulky, especially the pt-52 mobile top padding).
-$content = str_replace(
-    'class="relative min-h-[95vh] flex items-center justify-center overflow-hidden bg-slate-900"',
-    'class="relative min-h-[70vh] md:min-h-[80vh] flex items-start md:items-center justify-center overflow-hidden bg-slate-900 pt-36 pb-12 md:pt-24 md:pb-16"',
-    $content
-);
-
-// FIX: Add top padding to Hero container on mobile to prevent overlap with fixed header
-$content = preg_replace(
-    '/class\s*=\s*["\']relative\s+z-10\s+container\s+mx-auto\s+px-4\s+overflow-visible\s+py-20["\']/i',
-    'class="relative z-10 container mx-auto px-4 overflow-visible pt-10 pb-20 md:pt-0 md:pb-0"',
-    $content
-);
-// Remove the old GooeyText script from content
-$newContent = preg_replace('/<script>.*?window\.initGooeyText.*?<\/script>/s', '', $content);
-if ($newContent !== null) {
-    $content = $newContent;
-}
-
-// Feature: Convert Process Section to Horizontal Scroll on Mobile
-// Container
-$content = str_replace(
-    'class="grid md:grid-cols-4 gap-16 relative"',
-    'class="flex md:grid md:grid-cols-4 overflow-x-auto snap-x gap-6 md:gap-16 pb-12 pt-12 -mt-12 md:pb-0 md:pt-0 md:mt-0 relative -mx-4 px-4 md:mx-0 md:px-0 scroll-pt-12"',
-    $content
-);
-// Items
-$content = str_replace(
-    'class="relative z-10 text-center group"',
-    'class="relative z-10 text-center group min-w-[280px] md:min-w-0 snap-center shrink-0"',
-    $content
-);
-
-// Feature: Limit text width for workflow descriptions
-$content = str_replace(
-    'class="text-slate-500 text-base leading-relaxed font-medium"',
-    'class="text-brand-600 text-base leading-relaxed font-bold max-w-xs mx-auto"',
-    $content
-);
-
-echo do_shortcode($content);
 ?>
 
-<!-- Dynamic Slider Logic Footer -->
-<script>
-    window.HERO_VARIANTS_1 = <?= json_encode(get_setting('hero_text_variants_1', '')) ?>;
-    window.HERO_VARIANTS_2 = <?= json_encode(get_setting('hero_text_variants_2', '')) ?>;
-</script>
-<script src="/assets/js/react/hero-effect.iife.js"></script>
-<script>
-    (function () {
-        const images = <?= $sliderImagesJson ?>;
-        const container = document.getElementById('hero-slides');
-        if (!container) return;
-
-        // Clear existing placeholder slides
-        container.innerHTML = '';
-        let current = 0;
-
-        if (images.length === 0) {
-            // Fallback image if Pexels fails
-            images.push('https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg');
-        }
-
-        // Initialize slides
-        images.forEach((img, index) => {
-            const div = document.createElement('div');
-            div.className = 'absolute inset-0 w-full h-full bg-cover bg-center transition-opacity duration-1000 ease-in-out';
-            div.style.backgroundImage = `url('${img}')`;
-            div.style.opacity = index === 0 ? '1' : '0';
-            container.appendChild(div);
-        });
-
-        // Loop slider
-        if (images.length > 1) {
-            setInterval(() => {
-                const slides = container.children;
-                if (!slides || !slides[current]) return;
-                slides[current].style.opacity = '0';
-                current = (current + 1) % slides.length;
-                if (slides[current]) {
-                    slides[current].style.opacity = '1';
-                }
-            }, 5000);
-        }
-    })();
-</script>
-
-<!-- Pick Your Path -->
-<section class="py-14 md:py-20 bg-slate-50 border-b border-slate-100" id="yol-ayrimi">
-    <div class="container mx-auto px-4">
-        <div class="text-center max-w-3xl mx-auto mb-8 md:mb-10">
-            <span class="text-brand-600 font-extrabold tracking-[0.2em] uppercase text-[10px] mb-3 block">Kolektif</span>
-            <h2 class="font-heading font-black text-2xl md:text-4xl text-slate-900 tracking-tight">Sana Uygun Yolu Seç</h2>
-        </div>
-
-        <div class="grid md:grid-cols-2 gap-4 md:gap-6 max-w-4xl mx-auto">
-            <!-- Client Path -->
-            <div class="bg-white rounded-3xl border border-slate-100 shadow-lg p-6 flex flex-col">
-                <span class="inline-flex items-center gap-2 text-brand-600 font-black tracking-[0.15em] uppercase text-[10px] mb-3">Mekan Sahipleri</span>
-                <h3 class="font-heading font-black text-xl md:text-2xl text-slate-900 mb-3 leading-tight">Mekanını mı Çektirmek İstiyorsun?</h3>
-                <p class="text-slate-500 text-sm leading-relaxed mb-6 flex-1">
-                    İstediğin kategoride, bölgende uygun fotoğrafçıyı bul.
-                </p>
-                <div class="flex flex-col sm:flex-row gap-2">
-                    <button onclick="openQuoteWizard()"
-                        class="flex-1 px-5 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-black text-xs uppercase tracking-widest text-center transition-all hover:scale-105 active:scale-95">
-                        Çekim Talebi Oluştur
-                    </button>
-                    <a href="/fotografcilar"
-                        class="flex-1 px-5 py-3 bg-slate-50 hover:bg-slate-100 text-slate-700 rounded-xl font-black text-xs uppercase tracking-widest border border-slate-200 text-center transition-all hover:scale-105 active:scale-95">
-                        Fotoğrafçıları Keşfet
-                    </a>
-                </div>
-            </div>
-
-            <!-- Photographer Path -->
-            <div class="bg-slate-900 rounded-3xl shadow-lg p-6 flex flex-col relative overflow-hidden">
-                <div class="absolute top-0 right-0 w-40 h-40 bg-brand-500/20 rounded-full blur-[80px] -mr-20 -mt-20"></div>
-                <span class="relative inline-flex items-center gap-2 text-brand-400 font-black tracking-[0.15em] uppercase text-[10px] mb-3">Fotoğrafçılar</span>
-                <h3 class="relative font-heading font-black text-xl md:text-2xl text-white mb-3 leading-tight">Fotoğrafçı mısın? Freelance Çalışıyor musun?</h3>
-                <p class="relative text-slate-300 text-sm leading-relaxed mb-6 flex-1">
-                    Kolektife katıl, açık talepleri gör, dilediğini üstlen.
-                </p>
-                <div class="relative flex flex-col sm:flex-row gap-2">
-                    <a href="/kayit/fotografci"
-                        class="flex-1 px-5 py-3 bg-white hover:bg-slate-100 text-slate-900 rounded-xl font-black text-xs uppercase tracking-widest text-center transition-all hover:scale-105 active:scale-95">
-                        Fotoğrafçı Olarak Katıl
-                    </a>
-                    <a href="/nasil-calisir"
-                        class="flex-1 px-5 py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl font-black text-xs uppercase tracking-widest border border-white/20 text-center transition-all hover:scale-105 active:scale-95">
-                        Nasıl Çalışır?
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<?php if (!empty($featuredPhotographers)): ?>
-<!-- Featured Photographers -->
-<section class="py-14 bg-white">
-    <div class="container mx-auto px-4">
-        <div class="flex items-center justify-between max-w-5xl mx-auto mb-6">
-            <h2 class="font-heading font-black text-xl md:text-2xl text-slate-900">Kolektiften Fotoğrafçılar</h2>
-            <a href="/fotografcilar" class="text-brand-600 font-bold text-xs uppercase tracking-widest hover:text-brand-700">Tümünü Gör →</a>
-        </div>
-        <div class="flex overflow-x-auto snap-x gap-4 pb-2 hide-scrollbar -mx-4 px-4 md:grid md:grid-cols-4 md:gap-4 md:overflow-visible md:mx-0 md:px-0 max-w-5xl md:mx-auto">
-            <?php foreach ($featuredPhotographers as $photographer): ?>
-                <?php
-                $specs = json_decode($photographer['specialization'] ?? '[]', true) ?: [];
-                $specLabel = $specs[0] ?? '';
-                ?>
-                <a href="/fotografcilar/<?= e($photographer['slug']) ?>"
-                    class="min-w-[65vw] md:min-w-0 snap-center shrink-0 flex items-center gap-3 p-4 bg-slate-50 hover:bg-slate-100 rounded-2xl border border-slate-100 transition-all">
-                    <div class="w-11 h-11 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center font-heading font-black text-lg shrink-0">
-                        <?= e(mb_substr($photographer['name'] ?? '?', 0, 1)) ?>
-                    </div>
-                    <div class="min-w-0">
-                        <div class="font-bold text-slate-900 text-sm truncate"><?= e($photographer['name']) ?></div>
-                        <div class="text-slate-400 text-xs truncate"><?= e($photographer['city']) ?><?= $specLabel ? ' · ' . e($specLabel) : '' ?></div>
-                    </div>
-                </a>
-            <?php endforeach; ?>
-        </div>
-    </div>
-</section>
-<?php endif; ?>
-
-<?php
-// Only include the freelancer section if it is NOT already in the content
-if (strpos($content, 'freelancer-basvuru') === false):
-    ?>
-    <!-- Freelancer CTA Section -->
-    <section class="py-14 md:py-16 bg-slate-50 relative overflow-hidden" id="freelancer-basvuru">
-        <!-- Decorative Elements -->
-        <div
-            class="absolute top-0 right-0 w-64 h-64 bg-brand-200/20 rounded-full blur-[90px] -mr-32 -mt-32 animate-pulse-subtle">
-        </div>
-        <div class="absolute bottom-0 left-0 w-64 h-64 bg-accent-200/10 rounded-full blur-[90px] -ml-32 -mb-32 animate-pulse-subtle"
-            style="animation-delay: 2s"></div>
-
-        <div class="container mx-auto px-4 relative z-10">
-            <div class="max-w-2xl mx-auto text-center">
-                <span
-                    class="inline-block px-4 py-1.5 rounded-full bg-brand-50 text-brand-600 font-black tracking-[0.2em] uppercase text-[10px] mb-4 border border-brand-100">Kolektife
-                    Katıl</span>
-                <h2 class="font-heading font-black text-2xl md:text-4xl text-slate-900 mb-4 tracking-tight">Hâlâ mı
-                    Kararsızsın? <span class="text-gradient">Hemen Başvur</span></h2>
-                <p class="text-slate-500 text-base md:text-lg font-light leading-relaxed max-w-xl mx-auto mb-8">
-                    Formu doldurmanız iki dakikanızı alır. Başvurunuzu inceleyip en kısa sürede dönüş yapıyoruz.
+<main id="main">
+    <!-- Hero -->
+    <section class="relative overflow-hidden">
+        <div class="container-page grid items-center gap-12 pb-16 pt-10 md:pt-16 lg:grid-cols-12 lg:gap-8 lg:pb-24">
+            <div class="lg:col-span-6">
+                <p class="eyebrow"><?= icon('camera', 'h-4 w-4') ?> Mekan fotoğrafçılığı platformu</p>
+                <h1 class="h-display mt-5">Mekanını, bölgendeki <span class="text-brand-600">doğru fotoğrafçıyla</span> buluştur.</h1>
+                <p class="lead mt-6 max-w-xl">
+                    Otel, villa, restoran ya da ofis — ne çektireceğini ve nerede olduğunu söyle; onaylı fotoğrafçılar
+                    teklifleriyle sana dönsün.
                 </p>
 
-                <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
-                    <a href="/kayit/fotografci"
-                        class="group relative px-8 py-3.5 bg-brand-600 hover:bg-brand-500 text-white rounded-full font-black text-sm shadow-lg shadow-brand-500/30 transition-all hover:scale-105 active:scale-95 overflow-hidden">
-                        <span class="relative z-10 flex items-center gap-2">
-                            Hemen Kayıt Ol
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
-                                class="group-hover:translate-x-1 transition-transform">
-                                <path d="M5 12h14" />
-                                <path d="m12 5 7 7-7 7" />
-                            </svg>
+                <form class="mt-8 rounded-2xl border border-line bg-white p-2 shadow-soft sm:flex sm:items-center sm:gap-2" onsubmit="event.preventDefault(); openQuoteWizard(this.service.value, this.location.value.trim());">
+                    <label class="flex flex-1 items-center gap-3 rounded-xl px-3 py-2 sm:py-1">
+                        <span class="text-ink-muted"><?= icon('camera', 'h-5 w-5') ?></span>
+                        <span class="flex-1">
+                            <span class="block text-xs font-medium text-ink-muted">Ne çektireceksin?</span>
+                            <select name="service" class="-ml-1 w-full appearance-none bg-transparent pl-1 text-sm font-semibold focus:outline-none">
+                                <option value="mimari">Villa, konut, ofis</option>
+                                <option value="otel">Otel & turizm tesisi</option>
+                                <option value="yemek">Restoran & yemek</option>
+                                <option value="diger">Drone / diğer</option>
+                            </select>
                         </span>
-                    </a>
-                    <button onclick="openFreelancerModal()"
-                        class="px-8 py-3.5 bg-white hover:bg-slate-50 text-slate-700 rounded-full font-black text-sm border border-slate-200 transition-all hover:scale-105 active:scale-95">
-                        Sadece Başvuru Formunu Doldur
+                    </label>
+                    <span class="mx-3 block h-px bg-line sm:mx-0 sm:h-10 sm:w-px"></span>
+                    <label class="flex flex-1 items-center gap-3 rounded-xl px-3 py-2 sm:py-1">
+                        <span class="text-ink-muted"><?= icon('map-pin', 'h-5 w-5') ?></span>
+                        <span class="flex-1">
+                            <span class="block text-xs font-medium text-ink-muted">Nerede?</span>
+                            <input name="location" type="text" placeholder="Örn: Kaş, Antalya" class="w-full bg-transparent text-sm font-semibold placeholder:font-normal placeholder:text-stone-400 focus:outline-none">
+                        </span>
+                    </label>
+                    <button type="submit" class="btn btn-primary mt-2 w-full py-3 sm:mt-0 sm:w-auto">
+                        Teklif al <?= icon('arrow-right', 'h-4 w-4') ?>
                     </button>
+                </form>
+
+                <ul class="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm text-ink-soft">
+                    <li class="flex items-center gap-2"><?= icon('check', 'h-4 w-4 text-brand-600') ?> Ücretsiz ve bağlayıcı değil</li>
+                    <li class="flex items-center gap-2"><?= icon('check', 'h-4 w-4 text-brand-600') ?> Onaylı fotoğrafçılar</li>
+                    <li class="flex items-center gap-2"><?= icon('check', 'h-4 w-4 text-brand-600') ?> <?= count($activeProvinces) ?: 'Birçok' ?> ilde hizmet</li>
+                </ul>
+            </div>
+
+            <div class="relative lg:col-span-6" aria-hidden="true">
+                <div class="grid grid-cols-6 grid-rows-6 gap-3 sm:gap-4" style="aspect-ratio: 6 / 5;">
+                    <div class="photo-placeholder col-span-4 row-span-4 overflow-hidden rounded-3xl">
+                        <img src="<?= e($photoAt(0)) ?>" alt="" class="h-full w-full object-cover" fetchpriority="high">
+                    </div>
+                    <div class="photo-placeholder col-span-2 row-span-3 overflow-hidden rounded-3xl">
+                        <img src="<?= e($photoAt(1)) ?>" alt="" class="h-full w-full object-cover">
+                    </div>
+                    <div class="photo-placeholder col-span-2 row-span-3 overflow-hidden rounded-3xl">
+                        <img src="<?= e($photoAt(2)) ?>" alt="" class="h-full w-full object-cover">
+                    </div>
+                    <div class="photo-placeholder col-span-4 row-span-2 overflow-hidden rounded-3xl">
+                        <img src="<?= e($photoAt(3)) ?>" alt="" class="h-full w-full object-cover">
+                    </div>
+                </div>
+                <?php if (!empty($featuredPhotographers)): $top = $featuredPhotographers[0]; ?>
+                    <div class="absolute -bottom-4 left-4 hidden items-center gap-3 rounded-2xl border border-line bg-white py-3 pl-3 pr-5 shadow-lift sm:flex">
+                        <span class="flex h-10 w-10 items-center justify-center rounded-full bg-brand-100 font-display font-semibold text-brand-800"><?= e(mb_strtoupper(mb_substr($top['name'], 0, 1))) ?></span>
+                        <span class="text-sm">
+                            <span class="block font-semibold"><?= e($top['name']) ?></span>
+                            <span class="text-ink-muted"><?= e($top['city']) ?> · fotoğrafçı</span>
+                        </span>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </section>
+
+    <!-- Two sides of the marketplace -->
+    <section class="border-y border-line bg-white">
+        <div class="container-page grid divide-y divide-line md:grid-cols-2 md:divide-x md:divide-y-0">
+            <div class="py-10 md:py-12 md:pr-12">
+                <p class="eyebrow">Mekan sahipleri için</p>
+                <h2 class="h-card mt-3 text-2xl">Mekanını çektirmek mi istiyorsun?</h2>
+                <p class="mt-3 text-ink-soft">Tek bir talep oluştur, bölgende çalışan uygun fotoğrafçılardan teklif al, portfolyolarını karşılaştır ve seç.</p>
+                <div class="mt-6 flex flex-wrap gap-3">
+                    <button type="button" onclick="openQuoteWizard()" class="btn btn-primary">Çekim talebi oluştur</button>
+                    <a href="/fotografcilar" class="btn btn-outline">Fotoğrafçıları incele</a>
+                </div>
+            </div>
+            <div class="py-10 md:py-12 md:pl-12">
+                <p class="eyebrow">Fotoğrafçılar için</p>
+                <h2 class="h-card mt-3 text-2xl">Fotoğrafçı mısın? Freelance mi çalışıyorsun?</h2>
+                <p class="mt-3 text-ink-soft">Kolektife ücretsiz katıl, uzmanlığına ve bölgene uyan açık çekim taleplerini gör, dilediğini üstlen.</p>
+                <div class="mt-6 flex flex-wrap gap-3">
+                    <a href="/kayit/fotografci" class="btn btn-dark">Fotoğrafçı olarak katıl</a>
+                    <a href="/nasil-calisir#fotografcilar" class="btn btn-ghost">Nasıl çalışır? <?= icon('arrow-right', 'h-4 w-4') ?></a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Freelancer Modal -->
-    <div id="freelancer-modal" class="fixed inset-0 z-[200] hidden opacity-0 transition-opacity duration-300"
-        aria-modal="true">
-        <!-- Backdrop -->
-        <div class="absolute inset-0 bg-slate-950/60 backdrop-blur-sm" onclick="closeFreelancerModal()"></div>
-
-        <!-- Modal Content -->
-        <div
-            class="absolute inset-x-0 bottom-0 md:inset-0 md:flex md:items-center md:justify-center pointer-events-none p-4 md:p-6">
-            <div class="bg-white w-full max-w-5xl max-h-[90vh] md:max-h-[85vh] rounded-t-4xl md:rounded-4xl shadow-2xl overflow-hidden pointer-events-auto transform translate-y-full md:translate-y-10 scale-95 transition-all duration-300 flex flex-col"
-                id="freelancer-modal-content">
-
-                <!-- Modal Header -->
-                <div
-                    class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-white/80 backdrop-blur-md z-10">
-                    <h3 class="font-heading font-black text-xl text-slate-900">Freelancer Başvurusu</h3>
-                    <button onclick="closeFreelancerModal()"
-                        class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-slate-900 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M18 6 6 18" />
-                            <path d="m6 6 18 18" />
-                        </svg>
-                    </button>
-                </div>
-
-                <!-- Modal Body (Scrollable) -->
-                <div class="flex-1 overflow-y-auto p-6 md:p-10">
-                    <form id="freelancer-form" class="space-y-8">
-                        <!-- Name and Email Row -->
-                        <div class="grid md:grid-cols-2 gap-8">
-                            <div class="space-y-2">
-                                <label for="freelancer-name" class="block text-sm font-bold text-slate-700 ml-1">Ad Soyad
-                                    <span class="text-brand-500">*</span></label>
-                                <input type="text" id="freelancer-name" name="name" required
-                                    class="w-full px-6 py-4 rounded-2xl border-2 border-slate-100 bg-slate-50/50 focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition-all outline-none font-medium text-slate-900"
-                                    placeholder="Adınız Soyadınız">
-                            </div>
-                            <div class="space-y-2">
-                                <label for="freelancer-email" class="block text-sm font-bold text-slate-700 ml-1">E-posta
-                                    <span class="text-brand-500">*</span></label>
-                                <input type="email" id="freelancer-email" name="email" required
-                                    class="w-full px-6 py-4 rounded-2xl border-2 border-slate-100 bg-slate-50/50 focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition-all outline-none font-medium text-slate-900"
-                                    placeholder="ornek@email.com">
-                            </div>
+    <!-- How it works -->
+    <section class="section">
+        <div class="container-page">
+            <div class="max-w-2xl">
+                <p class="eyebrow">Nasıl çalışır?</p>
+                <h2 class="h-section mt-3">Üç adımda doğru fotoğrafçı</h2>
+            </div>
+            <ol class="mt-10 grid gap-6 md:grid-cols-3">
+                <?php foreach ([
+                    ['message', 'Talebini oluştur', 'Mekanını, konumunu ve ne zaman çekim istediğini birkaç soruda anlat. 2 dakika sürer.'],
+                    ['users', 'Teklifleri karşılaştır', 'Bölgende çalışan ve uzmanlığı uyan fotoğrafçılar sana ulaşır. Portfolyolarına ve yorumlara bak.'],
+                    ['camera', 'Çekimi planla', 'Seçtiğin fotoğrafçıyla tarihi netleştir; düzenlenmiş fotoğrafların birkaç gün içinde elinde.'],
+                ] as $i => [$ic, $title, $text]): ?>
+                    <li class="card p-6">
+                        <div class="flex items-center justify-between">
+                            <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-700"><?= icon($ic) ?></span>
+                            <span class="font-display text-3xl font-semibold text-stone-200"><?= sprintf('%02d', $i + 1) ?></span>
                         </div>
+                        <h3 class="mt-5 font-semibold"><?= e($title) ?></h3>
+                        <p class="mt-2 text-sm leading-relaxed text-ink-soft"><?= e($text) ?></p>
+                    </li>
+                <?php endforeach; ?>
+            </ol>
+        </div>
+    </section>
 
-                        <!-- Phone and City Row -->
-                        <div class="grid md:grid-cols-2 gap-8">
-                            <div class="space-y-2">
-                                <label for="freelancer-phone" class="block text-sm font-bold text-slate-700 ml-1">Telefon
-                                    <span class="text-brand-500">*</span></label>
-                                <input type="tel" id="freelancer-phone" name="phone" required
-                                    class="w-full px-6 py-4 rounded-2xl border-2 border-slate-100 bg-slate-50/50 focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition-all outline-none font-medium text-slate-900"
-                                    placeholder="0555 123 45 67">
-                            </div>
-                            <div class="space-y-2">
-                                <label for="freelancer-city" class="block text-sm font-bold text-slate-700 ml-1">Şehir <span
-                                        class="text-brand-500">*</span></label>
-                                <input type="text" id="freelancer-city" name="city" required
-                                    class="w-full px-6 py-4 rounded-2xl border-2 border-slate-100 bg-slate-50/50 focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition-all outline-none font-medium text-slate-900"
-                                    placeholder="Bulunduğunuz Şehir">
-                            </div>
-                        </div>
-
-                        <!-- Experience -->
-                        <div class="space-y-2">
-                            <label for="freelancer-experience" class="block text-sm font-bold text-slate-700 ml-1">Deneyim
-                                Yılı <span class="text-brand-500">*</span></label>
-                            <div class="relative">
-                                <select id="freelancer-experience" name="experience" required
-                                    class="w-full px-6 py-4 rounded-2xl border-2 border-slate-100 bg-slate-50/50 focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition-all outline-none font-medium text-slate-900 appearance-none">
-                                    <option value="">Seçiniz...</option>
-                                    <option value="0-1">0-1 yıl</option>
-                                    <option value="1-3">1-3 yıl</option>
-                                    <option value="3-5">3-5 yıl</option>
-                                    <option value="5-10">5-10 yıl</option>
-                                    <option value="10+">10+ yıl</option>
-                                </select>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    class="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
-                                    <path d="m6 9 6 6 6-6" />
-                                </svg>
-                            </div>
-                        </div>
-
-                        <!-- Specialization -->
-                        <div class="space-y-3">
-                            <label class="block text-sm font-bold text-slate-700 ml-1">Uzmanlık Alanlarınız <span
-                                    class="text-brand-500">*</span></label>
-                            <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-                                <?php
-                                $specialties = ['mimari' => 'Mimari', 'ic-mekan' => 'İç Mekan', 'otel' => 'Otel', 'emlak' => 'Emlak', 'yemek' => 'Yemek', 'drone' => 'Drone'];
-                                foreach ($specialties as $val => $label): ?>
-                                    <label
-                                        class="group flex items-center gap-3 p-4 rounded-xl border-2 border-slate-100 bg-slate-50/30 hover:bg-white hover:border-brand-200 cursor-pointer transition-all active:scale-95">
-                                        <div class="relative flex items-center justify-center">
-                                            <input type="checkbox" name="specialization[]" value="<?= $val ?>"
-                                                class="peer appearance-none w-5 h-5 rounded-md border-2 border-slate-200 checked:bg-brand-500 checked:border-brand-500 transition-all">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                                                fill="none" stroke="white" stroke-width="4" stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                class="absolute opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none">
-                                                <polyline points="20 6 9 17 4 12"></polyline>
-                                            </svg>
-                                        </div>
-                                        <span
-                                            class="text-sm font-bold text-slate-600 group-hover:text-slate-900"><?= $label ?></span>
-                                    </label>
-                                <?php endforeach; ?>
-                            </div>
-                        </div>
-
-                        <!-- Portfolio URL -->
-                        <div class="space-y-2">
-                            <label for="freelancer-portfolio" class="block text-sm font-bold text-slate-700 ml-1">Portfolio
-                                / Instagram</label>
-                            <input type="url" id="freelancer-portfolio" name="portfolio"
-                                class="w-full px-6 py-4 rounded-2xl border-2 border-slate-100 bg-slate-50/50 focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition-all outline-none font-medium text-slate-900 placeholder:text-slate-400"
-                                placeholder="https://...">
-                        </div>
-
-                        <!-- Message -->
-                        <div class="space-y-2">
-                            <label for="freelancer-message"
-                                class="block text-sm font-bold text-slate-700 ml-1">Hakkınızda</label>
-                            <textarea id="freelancer-message" name="message" rows="4"
-                                class="w-full px-6 py-4 rounded-2xl border-2 border-slate-100 bg-slate-50/50 focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition-all outline-none font-medium text-slate-900 resize-none placeholder:text-slate-400"
-                                placeholder="Kısaca kendinizden bahsedin..."></textarea>
-                        </div>
-
-                        <!-- Submit -->
-                        <div class="pt-4">
-                            <button type="submit"
-                                class="w-full py-5 bg-brand-600 hover:bg-brand-500 text-white rounded-2xl font-black text-lg shadow-xl shadow-brand-500/20 transition-all hover:scale-[1.02] active:scale-[0.98]">Başvuruyu
-                                Gönder</button>
-                        </div>
-                    </form>
-
-                    <!-- Success Message -->
-                    <div id="freelancer-success"
-                        class="hidden flex-col items-center justify-center text-center py-10 h-full">
-                        <div
-                            class="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mb-6 animate-bounce">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"
-                                class="text-green-600">
-                                <polyline points="20 6 9 17 4 12"></polyline>
-                            </svg>
-                        </div>
-                        <h3 class="text-3xl font-black text-slate-900 mb-2">Başvurunuz Alındı!</h3>
-                        <p class="text-slate-500 text-lg max-w-md">Teşekkürler. Başvurunuz ekibimiz tarafından incelenip en
-                            kısa sürede dönüş yapılacaktır.</p>
-                        <button onclick="closeFreelancerModal()"
-                            class="mt-8 px-8 py-3 bg-slate-100 text-slate-700 font-bold rounded-full hover:bg-slate-200 transition-colors">Kapat</button>
+    <!-- Categories -->
+    <?php if (!empty($services)): ?>
+        <section class="section border-t border-line bg-white">
+            <div class="container-page">
+                <div class="flex flex-col justify-between gap-4 md:flex-row md:items-end">
+                    <div class="max-w-2xl">
+                        <p class="eyebrow">Kategoriler</p>
+                        <h2 class="h-section mt-3">Hangi mekanı çektireceksin?</h2>
                     </div>
+                    <a href="/hizmetlerimiz" class="btn btn-outline self-start md:self-auto">Tüm hizmetler <?= icon('arrow-right', 'h-4 w-4') ?></a>
+                </div>
+                <div class="mt-10 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+                    <?php foreach (array_slice($services, 0, 8) as $i => $service): ?>
+                        <a href="<?= e($serviceHref($service['slug'])) ?>" class="card-link group overflow-hidden">
+                            <div class="photo-placeholder aspect-[4/3] overflow-hidden">
+                                <img src="<?= e($photoAt($i + 4)) ?>" alt="<?= e($service['title']) ?>" loading="lazy" class="h-full w-full object-cover transition duration-500 group-hover:scale-105">
+                            </div>
+                            <div class="flex items-center gap-3 p-3 sm:p-4">
+                                <span class="hidden text-brand-700 sm:block"><?= icon($serviceIcon($service['slug'])) ?></span>
+                                <span class="text-sm font-semibold leading-snug sm:text-base"><?= e($service['title']) ?></span>
+                            </div>
+                        </a>
+                    <?php endforeach; ?>
                 </div>
             </div>
+        </section>
+    <?php endif; ?>
+
+    <!-- Featured photographers -->
+    <section class="section border-t border-line">
+        <div class="container-page">
+            <div class="flex flex-col justify-between gap-4 md:flex-row md:items-end">
+                <div class="max-w-2xl">
+                    <p class="eyebrow">Kolektif</p>
+                    <h2 class="h-section mt-3">Kolektiften fotoğrafçılar</h2>
+                    <p class="mt-3 text-ink-soft">Başvurusu incelenip onaylanan, bağımsız çalışan mekan fotoğrafçıları.</p>
+                </div>
+                <?php if (!empty($featuredPhotographers)): ?>
+                    <a href="/fotografcilar" class="btn btn-outline self-start md:self-auto">Tümünü gör <?= icon('arrow-right', 'h-4 w-4') ?></a>
+                <?php endif; ?>
+            </div>
+            <?php if (!empty($featuredPhotographers)): ?>
+                <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                    <?php foreach ($featuredPhotographers as $photographer): ?>
+                        <?= photographer_card($photographer) ?>
+                    <?php endforeach; ?>
+                </div>
+            <?php else: ?>
+                <div class="card mt-10 flex flex-col items-start justify-between gap-4 p-6 md:flex-row md:items-center">
+                    <p class="text-ink-soft">Kolektif yeni büyüyor. Bölgendeki ilk fotoğrafçılardan biri ol, talepleri ilk sen gör.</p>
+                    <a href="/kayit/fotografci" class="btn btn-dark">Fotoğrafçı olarak katıl</a>
+                </div>
+            <?php endif; ?>
         </div>
-    </div>
+    </section>
 
-    <script>
-        // Modal Logic
-        const modal = document.getElementById('freelancer-modal');
-        const modalContent = document.getElementById('freelancer-modal-content');
+    <!-- For photographers -->
+    <section class="section bg-ink text-white">
+        <div class="container-page grid items-center gap-12 lg:grid-cols-2">
+            <div>
+                <p class="eyebrow-light">Fotoğrafçılar için</p>
+                <h2 class="h-section mt-3 text-white">Portfolyonu büyüt, işini kendin yönet.</h2>
+                <p class="mt-4 max-w-lg text-stone-300">Mekan fotoğrafçılığı yapıyorsan, müşteri aramak yerine çekime odaklan. Bölgendeki talepler panelinde seni bekliyor.</p>
+                <a href="/kayit/fotografci" class="btn btn-primary btn-lg mt-8">Ücretsiz katıl <?= icon('arrow-right', 'h-4 w-4') ?></a>
+            </div>
+            <ul class="grid gap-4 sm:grid-cols-2">
+                <?php foreach ([
+                    ['map-pin', 'Bölgene uygun işler', 'Uzmanlığına ve çalıştığın illere göre eşleşen talepleri gör.'],
+                    ['briefcase', 'Seçim senin', 'İstediğin talebi üstlen, istemediğini geç. Aidat yok.'],
+                    ['user', 'Herkese açık profil', 'Portfolyon ve müşteri yorumlarınla dizinde yer al.'],
+                    ['wallet', 'Güvenli ödeme', 'Kapora ve ödemeler platform üzerinden takip edilir.'],
+                ] as [$ic, $title, $text]): ?>
+                    <li class="rounded-2xl border border-white/10 bg-white/5 p-5">
+                        <span class="text-brand-300"><?= icon($ic) ?></span>
+                        <h3 class="mt-3 font-semibold"><?= e($title) ?></h3>
+                        <p class="mt-1 text-sm text-stone-400"><?= e($text) ?></p>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    </section>
 
-        function openFreelancerModal() {
-            modal.classList.remove('hidden');
-            // Small delay to allow display:block to apply before opacity transition
-            setTimeout(() => {
-                modal.classList.remove('opacity-0');
-                modalContent.classList.remove('translate-y-full', 'scale-95');
-                modalContent.classList.add('md:translate-y-0', 'scale-100');
-            }, 10);
-            document.body.style.overflow = 'hidden';
-        }
+    <!-- Regions -->
+    <?php if (!empty($activeProvinces)): ?>
+        <section class="section">
+            <div class="container-page">
+                <div class="max-w-2xl">
+                    <p class="eyebrow">Bölgeler</p>
+                    <h2 class="h-section mt-3">Hizmet verdiğimiz iller</h2>
+                    <p class="mt-3 text-ink-soft">İlçe bazında fotoğrafçı ve hizmet bilgisi için bir il seç.</p>
+                </div>
+                <div class="mt-8 flex flex-wrap gap-2">
+                    <?php foreach ($activeProvinces as $province): ?>
+                        <a href="/hizmet-bolgeleri/<?= e($province['slug']) ?>" class="inline-flex items-center gap-2 rounded-full border border-line bg-white px-4 py-2 text-sm font-medium transition hover:border-stone-300 hover:shadow-soft">
+                            <?= icon('map-pin', 'h-4 w-4 text-brand-600') ?> <?= e($province['name']) ?>
+                        </a>
+                    <?php endforeach; ?>
+                    <a href="/hizmet-bolgeleri" class="inline-flex items-center gap-1 rounded-full px-4 py-2 text-sm font-medium text-brand-700 hover:underline">Tüm bölgeler <?= icon('arrow-right', 'h-4 w-4') ?></a>
+                </div>
+            </div>
+        </section>
+    <?php endif; ?>
 
-        function closeFreelancerModal() {
-            modal.classList.add('opacity-0');
-            modalContent.classList.add('translate-y-full', 'scale-95');
-            modalContent.classList.remove('md:translate-y-0', 'scale-100');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-                document.body.style.overflow = '';
-            }, 300);
-        }
+    <!-- FAQ -->
+    <section class="section border-t border-line bg-white">
+        <div class="container-page grid gap-10 lg:grid-cols-3">
+            <div>
+                <p class="eyebrow">SSS</p>
+                <h2 class="h-section mt-3">Merak edilenler</h2>
+                <p class="mt-3 text-ink-soft">Başka bir sorun mu var? <a href="/nasil-calisir" class="font-medium text-brand-700 underline underline-offset-2">Nasıl çalışır</a> sayfasına göz at.</p>
+            </div>
+            <div class="divide-y divide-line border-y border-line lg:col-span-2">
+                <?php foreach ($faqs as [$q, $a]): ?>
+                    <details class="group py-5">
+                        <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold [&::-webkit-details-marker]:hidden">
+                            <?= e($q) ?>
+                            <span class="text-ink-muted transition group-open:rotate-180"><?= icon('chevron-down') ?></span>
+                        </summary>
+                        <p class="mt-3 max-w-2xl text-ink-soft"><?= e($a) ?></p>
+                    </details>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </section>
 
-        document.addEventListener("DOMContentLoaded", function () {
-            const form = document.getElementById("freelancer-form");
-            const successMessage = document.getElementById("freelancer-success");
-            if (form) {
-                form.addEventListener("submit", async function (e) {
-                    e.preventDefault();
-                    // Original submission logic...
-                    const formData = new FormData(form);
-                    const data = {
-                        name: formData.get("name"),
-                        email: formData.get("email"),
-                        phone: formData.get("phone"),
-                        city: formData.get("city"),
-                        experience: formData.get("experience"),
-                        specialization: formData.getAll("specialization[]"),
-                        portfolio: formData.get("portfolio"),
-                        message: formData.get("message"),
-                        type: "freelancer_application"
-                    };
-
-                    if (data.specialization.length === 0) {
-                        alert("Lütfen en az bir uzmanlık alanı seçiniz.");
-                        return;
-                    }
-
-                    try {
-                        const response = await fetch("/api/freelancer-application.php", {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify(data)
-                        });
-                        if (response.ok) {
-                            form.style.display = "none";
-                            successMessage.classList.remove("hidden");
-                            successMessage.classList.add("flex");
-                        } else {
-                            alert("Bir hata oluştu.");
-                        }
-                    } catch (error) {
-                        console.error(error);
-                        alert("Bir hata oluştu.");
-                    }
-                });
-            }
-        });
-    </script>
-<?php endif; ?>
+    <?php include __DIR__ . '/../partials/cta-band.php'; ?>
+</main>
 
 <?php include __DIR__ . '/../page-footer.php'; ?>

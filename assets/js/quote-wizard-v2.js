@@ -1,241 +1,221 @@
-// Quote Wizard Logic
+// Quote Wizard Logic (markup: templates/partials/quote-wizard.php)
 
-function openQuoteWizard(serviceType = null) {
-    const modal = document.getElementById('quote-wizard-modal');
-    const backdrop = document.getElementById('wizard-backdrop');
-    const panel = document.getElementById('wizard-panel');
+const WIZARD_TOTAL_STEPS = 4;
+let wizardLastFocus = null;
 
-    modal.classList.remove('hidden');
-    // Simple animation delay
-    setTimeout(() => {
-        backdrop.classList.remove('opacity-0');
-        panel.classList.remove('opacity-0', 'translate-y-4', 'sm:scale-95');
-    }, 10);
-
-    // reset wizard
-    resetWizard();
-
-    // Pre-select service if provided
-    if (serviceType) {
-        // Map simplified slugs
-        let mappedType = 'diger';
-        if (serviceType.includes('otel') || serviceType.includes('pansiyon') || serviceType.includes('resort')) mappedType = 'otel';
-        else if (serviceType.includes('yemek') || serviceType.includes('restoran') || serviceType.includes('gida')) mappedType = 'yemek';
-        else if (serviceType.includes('mimari') || serviceType.includes('ic-mekan') || serviceType.includes('villa') || serviceType.includes('emlak') || serviceType.includes('ofis') || serviceType.includes('konut')) mappedType = 'mimari';
-
-        const input = document.querySelector(`input[name="service_type"][value="${mappedType}"]`);
-        if (input) {
-            input.checked = true;
-            // Auto advance logic could go here
-        }
-    }
-}
-
-function closeQuoteWizard() {
-    const modal = document.getElementById('quote-wizard-modal');
-    const backdrop = document.getElementById('wizard-backdrop');
-    const panel = document.getElementById('wizard-panel');
-
-    backdrop.classList.add('opacity-0');
-    panel.classList.add('opacity-0', 'translate-y-4', 'sm:scale-95');
-
-    setTimeout(() => {
-        modal.classList.add('hidden');
-    }, 300);
-}
-
-// Initialize mfQuoteWizardStep if not already declared
 if (typeof window.mfQuoteWizardStep === 'undefined') {
     window.mfQuoteWizardStep = 1;
 }
 
+// Map a service/page slug (e.g. "hizmetlerimiz/otel-fotografciligi") onto one
+// of the wizard's four service types.
+function mapServiceType(serviceType) {
+    const s = String(serviceType || '').toLowerCase();
+    if (['mimari', 'otel', 'yemek', 'diger'].includes(s)) return s;
+    if (/otel|pansiyon|resort|termal|turizm/.test(s)) return 'otel';
+    if (/yemek|restoran|gida|kafe|cafe/.test(s)) return 'yemek';
+    if (/mimari|ic-mekan|mekan|villa|emlak|ofis|konut|is-merkezi|ticari/.test(s)) return 'mimari';
+    return 'diger';
+}
 
+function openQuoteWizard(serviceType = null, location = null) {
+    const modal = document.getElementById('quote-wizard-modal');
+    const backdrop = document.getElementById('wizard-backdrop');
+    const panel = document.getElementById('wizard-panel');
+
+    wizardLastFocus = document.activeElement;
+    resetWizard();
+
+    if (serviceType) {
+        const input = document.querySelector(`input[name="service_type"][value="${mapServiceType(serviceType)}"]`);
+        if (input) input.checked = true;
+    }
+    if (location) {
+        document.getElementById('wizard_location').value = location;
+    }
+
+    modal.hidden = false;
+    document.documentElement.classList.add('overflow-hidden');
+    requestAnimationFrame(() => {
+        backdrop.classList.remove('opacity-0');
+        panel.classList.remove('opacity-0', 'translate-y-4');
+    });
+
+    const firstField = serviceType
+        ? document.getElementById('wizard_location')
+        : document.querySelector('input[name="service_type"]');
+    if (firstField && !(serviceType && location)) setTimeout(() => firstField.focus(), 50);
+}
+
+function closeQuoteWizard() {
+    const modal = document.getElementById('quote-wizard-modal');
+    if (modal.hidden) return;
+    document.getElementById('wizard-backdrop').classList.add('opacity-0');
+    document.getElementById('wizard-panel').classList.add('opacity-0', 'translate-y-4');
+    document.documentElement.classList.remove('overflow-hidden');
+    setTimeout(() => {
+        modal.hidden = true;
+        if (wizardLastFocus && wizardLastFocus.focus) wizardLastFocus.focus();
+    }, 200);
+}
 
 function resetWizard() {
+    const form = document.getElementById('quote-form');
+    form.reset();
+    form.hidden = false;
+    document.getElementById('wizard-progress').hidden = false;
+    document.getElementById('wizard-success').hidden = true;
+    const btn = document.getElementById('btn-submit');
+    btn.disabled = false;
+    btn.textContent = 'Talebi gönder';
     window.mfQuoteWizardStep = 1;
+    showWizardError('');
     updateStepUI();
-    document.getElementById('quote-form').reset();
+}
+
+function showWizardError(message) {
+    const el = document.getElementById('wizard-error');
+    el.textContent = message;
+    el.hidden = !message;
 }
 
 function updateStepUI() {
-    // Hide all steps
-    document.querySelectorAll('.step-content').forEach(el => el.classList.add('hidden'));
-    document.querySelectorAll('.step-content').forEach(el => el.classList.remove('block'));
+    const step = window.mfQuoteWizardStep;
 
-    // Show current step
-    const currentEl = document.getElementById(`step-${window.mfQuoteWizardStep}`);
-    if (currentEl) {
-        currentEl.classList.remove('hidden');
-        currentEl.classList.add('block'); // Important for animation/display
-    }
-
-    // Update buttons
-    const btnPrev = document.getElementById('btn-prev');
-    const btnNext = document.getElementById('btn-next');
-    const btnSubmit = document.getElementById('btn-submit');
-
-    if (window.mfQuoteWizardStep === 1) {
-        btnPrev.classList.add('hidden');
-        btnNext.classList.remove('hidden');
-        btnSubmit.classList.add('hidden');
-    } else if (window.mfQuoteWizardStep === 2 || window.mfQuoteWizardStep === 3) {
-        btnPrev.classList.remove('hidden');
-        btnNext.classList.remove('hidden');
-        btnSubmit.classList.add('hidden');
-    } else if (window.mfQuoteWizardStep === 4) {
-        btnPrev.classList.remove('hidden');
-        btnNext.classList.add('hidden');
-        btnSubmit.classList.remove('hidden');
-    }
-
-    // Update Progress Bar
-    document.querySelectorAll('.step-indicator').forEach(el => {
-        const step = parseInt(el.dataset.step);
-        const circle = el.querySelector('div');
-        const text = el.querySelector('span');
-
-        if (step === window.mfQuoteWizardStep) {
-            // Active
-            el.classList.add('active');
-            circle.classList.remove('bg-slate-200', 'text-slate-500', 'bg-green-500', 'text-white');
-            circle.classList.add('bg-brand-600', 'text-white', 'ring-4', 'ring-brand-100');
-            text.classList.remove('text-slate-500');
-            text.classList.add('text-slate-900', 'font-bold');
-        } else if (step < window.mfQuoteWizardStep) {
-            // Completed
-            el.classList.add('completed');
-            circle.classList.remove('bg-slate-200', 'text-slate-500', 'ring-4', 'ring-brand-100', 'bg-brand-600');
-            circle.classList.add('bg-green-500', 'text-white');
-            circle.innerHTML = '✓';
-            text.classList.remove('text-slate-900', 'font-bold');
-            text.classList.add('text-slate-500');
-
-            // Activate line
-            const line = document.getElementById(`line-${step}`);
-            if (line) {
-                line.classList.remove('bg-slate-200');
-                line.classList.add('bg-green-500');
-            }
-        } else {
-            // Pending
-            circle.classList.remove('bg-brand-600', 'text-white', 'bg-green-500', 'ring-4', 'ring-brand-100');
-            circle.classList.add('bg-slate-200', 'text-slate-500');
-            circle.innerHTML = step;
-            // Deactivate line
-            const line = document.getElementById(`line-${step - 1}`); // Line before this step
-        }
+    document.querySelectorAll('#quote-form .step-content').forEach(el => {
+        el.hidden = el.id !== `step-${step}`;
     });
 
-    // Simple line logic fix
-    for (let i = 1; i < 4; i++) {
-        const line = document.getElementById(`line-${i}`);
-        if (line) {
-            if (window.mfQuoteWizardStep > i) {
-                line.classList.remove('bg-slate-200');
-                line.classList.add('bg-green-500');
-            } else {
-                line.classList.remove('bg-green-500');
-                line.classList.add('bg-slate-200');
-            }
-        }
-    }
+    document.getElementById('btn-prev').hidden = step === 1;
+    document.getElementById('btn-next').hidden = step === WIZARD_TOTAL_STEPS;
+    document.getElementById('btn-submit').hidden = step !== WIZARD_TOTAL_STEPS;
+
+    const indicator = document.querySelector(`.step-indicator[data-step="${step}"]`);
+    document.getElementById('wizard-step-number').textContent = step;
+    document.getElementById('wizard-step-name').textContent = indicator ? indicator.dataset.name : '';
+    document.getElementById('wizard-progress-bar').style.width = `${(step / WIZARD_TOTAL_STEPS) * 100}%`;
 }
 
-// Validation
 function validateStep(step) {
     const stepEl = document.getElementById(`step-${step}`);
-    const inputs = stepEl.querySelectorAll('input[required], select[required]');
-    let isValid = true;
+    const fields = stepEl.querySelectorAll('input[required], select[required], textarea[required]');
+    let firstInvalid = null;
 
-    inputs.forEach(input => {
-        if (!input.value || (input.type === 'radio' && !stepEl.querySelector(`input[name="${input.name}"]:checked`))) {
-            isValid = false;
-            input.parentElement.classList.add('ring-2', 'ring-red-500', 'border-red-500');
+    fields.forEach(field => {
+        let valid;
+        if (field.type === 'radio') {
+            valid = !!stepEl.querySelector(`input[name="${field.name}"]:checked`);
         } else {
-            input.parentElement.classList.remove('ring-2', 'ring-red-500', 'border-red-500');
+            valid = field.value.trim() !== '' && field.checkValidity();
         }
+        const target = field.type === 'radio' ? null : field;
+        if (target) {
+            target.setAttribute('aria-invalid', valid ? 'false' : 'true');
+            target.classList.toggle('border-red-400', !valid);
+        }
+        if (!valid && !firstInvalid) firstInvalid = field;
     });
 
-    if (!isValid) {
-        // Use a more subtle feedback if possible, or Swal
-        if (typeof Swal !== 'undefined') {
-            Swal.fire({
-                title: 'Eksik Bilgi',
-                text: 'Lütfen zorunlu alanları doldurunuz.',
-                icon: 'warning',
-                confirmButtonColor: '#0ea5e9'
-            });
-        } else {
-            alert("Lütfen zorunlu alanları seçiniz.");
-        }
+    if (firstInvalid) {
+        let message = 'Lütfen işaretli alanları doldurun.';
+        if (firstInvalid.name === 'service_type') message = 'Lütfen bir hizmet türü seçin.';
+        else if (firstInvalid.name === 'location') message = 'Lütfen çekimin yapılacağı yeri yazın.';
+        else if (firstInvalid.type === 'email' && firstInvalid.value) message = 'Lütfen geçerli bir e-posta adresi girin.';
+        showWizardError(message);
+        firstInvalid.focus();
+        return false;
     }
 
-    return isValid;
+    showWizardError('');
+    return true;
 }
 
-// Navigation Events
 document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('quote-form');
+    if (!form) return;
+
     document.getElementById('btn-next').addEventListener('click', () => {
         if (!validateStep(window.mfQuoteWizardStep)) return;
-
-        if (window.mfQuoteWizardStep === 1) {
-            setupStep2();
-        }
-
+        if (window.mfQuoteWizardStep === 1) setupStep2();
         window.mfQuoteWizardStep++;
         updateStepUI();
     });
 
     document.getElementById('btn-prev').addEventListener('click', () => {
         window.mfQuoteWizardStep--;
+        showWizardError('');
         updateStepUI();
     });
 
-    document.getElementById('quote-form').addEventListener('submit', (e) => {
+    // Enter moves forward instead of submitting half-way through.
+    form.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA' && window.mfQuoteWizardStep < WIZARD_TOTAL_STEPS) {
+            e.preventDefault();
+            document.getElementById('btn-next').click();
+        }
+    });
+
+    form.addEventListener('submit', (e) => {
         e.preventDefault();
+        if (!validateStep(WIZARD_TOTAL_STEPS)) return;
         submitQuote();
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeQuoteWizard();
     });
 });
 
 // Dynamic Fields based on Type
 const serviceQuestions = {
     'mimari': [
-        { label: 'Çekim projenizin boyutu hakkında lütfen detaylıca bilgi veriniz.', name: 'project_size_detail', type: 'textarea', placeholder: 'Örn: 4+1 Villa, yaklaşık 250 m2, tüm odalar ve dış çekim dahil...', required: true }
+        { label: 'Mekanı kısaca anlat', name: 'project_size_detail', type: 'textarea', placeholder: 'Örn: 4+1 villa, yaklaşık 250 m², tüm odalar ve dış çekim dahil', required: true }
     ],
     'otel': [
-        { label: 'Toplam Oda Sayısı', name: 'total_rooms', type: 'number', placeholder: 'Örn: 50' },
-        { label: 'Çekilecek Oda Tipleri', name: 'room_types', type: 'text', placeholder: 'Standart, Deluxe, Suit vb.' },
-        { label: 'Drone / Havadan Çekim', name: 'drone_needed', type: 'select', options: ['İstiyorum', 'İstemiyorum', 'Kararsızım'] }
+        { label: 'Toplam oda sayısı', name: 'total_rooms', type: 'number', placeholder: 'Örn: 50' },
+        { label: 'Çekilecek oda tipleri', name: 'room_types', type: 'text', placeholder: 'Standart, deluxe, suit…' },
+        { label: 'Drone / havadan çekim', name: 'drone_needed', type: 'select', options: ['İstiyorum', 'İstemiyorum', 'Kararsızım'] }
     ],
     'yemek': [
-        { label: 'Çekilecek Ürün/Tabak Sayısı', name: 'dish_count', type: 'number', placeholder: 'Örn: 15' },
-        { label: 'Styling / Sunum Desteği', name: 'styling_needed', type: 'select', options: ['İhtiyacım var', 'Kendimiz hazırlayacağız'] }
+        { label: 'Çekilecek ürün / tabak sayısı', name: 'dish_count', type: 'number', placeholder: 'Örn: 15' },
+        { label: 'Styling / sunum desteği', name: 'styling_needed', type: 'select', options: ['İhtiyacım var', 'Kendimiz hazırlayacağız'] }
     ],
     'diger': [
-        { label: 'Proje Detayları', name: 'project_type', type: 'text', placeholder: 'Lütfen proje amacını kısaca belirtiniz' }
+        { label: 'Proje nedir?', name: 'project_type', type: 'text', placeholder: 'Örn: Drone çekimi, etkinlik, tanıtım filmi', required: true }
     ]
+};
+
+const serviceTitles = {
+    mimari: 'Mekan hakkında',
+    otel: 'Tesis hakkında',
+    yemek: 'Çekim hakkında',
+    diger: 'Proje hakkında'
 };
 
 function setupStep2() {
     const serviceType = document.querySelector('input[name="service_type"]:checked').value;
     const container = document.getElementById('dynamic-fields');
-    container.innerHTML = ''; // Clear previous
+    container.innerHTML = '';
+    document.getElementById('step-2-title').textContent = serviceTitles[serviceType] || 'Proje detayları';
 
     const questions = serviceQuestions[serviceType] || serviceQuestions['diger'];
 
     questions.forEach(q => {
         const div = document.createElement('div');
-
-        let header = `<label class="block text-sm font-bold text-slate-700 mb-1">${q.label}${q.required ? ' *' : ''}</label>`;
-        let input = '';
+        const id = `wizard_${q.name}`;
+        const optional = q.required ? '' : ' <span class="font-normal text-ink-muted">(opsiyonel)</span>';
+        const header = `<label for="${id}" class="label">${q.label}${optional}</label>`;
+        const req = q.required ? 'required' : '';
+        let input;
 
         if (q.type === 'select') {
-            let opts = q.options.map(o => `<option value="${o}">${o}</option>`).join('');
-            input = `<select name="${q.name}" ${q.required ? 'required' : ''} class="w-full rounded-xl border-slate-200 shadow-sm focus:border-brand-500 py-3 px-4 transition-all">${opts}</select>`;
+            const opts = q.options.map(o => `<option value="${o}">${o}</option>`).join('');
+            input = `<select id="${id}" name="${q.name}" ${req} class="input">${opts}</select>`;
         } else if (q.type === 'textarea') {
-            input = `<textarea name="${q.name}" ${q.required ? 'required' : ''} placeholder="${q.placeholder || ''}" rows="3" class="w-full rounded-xl border-slate-200 shadow-sm focus:border-brand-500 py-3 px-4 transition-all"></textarea>`;
+            input = `<textarea id="${id}" name="${q.name}" ${req} placeholder="${q.placeholder || ''}" rows="3" class="input"></textarea>`;
         } else {
-            input = `<input type="${q.type}" name="${q.name}" ${q.required ? 'required' : ''} placeholder="${q.placeholder || ''}" class="w-full rounded-xl border-slate-200 shadow-sm focus:border-brand-500 py-3 px-4 transition-all">`;
+            const extra = q.type === 'number' ? 'min="0" inputmode="numeric"' : '';
+            input = `<input id="${id}" type="${q.type}" name="${q.name}" ${req} ${extra} placeholder="${q.placeholder || ''}" class="input">`;
         }
 
         div.innerHTML = header + input;
@@ -243,28 +223,50 @@ function setupStep2() {
     });
 }
 
+function showWizardSuccess(name, quoteNumber) {
+    const success = document.getElementById('wizard-success');
+    const safeName = typeof escapeHtml === 'function' ? escapeHtml(name) : '';
+    success.innerHTML = `
+        <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
+            <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+        </div>
+        <h3 class="h-card mt-5">Talebin alındı</h3>
+        <p class="mx-auto mt-2 max-w-sm text-sm text-ink-muted">Teşekkürler${safeName ? ' ' + safeName : ''}. Talebini bölgendeki uygun fotoğrafçılarla paylaşıyoruz; en kısa sürede sana dönüş yapılacak.</p>
+        ${quoteNumber ? `
+        <div class="mx-auto mt-6 max-w-xs rounded-2xl bg-stone-50 p-4">
+            <span class="block text-xs text-ink-muted">Talep numaran</span>
+            <span class="mt-1 block text-xl font-semibold tracking-wide">${typeof escapeHtml === 'function' ? escapeHtml(quoteNumber) : ''}</span>
+        </div>` : ''}
+        <div class="mt-8 flex flex-col justify-center gap-2 sm:flex-row">
+            <a href="/kayit/musteri" class="btn btn-outline">Taleplerini takip et</a>
+            <button type="button" onclick="closeQuoteWizard()" class="btn btn-dark">Kapat</button>
+        </div>`;
+    document.getElementById('quote-form').hidden = true;
+    document.getElementById('wizard-progress').hidden = true;
+    success.hidden = false;
+}
+
 function submitQuote() {
     const btn = document.getElementById('btn-submit');
-    const originalText = btn.innerText;
-    btn.innerText = 'Gönderiliyor...';
+    btn.textContent = 'Gönderiliyor…';
     btn.disabled = true;
+    showWizardError('');
 
-    // Configure Data
     const formData = new FormData(document.getElementById('quote-form'));
 
     // Construct meaningful summary for the CRM
     let summary = `Hizmet: ${formData.get('service_type')}\n`;
     if (formData.get('project_desc')) summary += `Not: ${formData.get('project_desc')}\n`;
-    
+
     // Form fields to exclude from dynamic summary loop (they are added manually or handled differently)
     const baseFields = ['name', 'email', 'phone', 'location', 'service_type', 'project_desc', 'preferred_date', 'preferred_time', 'urgency'];
-    
+
     for (let [key, value] of formData.entries()) {
         if (!baseFields.includes(key) && value) {
             summary += `${key}: ${value}\n`;
         }
     }
-    
+
     if (formData.get('preferred_date')) summary += `Tarih: ${formData.get('preferred_date')}\n`;
     if (formData.get('preferred_time')) summary += `Işık: ${formData.get('preferred_time')}\n`;
     if (formData.get('urgency')) summary += `Aciliyet: ${formData.get('urgency')}`;
@@ -285,17 +287,19 @@ function submitQuote() {
         }
     }
 
-    // Send to Local Save
-    fetch('/save-form.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-    });
+    const readJson = r => r.json().catch(() => ({}));
 
-    // Send to Central CRM
-    fetch(window.LEADS_API_URL || 'https://lead.ahmetcotur.com/api/leads/form', {
+    // Local save feeds the marketplace matching and issues the MF-xxxxx number
+    // that "Talep sorgula" looks up; the CRM copy is for the sales pipeline.
+    // Either one landing means the request isn't lost, so the visitor sees
+    // success unless both fail.
+    const localSave = fetch('/save-form.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    }).then(readJson);
+
+    const crmSave = fetch(window.LEADS_API_URL || 'https://lead.ahmetcotur.com/api/leads/form', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify({
@@ -306,39 +310,24 @@ function submitQuote() {
             details: payload,
             page_url: window.location.href
         })
-    })
-        .then(r => r.json())
-        .then(data => {
-            if (data.success) {
-                // Show success styling in modal
-                document.getElementById('wizard-panel').innerHTML = `
-                <div class="p-10 text-center">
-                    <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                             <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                        </svg>
-                    </div>
-                    <h3 class="text-2xl font-bold text-slate-900 mb-2">Talebiniz Alındı!</h3>
-                    <p class="text-slate-600 mb-4">Teşekkürler ${payload.name}, proje detaylarını inceleyip en kısa sürede size dönüş yapacağız.</p>
-                    
-                    <div class="bg-slate-50 border border-brand-100 rounded-2xl p-4 mb-8">
-                        <span class="text-xs text-slate-400 uppercase font-bold tracking-widest block mb-1">Teklif Numaranız</span>
-                        <span class="text-2xl font-black text-brand-600 tracking-tighter">${data.quote_number || '#' + data.id}</span>
-                    </div>
+    }).then(readJson);
 
-                    <button onclick="closeQuoteWizard()" class="px-8 py-3 bg-slate-100 font-bold rounded-xl hover:bg-slate-200">Kapat</button>
-                </div>
-            `;
-            } else {
-                alert("Hata: " + data.message);
-                btn.innerText = originalText;
-                btn.disabled = false;
-            }
-        })
-        .catch(err => {
-            console.error(err);
-            alert("Bağlantı hatası.");
-            btn.innerText = originalText;
-            btn.disabled = false;
-        });
+    Promise.allSettled([localSave, crmSave]).then(([local, crm]) => {
+        const localData = local.status === 'fulfilled' ? local.value : {};
+        const crmData = crm.status === 'fulfilled' ? crm.value : {};
+        if (crm.status === 'rejected') console.error('CRM lead failed', crm.reason);
+
+        if (localData.success || crmData.success) {
+            const number = localData.quote_number || crmData.quote_number || (crmData.id ? '#' + crmData.id : '');
+            showWizardSuccess(payload.name, number);
+            return;
+        }
+
+        const reason = localData.message || crmData.message;
+        showWizardError(reason
+            ? 'Talep gönderilemedi: ' + reason
+            : 'Bağlantı hatası. İnternet bağlantını kontrol edip tekrar dene.');
+        btn.textContent = 'Talebi gönder';
+        btn.disabled = false;
+    });
 }

@@ -1,108 +1,137 @@
 <?php
 /**
  * Public Photographer Directory (/fotografcilar)
- * Server-rendered shell + client-side fetch against api/directory/freelancers.php,
- * matching the rest of the public site's vanilla PHP + fetch() convention.
+ *
+ * Server-rendered with GET filters (?bolge=Antalya&uzmanlik=otel) so results
+ * are indexable and filter links can be shared. Filtering mirrors
+ * api/directory/freelancers.php (city or working region, specialization).
  */
-$pageTitle = 'Fotoğrafçılarımız';
-$pageDescription = 'Kolektifimizdeki bağımsız mekan fotoğrafçılarını keşfedin; bölge ve uzmanlığa göre filtreleyip doğrudan iletişime geçin.';
+require_once __DIR__ . '/../../includes/database.php';
+require_once __DIR__ . '/../../includes/helpers.php';
+
+$filterRegion = trim((string) ($_GET['bolge'] ?? ''));
+$filterSpecialty = (string) ($_GET['uzmanlik'] ?? '');
+if (!isset(photographer_specialties()[$filterSpecialty])) {
+    $filterSpecialty = '';
+}
+
+$db = new DatabaseClient();
+$photographers = [];
+try {
+    $photographers = $db->select('freelancer_applications', [
+        'status' => 'approved',
+        'is_public' => true,
+        'order' => 'rating_avg DESC, created_at DESC',
+        'limit' => 500,
+    ]);
+} catch (Exception $e) {
+    error_log('Directory fetch failed (migrations pending?): ' . $e->getMessage());
+}
+
+if ($filterRegion !== '') {
+    $photographers = array_values(array_filter($photographers, function ($f) use ($filterRegion) {
+        if (mb_stripos($f['city'] ?? '', $filterRegion) !== false) {
+            return true;
+        }
+        foreach (json_decode($f['working_regions'] ?? '[]', true) ?: [] as $region) {
+            if (isset($region['province_name']) && mb_stripos($region['province_name'], $filterRegion) !== false) {
+                return true;
+            }
+        }
+        return false;
+    }));
+}
+if ($filterSpecialty !== '') {
+    $photographers = array_values(array_filter($photographers, function ($f) use ($filterSpecialty) {
+        return in_array($filterSpecialty, json_decode($f['specialization'] ?? '[]', true) ?: [], true);
+    }));
+}
+
+$provinces = [];
+try {
+    $provinces = $db->select('locations_province', ['is_active' => true, 'order' => 'name ASC', 'limit' => 100]);
+} catch (Exception $e) {
+    error_log('Directory provinces fetch failed: ' . $e->getMessage());
+}
+
+$hasFilter = $filterRegion !== '' || $filterSpecialty !== '';
+$pageTitle = $filterRegion !== '' ? $filterRegion . ' Mekan Fotoğrafçıları' : 'Fotoğrafçılar';
+$pageDescription = 'Kolektifimizdeki onaylı, bağımsız mekan fotoğrafçılarını keşfedin; bölge ve uzmanlığa göre filtreleyip doğrudan iletişime geçin.';
+if ($hasFilter) {
+    $pageRobots = 'noindex, follow';
+    $appPage = false;
+}
 include __DIR__ . '/../page-header.php';
+
+$heroEyebrow = 'Kolektif';
+$heroTitle = $filterRegion !== '' ? $filterRegion . ' fotoğrafçıları' : 'Fotoğrafçıları keşfet';
+$heroLead = 'Başvurusu incelenip onaylanan bağımsız mekan fotoğrafçıları. Profillerine bak, doğrudan iletişime geç ya da tek talep ile hepsinden teklif al.';
+$heroCrumbs = [['href' => '/fotografcilar', 'label' => 'Fotoğrafçılar']];
 ?>
 
-<main class="pt-40 pb-24">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center max-w-3xl mx-auto mb-16">
-            <div class="inline-flex items-center gap-4 mb-8">
-                <span class="h-px w-12 bg-brand-500/30"></span>
-                <span class="text-brand-600 font-bold tracking-[0.3em] text-[11px] uppercase italic">Kolektif</span>
-                <span class="h-px w-12 bg-brand-500/30"></span>
-            </div>
-            <h1 class="text-4xl md:text-6xl font-heading font-black text-slate-900 tracking-tight leading-tight mb-6">
-                Fotoğrafçılarımızı Keşfedin
-            </h1>
-            <p class="text-lg text-slate-500">
-                Kolektifimizdeki onaylı, bağımsız fotoğrafçılar arasından bölgenize ve ihtiyacınıza en uygun olanı
-                seçin.
+<main id="main">
+    <?php include __DIR__ . '/../partials/page-hero.php'; ?>
+
+    <section class="section pt-8 md:pt-10">
+        <div class="container-page">
+            <form method="get" action="/fotografcilar" id="directory-filters" class="flex flex-col gap-3 rounded-2xl border border-line bg-white p-3 sm:flex-row sm:items-end">
+                <div class="flex-1">
+                    <label for="filter-region" class="label px-1 text-xs text-ink-muted">Bölge</label>
+                    <input id="filter-region" name="bolge" type="text" list="province-options" value="<?= e($filterRegion) ?>" placeholder="Şehir veya bölge" class="input">
+                    <datalist id="province-options">
+                        <?php foreach ($provinces as $province): ?>
+                            <option value="<?= e($province['name']) ?>">
+                        <?php endforeach; ?>
+                    </datalist>
+                </div>
+                <div class="flex-1">
+                    <label for="filter-specialty" class="label px-1 text-xs text-ink-muted">Uzmanlık</label>
+                    <select id="filter-specialty" name="uzmanlik" class="input" onchange="this.form.submit()">
+                        <option value="">Tüm uzmanlıklar</option>
+                        <?php foreach (photographer_specialties() as $value => $label): ?>
+                            <option value="<?= e($value) ?>" <?= $filterSpecialty === $value ? 'selected' : '' ?>><?= e($label) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-dark py-3"><?= icon('search', 'h-4 w-4') ?> Ara</button>
+                <?php if ($hasFilter): ?>
+                    <a href="/fotografcilar" class="btn btn-ghost py-3">Temizle</a>
+                <?php endif; ?>
+            </form>
+
+            <p class="mt-6 text-sm text-ink-muted" aria-live="polite">
+                <?= count($photographers) ?> fotoğrafçı<?= $filterSpecialty ? ' · ' . e(specialty_label($filterSpecialty)) : '' ?><?= $filterRegion !== '' ? ' · ' . e($filterRegion) : '' ?>
             </p>
-        </div>
 
-        <div class="flex flex-wrap gap-3 justify-center mb-12">
-            <input id="filter-province" type="text" placeholder="Şehir / Bölge"
-                class="px-5 py-3 rounded-2xl border border-slate-200 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-brand-500/30">
-            <select id="filter-specialization"
-                class="px-5 py-3 rounded-2xl border border-slate-200 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-brand-500/30">
-                <option value="">Tüm Uzmanlıklar</option>
-                <option value="mekan">Mekan</option>
-                <option value="dugun">Düğün</option>
-                <option value="mimari">Mimari</option>
-                <option value="otel">Otel</option>
-                <option value="emlak">Emlak</option>
-                <option value="yemek">Yemek</option>
-                <option value="drone">Drone</option>
-            </select>
-            <button onclick="loadDirectory()"
-                class="px-6 py-3 rounded-2xl bg-brand-600 text-white text-sm font-bold hover:bg-brand-700 transition-all">
-                Filtrele
-            </button>
-        </div>
+            <?php if ($photographers): ?>
+                <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    <?php foreach ($photographers as $photographer): ?>
+                        <?= photographer_card($photographer) ?>
+                    <?php endforeach; ?>
+                </div>
+            <?php else: ?>
+                <div class="card mt-4 p-8 text-center md:p-12">
+                    <span class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-stone-100 text-ink-muted"><?= icon('users') ?></span>
+                    <h2 class="h-card mt-4">Bu kriterlere uyan fotoğrafçı henüz yok</h2>
+                    <p class="mx-auto mt-2 max-w-md text-sm text-ink-soft">Talebini yine de ilet; bölgene hizmet verebilecek fotoğrafçıları senin için bulalım.</p>
+                    <div class="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
+                        <button type="button" onclick='openQuoteWizard(<?= json_encode($filterSpecialty ?: null) ?>, <?= json_encode($filterRegion ?: null) ?>)' class="btn btn-primary">Teklif iste</button>
+                        <?php if ($hasFilter): ?>
+                            <a href="/fotografcilar" class="btn btn-outline">Tüm fotoğrafçılar</a>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            <?php endif; ?>
 
-        <div id="directory-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            <p class="col-span-full text-center text-slate-400 py-16">Fotoğrafçılar yükleniyor...</p>
+            <div class="mt-12 flex flex-col items-start justify-between gap-4 rounded-2xl bg-brand-50 p-6 ring-1 ring-inset ring-brand-100 md:flex-row md:items-center">
+                <div>
+                    <h2 class="font-semibold">Tek tek yazmakla uğraşma</h2>
+                    <p class="mt-1 text-sm text-ink-soft">Tek bir talep oluştur, uygun fotoğrafçılar sana teklif göndersin.</p>
+                </div>
+                <button type="button" onclick='openQuoteWizard(<?= json_encode($filterSpecialty ?: null) ?>, <?= json_encode($filterRegion ?: null) ?>)' class="btn btn-primary shrink-0">Ücretsiz teklif al</button>
+            </div>
         </div>
-    </div>
+    </section>
 </main>
-
-<script>
-    function loadDirectory() {
-        const grid = document.getElementById('directory-grid');
-        grid.innerHTML = '<p class="col-span-full text-center text-slate-400 py-16">Yükleniyor...</p>';
-
-        const params = new URLSearchParams();
-        const province = document.getElementById('filter-province').value.trim();
-        const specialization = document.getElementById('filter-specialization').value;
-        if (province) params.set('province', province);
-        if (specialization) params.set('specialization', specialization);
-
-        fetch('/api/directory/freelancers.php?' + params.toString())
-            .then(r => r.json())
-            .then(data => {
-                if (!data.success || !data.freelancers.length) {
-                    grid.innerHTML = '<p class="col-span-full text-center text-slate-400 py-16">Kriterlere uygun fotoğrafçı bulunamadı.</p>';
-                    return;
-                }
-                grid.innerHTML = data.freelancers.map(renderCard).join('');
-            })
-            .catch(() => {
-                grid.innerHTML = '<p class="col-span-full text-center text-red-400 py-16">Fotoğrafçılar yüklenirken bir hata oluştu.</p>';
-            });
-    }
-
-    function renderCard(f) {
-        let specs = [];
-        try { specs = JSON.parse(f.specialization || '[]'); } catch (e) { }
-        const specBadges = specs.map(s => `<span class="px-3 py-1 bg-brand-50 text-brand-600 rounded-full text-xs font-bold">${escapeHtml(s)}</span>`).join(' ');
-        const rating = f.rating_count > 0 ? `★ ${Number(f.rating_avg).toFixed(1)} (${f.rating_count})` : 'Henüz değerlendirme yok';
-
-        return `
-        <a href="/fotografcilar/${encodeURIComponent(f.slug)}" class="block bg-white rounded-3xl border border-slate-100 shadow-xl shadow-slate-900/5 overflow-hidden hover-lift group">
-            <div class="h-48 bg-slate-100 flex items-center justify-center text-slate-300 font-heading font-black text-4xl">
-                ${escapeHtml((f.name || '?').charAt(0))}
-            </div>
-            <div class="p-6">
-                <h3 class="font-heading font-bold text-xl text-slate-900 group-hover:text-brand-600 transition-colors">${escapeHtml(f.name || '')}</h3>
-                <p class="text-sm text-slate-400 mb-3">${escapeHtml(f.city || '')} &middot; ${escapeHtml(rating)}</p>
-                <div class="flex flex-wrap gap-2">${specBadges}</div>
-            </div>
-        </a>`;
-    }
-
-    function escapeHtml(str) {
-        const div = document.createElement('div');
-        div.textContent = str;
-        return div.innerHTML;
-    }
-
-    loadDirectory();
-</script>
 
 <?php include __DIR__ . '/../page-footer.php'; ?>

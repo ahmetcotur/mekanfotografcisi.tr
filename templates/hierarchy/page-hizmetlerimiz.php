@@ -1,162 +1,63 @@
 <?php
 /**
- * Services Archive Page - Modern UI
+ * Services archive (/hizmetlerimiz)
  */
+$pageTitle = 'Hizmetler';
+$pageDescription = 'Otel, villa, restoran, ofis ve daha fazlası: mekan fotoğrafçılığı kategorileri ve her biri için uygun fotoğrafçıdan teklif alma.';
 include __DIR__ . '/../page-header.php';
 global $db;
 
-// Fetch all active services from posts table
-$activeServices = $db->select('posts', [
-    'post_type' => 'service',
-    'post_status' => 'publish',
-    'limit' => 50,
-    'order' => 'title ASC'
-]);
+$activeServices = published_services($db);
 
-// Service images mapping
-$serviceImages = [
-    'mimari-fotografcilik' => 'https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg',
-    'ic-mekan-fotografciligi' => 'https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg',
-    'otel-fotografciligi' => 'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg',
-    'emlak-fotografciligi' => 'https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg',
-    'otel-restoran-fotografciligi' => 'https://images.pexels.com/photos/67468/pexels-photo-67468.jpeg',
-];
-$defaultImage = 'https://images.pexels.com/photos/7045926/pexels-photo-7045926.jpeg';
+$servicePhotos = array_map('photo_src', get_random_pexels_photos(count($activeServices) ?: 1));
+$defaultImage = '/assets/images/hero-bg.jpg';
 
-$randomPhoto = get_random_pexels_photo();
-$heroImage = $randomPhoto ? $randomPhoto['src'] : '/assets/images/hero-bg.jpg';
+$heroEyebrow = 'Hizmetler';
+$heroTitle = 'Her mekan için doğru uzman';
+$heroLead = 'Çektirmek istediğin mekanın türünü seç; o alanda deneyimli fotoğrafçılardan ücretsiz teklif al.';
+$heroCrumbs = [['href' => '/hizmetlerimiz', 'label' => 'Hizmetler']];
 ?>
 
-<!-- Hero Section -->
-<section class="relative h-[60vh] min-h-[500px] flex items-center justify-center overflow-hidden bg-slate-950">
-    <div class="absolute inset-0 z-0">
-        <img src="<?= htmlspecialchars($heroImage) ?>" alt="Hizmetlerimiz"
-            class="w-full h-full object-cover opacity-30 animate-pulse-subtle">
-        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
-        <div
-            class="absolute inset-0 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:40px_40px] opacity-10">
-        </div>
-    </div>
+<main id="main">
+    <?php include __DIR__ . '/../partials/page-hero.php'; ?>
 
-    <div class="relative z-10 container mx-auto px-4 text-center">
-        <div class="animate-slide-up">
-            <span
-                class="inline-block px-4 py-1.5 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-400 text-[10px] font-black tracking-[0.2em] uppercase mb-8 backdrop-blur-xl">
-                Profesyonel Çözümler
-            </span>
-            <h1 class="font-heading font-black text-5xl md:text-8xl text-white mb-8 tracking-tighter drop-shadow-2xl">
-                Hizmetlerimiz
-            </h1>
-            <p class="text-xl md:text-2xl text-slate-400 max-w-2xl mx-auto font-light leading-relaxed">
-                Her mekanın kendine has bir dili vardır. <span class="text-white font-medium">Biz o dili
-                    görselleştiriyoruz.</span>
-            </p>
-        </div>
-    </div>
-</section>
-
-<!-- Services Grid -->
-<main class="py-32 bg-slate-50">
-    <div class="container mx-auto px-4">
-
-        <?php if (empty($activeServices)): ?>
-            <div class="text-center py-20 bg-white rounded-3xl border border-slate-100 shadow-sm">
-                <p class="text-slate-500 text-lg">Henüz aktif hizmet bulunmuyor.</p>
-            </div>
-        <?php else:
-            // Fetch Pexels photos for all services
-            $servicePhotos = get_random_pexels_photos(count($activeServices));
-            ?>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                <?php
-                $idx = 0;
-                foreach ($activeServices as $service):
-                    $serviceName = htmlspecialchars($service['title']);
-                    $serviceSlug = htmlspecialchars($service['slug']);
-                    $serviceIntro = htmlspecialchars($service['short_intro'] ?? 'Profesyonel fotoğrafçılık hizmeti.');
-
-                    // Use Pexels photo if available
-                    $photo = $servicePhotos[$idx] ?? null;
-                    $serviceImage = $photo ? ($photo['src']['large'] ?? $photo['src']) : ($serviceImages[$serviceSlug] ?? $defaultImage);
-                    $idx++;
-                    ?>
-                    <!-- Full-Image Glass Card -->
-                    <div class="group relative bg-slate-900 rounded-5xl h-[550px] overflow-hidden shadow-2xl hover-lift">
-                        <!-- Background Image -->
-                        <img src="<?= $serviceImage ?>" alt="<?= $serviceName ?>"
-                            class="absolute inset-0 w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110 opacity-70">
-
-                        <!-- Overlay Gradient -->
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/20 to-transparent"></div>
-
-                        <!-- Content Overlay -->
-                        <div
-                            class="absolute inset-0 p-8 flex flex-col justify-end transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                            <div class="bg-white/10 backdrop-blur-md border border-white/10 p-8 rounded-4xl">
-                                <div class="w-12 h-1 bg-brand-500 mb-6 rounded-full overflow-hidden">
-                                    <div
-                                        class="w-full h-full bg-white -translate-x-full group-hover:translate-x-0 transition-transform duration-700">
-                                    </div>
+    <section class="section pt-10 md:pt-14">
+        <div class="container-page">
+            <?php if (empty($activeServices)): ?>
+                <div class="card p-10 text-center text-ink-muted">Henüz yayınlanmış hizmet bulunmuyor.</div>
+            <?php else: ?>
+                <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                    <?php foreach ($activeServices as $i => $service):
+                        $href = '/hizmetlerimiz/' . preg_replace('#^hizmetlerimiz/#', '', $service['slug']);
+                        $intro = $service['excerpt'] ?? '';
+                        $image = $servicePhotos[$i] ?? '' ?: $defaultImage;
+                        ?>
+                        <article class="card-link group flex flex-col overflow-hidden">
+                            <a href="<?= e($href) ?>" class="photo-placeholder block aspect-[3/2] overflow-hidden" tabindex="-1" aria-hidden="true">
+                                <img src="<?= e($image) ?>" alt="" loading="lazy" class="h-full w-full object-cover transition duration-500 group-hover:scale-105">
+                            </a>
+                            <div class="flex flex-1 flex-col p-5">
+                                <h2 class="h-card"><a href="<?= e($href) ?>" class="hover:text-brand-700"><?= e($service['title']) ?></a></h2>
+                                <?php if ($intro): ?>
+                                    <p class="mt-2 line-clamp-2 text-sm text-ink-soft"><?= e($intro) ?></p>
+                                <?php endif; ?>
+                                <div class="mt-auto flex items-center justify-between gap-3 pt-5">
+                                    <a href="<?= e($href) ?>" class="inline-flex items-center gap-1 text-sm font-semibold text-brand-700">Detaylar <?= icon('arrow-right', 'h-4 w-4') ?></a>
+                                    <button type="button" onclick='openQuoteWizard(<?= json_encode($service['slug']) ?>)' class="btn btn-outline btn-sm">Teklif al</button>
                                 </div>
-                                <h3 class="text-3xl font-black text-white mb-4 tracking-tight"><?= $serviceName ?></h3>
-                                <p
-                                    class="text-slate-200 text-sm font-medium leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
-                                    <?= $serviceIntro ?>
-                                </p>
-                                <a href="/<?= $serviceSlug ?>"
-                                    class="mt-8 inline-flex items-center gap-3 text-white font-bold text-xs uppercase tracking-widest group/btn border border-white/20 px-8 py-4 rounded-full hover:bg-white hover:text-brand-900 transition-all">
-                                    Detayları İncele
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
-                                        stroke-linejoin="round" class="group-hover/btn:translate-x-2 transition-transform">
-                                        <path d="M5 12h14" />
-                                        <path d="m12 5 7 7-7 7" />
-                                    </svg>
-                                </a>
                             </div>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-        <?php endif; ?>
-
-
-        <!-- CTA Section -->
-        <div
-            class="mt-24 bg-slate-900 rounded-5xl p-12 md:p-20 text-center text-white relative overflow-hidden shadow-2xl group animate-slide-up">
-            <div class="absolute inset-0 z-0 opacity-40">
-                <img src="https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg" alt="CTA BG"
-                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[2s]">
-                <div class="absolute inset-0 bg-gradient-to-br from-brand-900/80 to-slate-900/90 backdrop-blur-sm">
+                        </article>
+                    <?php endforeach; ?>
                 </div>
-            </div>
-            <div class="relative z-10">
-                <h2 class="font-heading font-black text-4xl md:text-6xl mb-8 tracking-tight">Hangi Hizmet Size Uygun?
-                </h2>
-                <p class="text-brand-100 mb-12 text-xl md:text-2xl font-light max-w-3xl mx-auto leading-relaxed">
-                    Projeniz için en uygun çözümü birlikte belirleyelim. <span class="text-white font-bold">Ücretsiz
-                        danışmanlık</span> için hemen iletişime geçin.
-                </p>
-                <div class="flex flex-col sm:flex-row gap-6 justify-center">
-                    <button onclick="openQuoteWizard()"
-                        class="px-12 py-6 bg-white text-slate-900 rounded-3xl font-black text-xl hover:bg-brand-50 transition-all hover:scale-105 active:scale-95 shadow-2xl">
-                        Hemen Teklif Al
-                    </button>
-                    <a href="tel:<?= get_setting('phone_url') ?>"
-                        class="px-12 py-6 bg-brand-600/20 backdrop-blur-md border border-brand-500/30 text-white rounded-3xl font-black text-xl hover:bg-brand-600/40 transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                            <path
-                                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-                        </svg>
-                        Bizi Arayın
-                    </a>
-                </div>
-            </div>
+            <?php endif; ?>
         </div>
+    </section>
 
-    </div>
+    <?php
+    $ctaTitle = 'Aradığın kategori listede yok mu?';
+    $ctaLead = 'Drone, etkinlik ya da özel bir proje — talebini anlat, uygun fotoğrafçıyı biz bulalım.';
+    include __DIR__ . '/../partials/cta-band.php';
+    ?>
 </main>
 
 <?php include __DIR__ . '/../page-footer.php'; ?>

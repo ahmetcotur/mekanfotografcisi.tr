@@ -3,58 +3,96 @@
  * Freelancer self-service registration (/kayit/fotografci)
  * Posts to api/register-freelancer.php, then auto-logs in and redirects to /panel.
  */
-$pageTitle = 'Kolektife Katılın';
+$pageTitle = 'Fotoğrafçı Olarak Katıl';
 $pageDescription = 'Bağımsız fotoğrafçı olarak kayıt olun, açık çekim taleplerini görün ve kendi işinizi büyütün.';
 $pageRobots = 'noindex, follow';
 include __DIR__ . '/../page-header.php';
 ?>
 
-<main class="pt-40 pb-24 min-h-screen flex items-start justify-center">
-    <div class="max-w-xl w-full mx-4 bg-white rounded-3xl border border-slate-100 shadow-xl p-8 md:p-10">
-        <h1 class="text-2xl font-heading font-black text-slate-900 mb-2">Fotoğrafçı Olarak Katılın</h1>
-        <p class="text-slate-400 text-sm mb-8">Kolektifimize katılın, açık çekim taleplerine erişin ve kendi profilinizi yönetin.</p>
+<main id="main" class="grid flex-1 lg:grid-cols-2">
+    <div class="flex items-start justify-center px-4 py-12 sm:px-6 md:py-16">
+        <div class="w-full max-w-lg">
+            <p class="eyebrow">Fotoğrafçılar</p>
+            <h1 class="h-section mt-3">Kolektife katıl</h1>
+            <p class="mt-2 text-ink-muted">Kayıt ücretsiz. Başvurun incelendikten sonra profilin dizinde yayınlanır ve bölgendeki talepleri görmeye başlarsın.</p>
 
-        <form id="register-form" class="space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input name="name" required placeholder="Ad Soyad" class="px-4 py-3 rounded-xl border border-slate-200">
-                <input name="email" type="email" required placeholder="E-posta" class="px-4 py-3 rounded-xl border border-slate-200">
-                <input name="password" type="password" required minlength="8" placeholder="Şifre (en az 8 karakter)" class="px-4 py-3 rounded-xl border border-slate-200">
-                <input name="phone" required placeholder="Telefon" class="px-4 py-3 rounded-xl border border-slate-200">
-                <input name="city" required placeholder="Şehir" class="px-4 py-3 rounded-xl border border-slate-200">
-                <select name="experience" required class="px-4 py-3 rounded-xl border border-slate-200">
-                    <option value="">Deneyim</option>
-                    <option value="0-1">0-1 yıl</option>
-                    <option value="1-3">1-3 yıl</option>
-                    <option value="3-5">3-5 yıl</option>
-                    <option value="5-10">5-10 yıl</option>
-                    <option value="10+">10+ yıl</option>
-                </select>
-            </div>
+            <form id="register-form" class="mt-8 space-y-8" novalidate>
+                <fieldset class="space-y-4">
+                    <legend class="mb-4 text-sm font-semibold uppercase tracking-wider text-ink-muted">Hesap</legend>
+                    <div>
+                        <label for="rf-name" class="label">Ad soyad</label>
+                        <input id="rf-name" name="name" required class="input" autocomplete="name">
+                    </div>
+                    <div class="grid gap-4 sm:grid-cols-2">
+                        <div>
+                            <label for="rf-email" class="label">E-posta</label>
+                            <input id="rf-email" name="email" type="email" required class="input" autocomplete="email">
+                        </div>
+                        <div>
+                            <label for="rf-phone" class="label">Telefon</label>
+                            <input id="rf-phone" name="phone" type="tel" required class="input" autocomplete="tel">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="rf-password" class="label">Şifre</label>
+                        <input id="rf-password" name="password" type="password" required minlength="8" class="input" autocomplete="new-password">
+                        <p class="hint">En az 8 karakter.</p>
+                    </div>
+                </fieldset>
 
-            <div>
-                <label class="block text-sm font-bold text-slate-600 mb-2">Uzmanlık Alanları</label>
-                <div class="flex flex-wrap gap-3">
-                    <?php foreach (['mekan' => 'Mekan', 'dugun' => 'Düğün', 'mimari' => 'Mimari', 'otel' => 'Otel', 'emlak' => 'Emlak', 'yemek' => 'Yemek', 'drone' => 'Drone'] as $val => $label): ?>
-                        <label class="flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 cursor-pointer text-sm">
-                            <input type="checkbox" name="specialization" value="<?= e($val) ?>"> <?= e($label) ?>
-                        </label>
-                    <?php endforeach; ?>
+                <fieldset class="space-y-4">
+                    <legend class="mb-4 text-sm font-semibold uppercase tracking-wider text-ink-muted">Profesyonel bilgiler</legend>
+                    <div class="grid gap-4 sm:grid-cols-2">
+                        <div>
+                            <label for="rf-city" class="label">Şehir</label>
+                            <input id="rf-city" name="city" required class="input" autocomplete="address-level1" placeholder="Örn: Antalya">
+                        </div>
+                        <div>
+                            <label for="rf-experience" class="label">Deneyim</label>
+                            <select id="rf-experience" name="experience" required class="input">
+                                <option value="">Seç</option>
+                                <option value="0-1">0-1 yıl</option>
+                                <option value="1-3">1-3 yıl</option>
+                                <option value="3-5">3-5 yıl</option>
+                                <option value="5-10">5-10 yıl</option>
+                                <option value="10+">10+ yıl</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="label">Uzmanlık alanların</span>
+                        <div class="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                            <?php foreach (photographer_specialties() as $val => $label): ?>
+                                <label class="choice py-2.5">
+                                    <input type="checkbox" name="specialization" value="<?= e($val) ?>" class="h-4 w-4 rounded border-stone-300 accent-brand-600">
+                                    <?= e($label) ?>
+                                </label>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="rf-portfolio" class="label">Portfolyo / Instagram <span class="font-normal text-ink-muted">(opsiyonel)</span></label>
+                        <input id="rf-portfolio" name="portfolio_url" type="url" class="input" placeholder="https://">
+                    </div>
+                    <div>
+                        <label for="rf-message" class="label">Kendinden bahset <span class="font-normal text-ink-muted">(opsiyonel)</span></label>
+                        <textarea id="rf-message" name="message" rows="3" class="input" placeholder="Hangi mekanları çekiyorsun, nerelerde çalışıyorsun?"></textarea>
+                    </div>
+                </fieldset>
+
+                <div>
+                    <p id="register-message" class="notice notice-error mb-4" role="alert" hidden></p>
+                    <button type="submit" class="btn btn-primary w-full py-3">Kayıt ol</button>
+                    <p class="mt-4 text-sm text-ink-muted">Zaten hesabın var mı? <a href="/giris" class="font-semibold text-brand-700 hover:underline">Giriş yap</a></p>
                 </div>
-            </div>
-
-            <input name="portfolio_url" placeholder="Portfolyo linki (opsiyonel)" class="w-full px-4 py-3 rounded-xl border border-slate-200">
-            <textarea name="message" placeholder="Kendinizden kısaca bahsedin (opsiyonel)" rows="3" class="w-full px-4 py-3 rounded-xl border border-slate-200"></textarea>
-
-            <button type="submit" class="w-full py-4 bg-brand-600 text-white rounded-2xl font-black uppercase tracking-widest hover:bg-brand-700 transition-all">
-                Kayıt Ol
-            </button>
-            <p id="register-message" class="text-sm font-medium"></p>
-        </form>
-
-        <div class="mt-6 pt-6 border-t border-slate-100 text-sm text-slate-400">
-            Zaten hesabınız var mı? <a href="/giris" class="text-brand-600 font-bold">Giriş yapın</a>
+            </form>
         </div>
     </div>
+    <?php
+    $asideTitle = 'Müşteri aramak yerine çekime odaklan.';
+    $asidePoints = ['Bölgene ve uzmanlığına uyan açık talepler', 'İstediğin işi üstlen, aidat yok', 'Portfolyo ve yorumlarla herkese açık profil', 'Kapora ve ödemeler platform üzerinden'];
+    include __DIR__ . '/../partials/auth-aside.php';
+    ?>
 </main>
 
 <script>
@@ -62,11 +100,20 @@ include __DIR__ . '/../page-header.php';
         e.preventDefault();
         const form = e.target;
         const msgEl = document.getElementById('register-message');
+        const btn = form.querySelector('button[type="submit"]');
+        const fail = (text, field) => { msgEl.textContent = text; msgEl.hidden = false; if (field) field.focus(); };
+        msgEl.hidden = true;
+
+        const invalid = Array.from(form.querySelectorAll('input:not([type=checkbox]), select')).find(f => (f.required && !f.value.trim()) || !f.checkValidity());
+        if (invalid) {
+            const messages = { password: 'Şifre en az 8 karakter olmalı.', email: 'Geçerli bir e-posta adresi gir.', portfolio_url: 'Portfolyo linki https:// ile başlamalı.' };
+            fail(messages[invalid.name] || 'Lütfen zorunlu alanları doldur.', invalid);
+            return;
+        }
 
         const specialization = Array.from(form.querySelectorAll('input[name="specialization"]:checked')).map(c => c.value);
         if (!specialization.length) {
-            msgEl.textContent = 'En az bir uzmanlık alanı seçin.';
-            msgEl.className = 'text-sm font-medium text-red-600';
+            fail('En az bir uzmanlık alanı seç.', form.querySelector('input[name="specialization"]'));
             return;
         }
 
@@ -82,6 +129,8 @@ include __DIR__ . '/../page-header.php';
             message: form.message.value,
         };
 
+        btn.disabled = true;
+        btn.textContent = 'Kaydediliyor…';
         fetch('/api/register-freelancer.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -90,17 +139,17 @@ include __DIR__ . '/../page-header.php';
             .then(r => r.json())
             .then(res => {
                 if (!res.success) {
-                    msgEl.textContent = res.error || 'Kayıt başarısız';
-                    msgEl.className = 'text-sm font-medium text-red-600';
+                    fail(res.error || 'Kayıt başarısız.');
                     return;
                 }
                 localStorage.setItem('mf_token', res.token);
                 localStorage.setItem('mf_role', 'freelancer');
                 window.location.href = '/panel';
             })
-            .catch(() => {
-                msgEl.textContent = 'Bir hata oluştu, lütfen tekrar deneyin.';
-                msgEl.className = 'text-sm font-medium text-red-600';
+            .catch(() => fail('Bağlantı hatası, lütfen tekrar dene.'))
+            .finally(() => {
+                btn.disabled = false;
+                btn.textContent = 'Kayıt ol';
             });
     });
 </script>

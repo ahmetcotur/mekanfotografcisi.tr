@@ -1,223 +1,168 @@
-<!-- Footer -->
-<!-- Quote Wizard Modal -->
+<?php
+$siteName = get_setting('site_title', 'Mekan Fotoğrafçısı');
+$appPage = $appPage ?? false;
+$footerEmail = get_setting('email_primary') ?: get_setting('email');
+$footerPhone = get_setting('phone');
+$socials = array_filter([
+    'instagram' => get_setting('social_instagram'),
+    'facebook' => get_setting('social_facebook'),
+    'twitter' => get_setting('social_twitter'),
+], function ($url) {
+    return $url && $url !== '#';
+});
+?>
+
 <?php include __DIR__ . '/partials/quote-wizard.php'; ?>
 
-<footer class="site-footer bg-slate-950 border-t border-white/5 text-slate-400 mt-20 relative overflow-hidden">
-    <!-- Subtle glow effect -->
-    <div class="absolute top-0 left-1/4 w-64 h-64 bg-brand-500/10 rounded-full blur-[100px] -mt-32"></div>
-
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-10 relative z-10">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 mb-14">
-
-            <!-- Brand Section -->
-            <div class="lg:col-span-4 space-y-8">
-                <a href="/" class="flex items-center gap-3 group">
-                    <?php
-                    $logoUrl = get_setting('logo_url');
-                    $siteName = get_setting('site_title', 'Mekan Fotoğrafçısı');
-                    ?>
-                    <?php if ($logoUrl): ?>
-                        <img src="<?= e($logoUrl) ?>" alt="<?= e($siteName) ?>"
-                            class="h-10 w-auto object-contain transition-transform group-hover:scale-105 brightness-0 invert">
-                    <?php else: ?>
-                        <div
-                            class="w-10 h-10 bg-brand-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-brand-500/20 transition-all group-hover:scale-110 group-hover:rotate-6">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path
-                                    d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
-                                <circle cx="12" cy="13" r="3" />
-                            </svg>
-                        </div>
-                        <div class="flex flex-col">
-                            <span
-                                class="font-heading font-black text-xl tracking-tight text-white leading-none">Mekan</span>
-                            <span
-                                class="font-heading font-bold text-[10px] uppercase tracking-widest text-slate-500">Fotoğrafçısı</span>
-                        </div>
-                    <?php endif; ?>
-                </a>
-
-                <p class="text-slate-500 leading-relaxed text-sm max-w-sm">
-                    Antalya ve Muğla bölgesinde mimari, iç mekan ve otel fotoğrafçılığında uzmanlaşmış ekibimizle
-                    mekanlarınızın hikayesini en vizyoner bakış açısıyla anlatıyoruz.
+<footer class="mt-auto border-t border-line bg-white">
+    <?php if (!$appPage): ?>
+        <div class="container-page grid grid-cols-2 gap-x-6 gap-y-10 py-14 md:grid-cols-4 lg:grid-cols-12">
+            <div class="col-span-2 md:col-span-4 lg:col-span-3">
+                <a href="/" class="font-display text-xl font-semibold"><?= e($siteName) ?></a>
+                <p class="mt-3 max-w-sm text-sm leading-relaxed text-ink-muted">
+                    Mekanını çektirmek isteyenleri, bölgesindeki doğru fotoğrafçıyla buluşturan kolektif.
+                    Otel, villa, restoran, ofis ve daha fazlası için.
                 </p>
-
-                <!-- Social Links -->
-                <div class="flex items-center gap-4">
-                    <?php
-                    $socials = [
-                        ['id' => 'instagram', 'url' => get_setting('social_instagram'), 'icon' => '<rect width="20" height="20" x="2" y="2" rx="5" ry="5" /><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" /><line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />'],
-                        ['id' => 'facebook', 'url' => get_setting('social_facebook'), 'icon' => '<path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />'],
-                        ['id' => 'twitter', 'url' => get_setting('social_twitter'), 'icon' => '<path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" />'],
-                        ['id' => 'email', 'url' => get_setting('email_primary') ? 'mailto:' . get_setting('email_primary') : '', 'icon' => '<rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />']
-                    ];
-
-                    // Filter out empty or placeholder socials
-                    $activeSocials = array_filter($socials, function ($s) {
-                        return !empty($s['url']) && $s['url'] !== '#' && $s['url'] !== 'mailto:';
-                    });
-
-                    foreach ($activeSocials as $social):
-                        ?>
-                        <a href="<?= e($social['url']) ?>"
-                            class="w-12 h-12 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center text-slate-400 hover:bg-brand-600 hover:text-white hover:border-brand-500 transition-all hover:-translate-y-2 group shadow-lg"
-                            aria-label="<?= ucfirst($social['id']) ?>" target="_blank" rel="noopener">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                class="group-hover:scale-110 transition-transform">
-                                <?= $social['icon'] ?>
-                            </svg>
-                        </a>
-                    <?php endforeach; ?>
-                </div>
+                <?php if ($socials): ?>
+                    <div class="mt-5 flex gap-2">
+                        <?php foreach ($socials as $network => $url): ?>
+                            <a href="<?= e($url) ?>" target="_blank" rel="noopener"
+                                class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-line text-ink-soft transition hover:border-stone-300 hover:text-ink"
+                                aria-label="<?= e(ucfirst($network)) ?>">
+                                <?= icon($network, 'h-4 w-4') ?>
+                            </a>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
             </div>
 
-            <!-- Quick Links -->
-            <div class="lg:col-span-2 space-y-8">
-                <h4 class="text-white font-black text-xs uppercase tracking-[0.2em]">Hizmetler</h4>
-                <ul class="space-y-4">
-                    <li><a href="/hizmetlerimiz/mimari-fotografcilik"
-                            class="text-sm font-medium hover:text-brand-400 transition-colors flex items-center gap-2 group"><span
-                                class="w-1 h-1 bg-brand-500 rounded-full group-hover:scale-150 transition-transform"></span>
-                            Mimari Çekimler</a></li>
-                    <li><a href="/hizmetlerimiz/ic-mekan-fotografciligi"
-                            class="text-sm font-medium hover:text-brand-400 transition-colors flex items-center gap-2 group"><span
-                                class="w-1 h-1 bg-brand-500 rounded-full group-hover:scale-150 transition-transform"></span>
-                            İç Mekan</a></li>
-                    <li><a href="/hizmetlerimiz/otel-fotografciligi"
-                            class="text-sm font-medium hover:text-brand-400 transition-colors flex items-center gap-2 group"><span
-                                class="w-1 h-1 bg-brand-500 rounded-full group-hover:scale-150 transition-transform"></span>
-                            Otel & Tatil Köyü</a></li>
-                    <li><a href="/hizmetlerimiz/emlak-fotografciligi"
-                            class="text-sm font-medium hover:text-brand-400 transition-colors flex items-center gap-2 group"><span
-                                class="w-1 h-1 bg-brand-500 rounded-full group-hover:scale-150 transition-transform"></span>
-                            Emlak & Villa</a></li>
-                    <li><a href="/hizmetlerimiz"
-                            class="text-sm font-black text-brand-400 hover:text-brand-300 transition-colors flex items-center gap-2 group">Tümünü
-                            Keşfet <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
-                                stroke-linejoin="round" class="group-hover:translate-x-1 transition-transform">
-                                <path d="m9 18 6-6-6-6" />
-                            </svg></a></li>
+            <div class="lg:col-span-2">
+                <h2 class="text-sm font-semibold">Mekan sahipleri</h2>
+                <ul class="mt-4 space-y-2.5 text-sm text-ink-muted">
+                    <li><button type="button" onclick="openQuoteWizard()" class="hover:text-ink">Teklif al</button></li>
+                    <li><a href="/fotografcilar" class="hover:text-ink">Fotoğrafçı bul</a></li>
+                    <li><a href="/hizmetlerimiz" class="hover:text-ink">Hizmetler</a></li>
+                    <li><a href="/kayit/musteri" class="hover:text-ink">Müşteri hesabı</a></li>
                 </ul>
             </div>
 
-            <!-- Corporate -->
-            <div class="lg:col-span-2 space-y-8">
-                <h4 class="text-white font-black text-xs uppercase tracking-[0.2em]">Kurumsal</h4>
-                <ul class="space-y-4">
-                    <li><a href="/portfolio"
-                            class="text-sm font-medium hover:text-brand-400 transition-colors">Portfolyo</a></li>
-                    <li><a href="/hizmet-bolgeleri"
-                            class="text-sm font-medium hover:text-brand-400 transition-colors">Bölgeler</a></li>
-                    <li><a href="/#hakkimizda"
-                            class="text-sm font-medium hover:text-brand-400 transition-colors">Hakkımızda</a></li>
-                    <li><a href="/#iletisim"
-                            class="text-sm font-medium hover:text-brand-400 transition-colors">İletişim</a></li>
+            <div class="lg:col-span-2">
+                <h2 class="text-sm font-semibold">Fotoğrafçılar</h2>
+                <ul class="mt-4 space-y-2.5 text-sm text-ink-muted">
+                    <li><a href="/kayit/fotografci" class="hover:text-ink">Kolektife katıl</a></li>
+                    <li><a href="/nasil-calisir#fotografcilar" class="hover:text-ink">Nasıl çalışır?</a></li>
+                    <li><a href="/giris" class="hover:text-ink">Giriş yap</a></li>
                 </ul>
             </div>
 
-            <!-- Pexels Integration -->
-            <?php $pexelsPhoto = get_random_pexels_photo(); ?>
-            <?php if ($pexelsPhoto): ?>
-                <div class="lg:col-span-4 space-y-8">
-                    <h4 class="text-white font-black text-xs uppercase tracking-[0.2em]">Günün İzleyici</h4>
-                    <a href="<?= e($pexelsPhoto['url']) ?>" target="_blank" rel="noopener"
-                        class="block group relative aspect-video rounded-3xl overflow-hidden border border-white/5 shadow-2xl">
-                        <img src="<?= e($pexelsPhoto['src']['large'] ?? $pexelsPhoto['thumbnail'] ?? $pexelsPhoto['src']) ?>"
-                            alt="<?= e($pexelsPhoto['alt']) ?>"
-                            class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-80"
-                            loading="lazy">
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent"></div>
-                        <div class="absolute inset-x-0 bottom-0 p-5">
-                            <div class="flex items-center justify-between">
-                                <span
-                                    class="text-[10px] font-black uppercase tracking-widest text-white/70"><?= e($pexelsPhoto['photographer']) ?></span>
-                                <span
-                                    class="text-[9px] px-2 py-0.5 rounded-full bg-white/10 text-white/90 backdrop-blur-md border border-white/5 font-bold uppercase tracking-widest">Pexels</span>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            <?php endif; ?>
+            <div class="lg:col-span-2">
+                <h2 class="text-sm font-semibold">Keşfet</h2>
+                <ul class="mt-4 space-y-2.5 text-sm text-ink-muted">
+                    <li><a href="/hizmet-bolgeleri" class="hover:text-ink">Bölgeler</a></li>
+                    <li><a href="/portfolio" class="hover:text-ink">Portfolyo</a></li>
+                    <li><a href="/blog" class="hover:text-ink">Blog</a></li>
+                    <li><button type="button" onclick="openInquiryModal()" class="hover:text-ink">Talep sorgula</button></li>
+                </ul>
+            </div>
+
+            <div class="col-span-2 md:col-span-1 lg:col-span-3">
+                <h2 class="text-sm font-semibold">İletişim</h2>
+                <ul class="mt-4 space-y-2.5 text-sm text-ink-muted">
+                    <?php if ($footerPhone && phone_href()): ?>
+                        <li><a href="<?= e(phone_href()) ?>" class="hover:text-ink"><?= e($footerPhone) ?></a></li>
+                    <?php endif; ?>
+                    <?php if (whatsapp_url()): ?>
+                        <li><a href="<?= e(whatsapp_url()) ?>" target="_blank" rel="noopener" class="hover:text-ink">WhatsApp</a></li>
+                    <?php endif; ?>
+                    <?php if ($footerEmail): ?>
+                        <li><a href="mailto:<?= e($footerEmail) ?>" class="hover:text-ink [overflow-wrap:anywhere]"><?= e($footerEmail) ?></a></li>
+                    <?php endif; ?>
+                </ul>
+            </div>
         </div>
+    <?php endif; ?>
 
-        <div class="border-t border-white/5 pt-12 flex flex-col md:flex-row justify-between items-center gap-6">
-            <p class="text-xs font-bold text-slate-600 uppercase tracking-widest">&copy; <?= date('Y') ?> Mekan
-                Fotoğrafçısı. Crafted with passion.</p>
-            <div class="flex gap-8 text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">
-                <a href="/gizlilik-politikasi" class="hover:text-brand-400 transition-colors">Gizlilik</a>
-                <a href="/kullanim-sartlari" class="hover:text-brand-400 transition-colors">Şartlar</a>
-                <a href="/cerez-politikasi" class="hover:text-brand-400 transition-colors">Çerez Politikası</a>
-            </div>
+    <div class="border-t border-line">
+        <div class="container-page flex flex-col gap-3 py-6 text-xs text-ink-muted md:flex-row md:items-center md:justify-between">
+            <p>&copy; <?= date('Y') ?> <?= e($siteName) ?></p>
+            <nav class="flex flex-wrap gap-x-5 gap-y-2" aria-label="Yasal">
+                <a href="/gizlilik-politikasi" class="hover:text-ink">Gizlilik</a>
+                <a href="/kullanim-sartlari" class="hover:text-ink">Kullanım şartları</a>
+                <a href="/cerez-politikasi" class="hover:text-ink">Çerez politikası</a>
+            </nav>
         </div>
     </div>
-
-    <!-- Cookie Consent Partial -->
-    <?php include __DIR__ . '/partials/cookie-consent.php'; ?>
 </footer>
 
-<!-- JavaScript -->
-<script>
-    window.LEADS_SITE_KEY = "<?= getenv('LEADS_SITE_KEY') ?: 'site_mekan_8342' ?>";
-    window.LEADS_API_URL = "<?= getenv('LEADS_API_URL') ?: 'https://lead.ahmetcotur.com/api/leads/form' ?>";
-</script>
-<script src="/assets/js/main.js?v=<?= time() ?>"></script>
+<?php if (!$appPage): ?>
+    <!-- Mobile quote bar (space on the right is left for the chat launcher) -->
+    <div class="fixed inset-x-0 bottom-0 z-[90] border-t border-line bg-paper/95 py-3 pl-4 pr-24 backdrop-blur md:hidden"
+        style="padding-bottom: max(0.75rem, env(safe-area-inset-bottom));">
+        <button type="button" onclick="openQuoteWizard()" class="btn btn-primary w-full py-3">
+            Ücretsiz teklif al <?= icon('arrow-right', 'h-4 w-4') ?>
+        </button>
+    </div>
+<?php endif; ?>
 
-<!-- SweetAlert2 for Frontend Modals -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<!-- Inquiry Modal -->
-<div id="inquiry-modal" class="fixed inset-0 z-[10000] hidden flex items-center justify-center p-4">
-    <div onclick="closeInquiryModal()" class="absolute inset-0 bg-slate-950/60 backdrop-blur-sm"></div>
-    <div
-        class="relative bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in duration-300">
-        <div class="p-8">
-            <h3 class="text-2xl font-heading font-black text-slate-900 mb-2">Teklif Takibi</h3>
-            <p class="text-slate-500 text-sm mb-6">Lütfen size verilen MF-XXXXX formatındaki teklif numarasını giriniz.
-            </p>
-
-            <div class="space-y-4">
-                <input type="text" id="inquiry-number" placeholder="Örn: MF-00123"
-                    class="w-full bg-slate-50 border-slate-200 rounded-2xl p-4 text-center text-xl font-black tracking-tight focus:ring-brand-500 focus:border-brand-500">
-
-                <button onclick="submitInquiry()" id="inquiry-btn"
-                    class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-4 rounded-2xl shadow-lg shadow-brand-600/30 transition-all">
-                    Sorgula
-                </button>
-            </div>
-
-            <div id="inquiry-result"
-                class="mt-8 hidden border-t border-slate-100 pt-8 animate-in slide-in-from-bottom-4 duration-500">
-                <!-- Result injected here -->
-            </div>
-        </div>
+<!-- Quote status lookup -->
+<div id="inquiry-modal" class="fixed inset-0 z-[200] flex items-end justify-center p-0 sm:items-center sm:p-4" role="dialog"
+    aria-modal="true" aria-labelledby="inquiry-title" hidden>
+    <div class="absolute inset-0 bg-ink/50" onclick="closeInquiryModal()"></div>
+    <div class="relative w-full max-w-md rounded-t-3xl bg-white p-6 shadow-lift sm:rounded-3xl sm:p-8">
+        <button type="button" onclick="closeInquiryModal()" class="absolute right-4 top-4 rounded-full p-2 text-ink-muted hover:bg-stone-100" aria-label="Kapat">
+            <?= icon('x') ?>
+        </button>
+        <h2 id="inquiry-title" class="h-card">Talep sorgula</h2>
+        <p class="mt-1 text-sm text-ink-muted">Size iletilen MF-XXXXX formatındaki talep numarasını girin.</p>
+        <form class="mt-6 space-y-3" onsubmit="event.preventDefault(); submitInquiry();">
+            <label for="inquiry-number" class="sr-only">Talep numarası</label>
+            <input type="text" id="inquiry-number" placeholder="Örn: MF-00123" class="input text-center text-lg font-semibold tracking-wide">
+            <p id="inquiry-error" class="notice notice-error" hidden></p>
+            <button type="submit" id="inquiry-btn" class="btn btn-primary w-full py-3">Sorgula</button>
+        </form>
+        <div id="inquiry-result" class="mt-6 border-t border-line pt-6" hidden></div>
     </div>
 </div>
 
-<script src="/assets/js/quote-wizard-v2.js?v=<?= time() ?>"></script>
+<?php include __DIR__ . '/partials/cookie-consent.php'; ?>
 
 <script>
+    window.LEADS_SITE_KEY = <?= json_encode(getenv('LEADS_SITE_KEY') ?: 'site_mekan_8342') ?>;
+    window.LEADS_API_URL = <?= json_encode(getenv('LEADS_API_URL') ?: 'https://lead.ahmetcotur.com/api/leads/form') ?>;
+
+    function escapeHtml(str) {
+        const div = document.createElement('div');
+        div.textContent = str == null ? '' : String(str);
+        return div.innerHTML;
+    }
+
     function openInquiryModal() {
-        document.getElementById('inquiry-modal').classList.remove('hidden');
-        document.getElementById('inquiry-result').classList.add('hidden');
-        document.getElementById('inquiry-number').value = '';
+        document.getElementById('inquiry-modal').hidden = false;
+        document.getElementById('inquiry-result').hidden = true;
+        document.getElementById('inquiry-error').hidden = true;
+        const input = document.getElementById('inquiry-number');
+        input.value = '';
+        input.focus();
     }
 
     function closeInquiryModal() {
-        document.getElementById('inquiry-modal').classList.add('hidden');
+        document.getElementById('inquiry-modal').hidden = true;
     }
 
     function submitInquiry() {
         const number = document.getElementById('inquiry-number').value.trim();
-        if (!number) return Swal.fire('Uyarı', 'Lütfen teklif numarası giriniz.', 'warning');
-
+        const errorEl = document.getElementById('inquiry-error');
+        const resultEl = document.getElementById('inquiry-result');
         const btn = document.getElementById('inquiry-btn');
-        const resultDiv = document.getElementById('inquiry-result');
+        errorEl.hidden = true;
+        if (!number) {
+            errorEl.textContent = 'Lütfen talep numaranızı girin.';
+            errorEl.hidden = false;
+            return;
+        }
 
         btn.disabled = true;
-        btn.innerText = 'Sorgulanıyor...';
+        btn.textContent = 'Sorgulanıyor…';
 
         fetch('/api/quote-status.php', {
             method: 'POST',
@@ -226,60 +171,46 @@
         })
             .then(r => r.json())
             .then(res => {
-                if (res.success) {
-                    resultDiv.innerHTML = `
-                    <div class="space-y-4">
-                        <div class="flex justify-between items-center text-sm">
-                            <span class="text-slate-400">Sayın</span>
-                            <span class="font-bold text-slate-900">${res.data.name}</span>
-                        </div>
-                        <div class="flex justify-between items-center text-sm">
-                            <span class="text-slate-400">Durum</span>
-                            <span class="bg-brand-50 text-brand-600 px-3 py-1 rounded-full text-xs font-bold border border-brand-100 line-clamp-1">${res.data.status}</span>
-                        </div>
-                        <div class="bg-slate-50 rounded-2xl p-4 text-left">
-                            <span class="text-[10px] text-slate-400 uppercase font-bold block mb-1">Mekan Fotoğrafçısı Notu</span>
-                            <p class="text-xs text-slate-700 italic leading-relaxed">${res.data.note}</p>
-                        </div>
-                        <div class="text-[10px] text-center text-slate-300 pt-2 border-t border-slate-100">Talep Tarihi: ${res.data.date}</div>
-                    </div>
-                `;
-                    resultDiv.classList.remove('hidden');
-                } else {
-                    Swal.fire({
-                        title: 'Hata',
-                        text: res.message,
-                        icon: 'error',
-                        confirmButtonColor: 'var(--brand-600)'
-                    });
+                if (!res.success) {
+                    errorEl.textContent = res.message || 'Talep bulunamadı.';
+                    errorEl.hidden = false;
+                    return;
                 }
+                resultEl.innerHTML = `
+                    <dl class="space-y-3 text-sm">
+                        <div class="flex justify-between gap-4"><dt class="text-ink-muted">Ad</dt><dd class="font-medium">${escapeHtml(res.data.name)}</dd></div>
+                        <div class="flex justify-between gap-4"><dt class="text-ink-muted">Durum</dt><dd><span class="chip-brand">${escapeHtml(res.data.status)}</span></dd></div>
+                        <div class="flex justify-between gap-4"><dt class="text-ink-muted">Talep tarihi</dt><dd>${escapeHtml(res.data.date)}</dd></div>
+                    </dl>
+                    ${res.data.note ? `<p class="mt-4 rounded-xl bg-stone-50 p-4 text-sm text-ink-soft">${escapeHtml(res.data.note)}</p>` : ''}`;
+                resultEl.hidden = false;
+            })
+            .catch(() => {
+                errorEl.textContent = 'Bağlantı hatası, lütfen tekrar deneyin.';
+                errorEl.hidden = false;
             })
             .finally(() => {
                 btn.disabled = false;
-                btn.innerText = 'Sorgula';
+                btn.textContent = 'Sorgula';
             });
     }
-</script>
 
-<!-- GLightbox for Service Galleries -->
-<?php if (isset($serviceData['gallery_images']) && !empty($serviceData['gallery_images'])): ?>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            if (typeof GLightbox !== 'undefined') {
-                const lightbox = GLightbox({
-                    selector: '.glightbox',
-                    touchNavigation: true,
-                    loop: true,
-                    autoplayVideos: false
-                });
-            }
-        });
-    </script>
-<?php endif; ?>
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeInquiryModal();
+    });
+
+    // A photo that fails to load leaves its tinted placeholder visible
+    // instead of a broken-image icon.
+    document.addEventListener('error', function (e) {
+        if (e.target.tagName === 'IMG') e.target.style.visibility = 'hidden';
+    }, true);
+</script>
+<script src="<?= asset_url('assets/js/quote-wizard-v2.js') ?>"></script>
+
+<?php if (!$appPage): ?>
     <!-- Voyn Widget -->
-    <script src="/widget/widget.js?v=14" data-website-uuid="<?= getenv('LEADS_WEBSITE_UUID') ?: '1be2f821-28cd-4c86-aeb0-dabe0c05aa0a' ?>"></script>
+    <script src="/widget/widget.js?v=14" data-website-uuid="<?= e(getenv('LEADS_WEBSITE_UUID') ?: '1be2f821-28cd-4c86-aeb0-dabe0c05aa0a') ?>"></script>
+<?php endif; ?>
 </body>
 
 </html>
