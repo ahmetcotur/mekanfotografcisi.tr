@@ -2,12 +2,12 @@
 <!-- Quote Wizard Modal -->
 <?php include __DIR__ . '/partials/quote-wizard.php'; ?>
 
-<footer class="site-footer bg-slate-950 border-t border-white/5 text-slate-400 mt-32 relative overflow-hidden">
+<footer class="site-footer bg-slate-950 border-t border-white/5 text-slate-400 mt-20 relative overflow-hidden">
     <!-- Subtle glow effect -->
-    <div class="absolute top-0 left-1/4 w-96 h-96 bg-brand-500/10 rounded-full blur-[120px] -mt-48"></div>
+    <div class="absolute top-0 left-1/4 w-64 h-64 bg-brand-500/10 rounded-full blur-[100px] -mt-32"></div>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12 relative z-10">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-16 mb-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-10 relative z-10">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 mb-14">
 
             <!-- Brand Section -->
             <div class="lg:col-span-4 space-y-8">
