@@ -239,6 +239,22 @@ echo do_shortcode($content);
     })();
 </script>
 
+<!-- Kolektif Quick Links -->
+<section class="py-10 bg-white border-b border-slate-100">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-4">
+            <button onclick="openQuoteWizard()"
+                class="w-full sm:w-auto px-8 py-4 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg shadow-brand-500/20 transition-all hover:scale-105 active:scale-95">
+                Çekim Talebi Oluştur
+            </button>
+            <a href="/fotografcilar"
+                class="w-full sm:w-auto text-center px-8 py-4 bg-slate-50 hover:bg-slate-100 text-slate-700 rounded-2xl font-black text-sm uppercase tracking-widest border border-slate-200 transition-all hover:scale-105 active:scale-95">
+                Fotoğrafçılarımızı Keşfedin
+            </a>
+        </div>
+    </div>
+</section>
+
 <?php
 // Only include the freelancer section if it is NOT already in the content
 if (strpos($content, 'freelancer-basvuru') === false):
@@ -255,27 +271,34 @@ if (strpos($content, 'freelancer-basvuru') === false):
         <div class="container mx-auto px-4 relative z-10">
             <div class="max-w-4xl mx-auto text-center">
                 <span
-                    class="inline-block px-4 py-1.5 rounded-full bg-brand-50 text-brand-600 font-black tracking-[0.2em] uppercase text-[10px] mb-6 border border-brand-100">Ekibimize
+                    class="inline-block px-4 py-1.5 rounded-full bg-brand-50 text-brand-600 font-black tracking-[0.2em] uppercase text-[10px] mb-6 border border-brand-100">Kolektife
                     Katıl</span>
-                <h2 class="font-heading font-black text-4xl md:text-6xl text-slate-900 mb-8 tracking-tight">Freelancer
-                    Olarak <span class="text-gradient">Sisteme Katıl</span></h2>
+                <h2 class="font-heading font-black text-4xl md:text-6xl text-slate-900 mb-8 tracking-tight">Bağımsız
+                    Fotoğrafçılar <span class="text-gradient">Kolektifimize Katılın</span></h2>
                 <p class="text-slate-500 text-xl font-light leading-relaxed max-w-2xl mx-auto mb-12">
-                    Profesyonel mekan fotoğrafçısı mısınız? Ekibimize katılın ve Türkiye'nin dört bir yanındaki projelerde
-                    çözüm ortağımız olun.
+                    Profesyonel mekan fotoğrafçısı mısınız? Kolektifimize katılın; açık çekim taleplerini kendiniz
+                    görün, dilediğinizi üstlenin ve kendi profilinizle Türkiye'nin dört bir yanındaki projelerde yer
+                    alın.
                 </p>
 
-                <button onclick="openFreelancerModal()"
-                    class="group relative px-12 py-5 bg-brand-600 hover:bg-brand-500 text-white rounded-full font-black text-lg shadow-xl shadow-brand-500/30 transition-all hover:scale-105 active:scale-95 overflow-hidden">
-                    <span class="relative z-10 flex items-center gap-3">
-                        Başvuru Formunu Aç
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
-                            class="group-hover:translate-x-1 transition-transform">
-                            <path d="M5 12h14" />
-                            <path d="m12 5 7 7-7 7" />
-                        </svg>
-                    </span>
-                </button>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <a href="/kayit/fotografci"
+                        class="group relative px-12 py-5 bg-brand-600 hover:bg-brand-500 text-white rounded-full font-black text-lg shadow-xl shadow-brand-500/30 transition-all hover:scale-105 active:scale-95 overflow-hidden">
+                        <span class="relative z-10 flex items-center gap-3">
+                            Hemen Kayıt Ol
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                                class="group-hover:translate-x-1 transition-transform">
+                                <path d="M5 12h14" />
+                                <path d="m12 5 7 7-7 7" />
+                            </svg>
+                        </span>
+                    </a>
+                    <button onclick="openFreelancerModal()"
+                        class="px-12 py-5 bg-white hover:bg-slate-50 text-slate-700 rounded-full font-black text-lg border border-slate-200 transition-all hover:scale-105 active:scale-95">
+                        Sadece Başvuru Formunu Doldur
+                    </button>
+                </div>
             </div>
         </div>
     </section>
