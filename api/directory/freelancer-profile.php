@@ -49,11 +49,17 @@ try {
         $cover = $coverRows[0] ?? null;
     }
 
+    $reviews = $db->select('reviews', ['freelancer_id' => $profile['id'], 'is_published' => true, 'order' => 'created_at DESC', 'limit' => 20]);
+    $publicReviews = array_map(function ($r) {
+        return ['rating' => (int) $r['rating'], 'comment' => $r['comment'], 'created_at' => $r['created_at']];
+    }, $reviews);
+
     $publicFields = ['id', 'name', 'slug', 'city', 'bio', 'specialization', 'experience', 'rating_avg', 'rating_count'];
     $publicProfile = array_intersect_key($profile, array_flip($publicFields));
     $publicProfile['avatar'] = $avatar;
     $publicProfile['cover'] = $cover;
     $publicProfile['portfolio'] = $portfolio;
+    $publicProfile['reviews'] = $publicReviews;
 
     jsonSuccess(['profile' => $publicProfile]);
 } catch (Exception $e) {

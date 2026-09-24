@@ -14,6 +14,8 @@ export default function Sidebar() {
         { path: '/seo-pages', icon: '🔍', label: 'SEO Sayfaları' },
         { path: '/quotes', icon: '✉️', label: 'Teklif Talepleri' },
         { path: '/freelancers', icon: '👷', label: 'Freelancer Başvuruları' },
+        { path: '/users', icon: '🧑‍🤝‍🧑', label: 'Kullanıcılar' },
+        { path: '/payments', icon: '💳', label: 'Ödemeler' },
         { path: '/media', icon: '🖼️', label: 'Medya' },
         { path: '/pexels', icon: '🌄', label: 'Pexels Koleksiyon' },
         { path: '/settings', icon: '⚙️', label: 'Ayarlar' },

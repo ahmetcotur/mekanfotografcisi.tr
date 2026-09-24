@@ -30,7 +30,7 @@ try {
 
     if ($action === 'list') {
         $table = $data['table'] ?? '';
-        $allowed_tables = ['locations_province', 'locations_district', 'locations_town', 'locations_city_distance', 'services', 'posts', 'quotes', 'media', 'media_folders', 'seo_pages', 'settings', 'freelancer_applications'];
+        $allowed_tables = ['locations_province', 'locations_district', 'locations_town', 'locations_city_distance', 'services', 'posts', 'quotes', 'media', 'media_folders', 'seo_pages', 'settings', 'freelancer_applications', 'users', 'payments', 'reviews'];
 
         if (!in_array($table, $allowed_tables)) {
             throw new Exception("Invalid table specified for list: $table");
@@ -66,6 +66,12 @@ try {
         file_put_contents('/tmp/api_debug.log', date('[Y-m-d H:i:s] ') . "About to query table=$table with where=" . json_encode($where) . "\n", FILE_APPEND);
         $items = $db->select($table, $where);
         file_put_contents('/tmp/api_debug.log', date('[Y-m-d H:i:s] ') . "Query successful, got " . count($items) . " items\n", FILE_APPEND);
+        if ($table === 'users') {
+            $items = array_map(function ($item) {
+                unset($item['password_hash']);
+                return $item;
+            }, $items);
+        }
         echo json_encode(['success' => true, 'data' => $items ?: []]);
         exit;
 
@@ -73,7 +79,7 @@ try {
         $table = $data['table'] ?? '';
         $id = $data['id'] ?? '';
 
-        $allowed_tables = ['locations_province', 'locations_district', 'locations_town', 'locations_city_distance', 'services', 'posts', 'quotes', 'media', 'media_folders', 'settings', 'freelancer_applications'];
+        $allowed_tables = ['locations_province', 'locations_district', 'locations_town', 'locations_city_distance', 'services', 'posts', 'quotes', 'media', 'media_folders', 'settings', 'freelancer_applications', 'users', 'payments', 'reviews'];
         if (!in_array($table, $allowed_tables)) {
             throw new Exception("Invalid table specified for get: $table");
         }
@@ -84,7 +90,12 @@ try {
             throw new Exception('Item not found');
         }
 
-        echo json_encode(['success' => true, 'data' => $item[0]]);
+        $itemData = $item[0];
+        if ($table === 'users') {
+            unset($itemData['password_hash']);
+        }
+
+        echo json_encode(['success' => true, 'data' => $itemData]);
         exit;
 
     } elseif ($action === 'update') {
@@ -98,7 +109,7 @@ try {
         }
 
         // Allowed tables check
-        $allowed_tables = ['locations_province', 'locations_district', 'locations_town', 'locations_city_distance', 'services', 'posts', 'quotes', 'settings', 'seo_pages', 'freelancer_applications'];
+        $allowed_tables = ['locations_province', 'locations_district', 'locations_town', 'locations_city_distance', 'services', 'posts', 'quotes', 'settings', 'seo_pages', 'freelancer_applications', 'users', 'payments', 'reviews'];
         if (!in_array($table, $allowed_tables)) {
             throw new Exception("Invalid table specified for update: $table");
         }
@@ -194,7 +205,7 @@ try {
             throw new Exception('Missing required parameters for delete');
         }
 
-        $allowed_tables = ['locations_province', 'locations_district', 'locations_town', 'locations_city_distance', 'services', 'posts', 'quotes', 'media', 'media_folders', 'seo_pages', 'freelancer_applications'];
+        $allowed_tables = ['locations_province', 'locations_district', 'locations_town', 'locations_city_distance', 'services', 'posts', 'quotes', 'media', 'media_folders', 'seo_pages', 'freelancer_applications', 'users', 'reviews'];
         if (!in_array($table, $allowed_tables)) {
             throw new Exception("Invalid table specified for delete: $table");
         }
