@@ -75,6 +75,86 @@ class FreelancerMatcher
     }
 
     /**
+     * Find open marketplace quotes ranked for a specific freelancer (the inverse
+     * of findMatchingFreelancers): used by the freelancer's "open jobs" dashboard.
+     *
+     * "Open" means: visible to the marketplace (not a direct-to-photographer
+     * request), still in an actionable status, and not already accepted or
+     * completed by someone (a quote can have multiple pending self-claims, but
+     * once one is accepted/completed it drops out of everyone's open list).
+     *
+     * @param int $freelancerId freelancer_applications.id
+     * @return array Ranked list of matching quotes with scores
+     */
+    public function findMatchingQuotesForFreelancer($freelancerId)
+    {
+        $freelancers = $this->db->select('freelancer_applications', ['id' => $freelancerId]);
+        if (empty($freelancers)) {
+            return [];
+        }
+        $freelancer = $freelancers[0];
+
+        $openQuotes = $this->db->select('quotes', [
+            'visibility' => 'marketplace',
+            'in.status' => ['beklemede', 'inceleniyor'],
+        ]);
+
+        if (empty($openQuotes)) {
+            return [];
+        }
+
+        // Drop quotes that already have an accepted/completed assignment
+        // (to anyone), and quotes this freelancer already has a pending
+        // self-claim on (no point re-showing it as "open").
+        $lockedQuoteIds = [];
+        $ownPendingQuoteIds = [];
+        $allAssignments = $this->db->select('quote_assignments', []);
+        foreach ($allAssignments as $assignment) {
+            if (in_array($assignment['status'], ['accepted', 'completed'], true)) {
+                $lockedQuoteIds[$assignment['quote_id']] = true;
+            }
+            if ((int) $assignment['freelancer_id'] === (int) $freelancerId && $assignment['status'] === 'pending') {
+                $ownPendingQuoteIds[$assignment['quote_id']] = true;
+            }
+        }
+
+        $ranked = [];
+        foreach ($openQuotes as $quote) {
+            if (isset($lockedQuoteIds[$quote['id']]) || isset($ownPendingQuoteIds[$quote['id']])) {
+                continue;
+            }
+
+            $locationParts = $this->parseLocation($quote['location']);
+            $score = 0;
+            $matchDetails = [];
+
+            $locationScore = $this->calculateLocationScore($freelancer, $locationParts);
+            $score += $locationScore['score'];
+            $matchDetails['location'] = $locationScore['details'];
+
+            if (!empty($quote['service'])) {
+                $specializationScore = $this->calculateSpecializationScore($freelancer, $quote['service']);
+                $score += $specializationScore['score'];
+                $matchDetails['specialization'] = $specializationScore['details'];
+            }
+
+            if ($score > 0) {
+                $ranked[] = [
+                    'quote' => $quote,
+                    'score' => $score,
+                    'match_details' => $matchDetails,
+                ];
+            }
+        }
+
+        usort($ranked, function ($a, $b) {
+            return $b['score'] - $a['score'];
+        });
+
+        return $ranked;
+    }
+
+    /**
      * Parse location string into province and district
      */
     private function parseLocation($location)

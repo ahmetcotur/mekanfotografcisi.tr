@@ -9,6 +9,8 @@ if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
     require_once __DIR__ . '/../vendor/autoload.php';
 }
 
+require_once __DIR__ . '/../includes/config.php';
+
 /**
  * Add CORS headers to response
  */
@@ -44,7 +46,7 @@ function validateAuthToken()
     }
 
     // JWT Secret
-    $jwtSecret = env('JWT_SECRET', 'mekanfotografcisi_secret_key_2026');
+    $jwtSecret = mf_jwt_secret();
 
     try {
         if (class_exists('Firebase\JWT\JWT')) {
@@ -79,12 +81,33 @@ function requireAuth()
             return [
                 'user_id' => $_SESSION['admin_user_id'],
                 'email' => $_SESSION['admin_user_email'] ?? '',
-                'name' => $_SESSION['admin_user_name'] ?? 'Admin'
+                'name' => $_SESSION['admin_user_name'] ?? 'Admin',
+                // Session auth is admin-only today (admin-spa login sets these
+                // session keys), so requireRole() can rely on this being set.
+                'role' => 'admin'
             ];
         }
 
         http_response_code(401);
         echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        exit;
+    }
+
+    return $user;
+}
+
+/**
+ * Require authentication AND that the caller's role is one of $roles.
+ * Admin tokens/sessions always carry role 'admin'; freelancer/client tokens
+ * carry the role from the users table (see api/auth.php).
+ */
+function requireRole($roles = [])
+{
+    $user = requireAuth();
+
+    if (!empty($roles) && !in_array($user['role'] ?? 'admin', $roles, true)) {
+        http_response_code(403);
+        echo json_encode(['success' => false, 'error' => 'Forbidden']);
         exit;
     }
 

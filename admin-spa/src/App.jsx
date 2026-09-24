@@ -15,6 +15,8 @@ import Settings from './pages/Settings';
 import AiSettings from './pages/AiSettings';
 import SeoLinkManager from './pages/SeoLinkManager';
 import FreelancerApplications from './pages/FreelancerApplications';
+import Payments from './pages/Payments';
+import Users from './pages/Users';
 import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
 import useAuthStore from './store/authStore';
@@ -49,6 +51,8 @@ function App() {
             <Route path="/seo-links" element={<SeoLinkManager />} />
             <Route path="/quotes" element={<Quotes />} />
             <Route path="/freelancers" element={<FreelancerApplications />} />
+            <Route path="/users" element={<Users />} />
+            <Route path="/payments" element={<Payments />} />
             <Route path="/media" element={<Media />} />
             <Route path="/pexels" element={<Pexels />} />
             <Route path="/settings" element={<Settings />} />

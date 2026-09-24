@@ -168,6 +168,57 @@ if (strpos($requestPath, 'api') === 0 || strpos($requestPath, '/api') === 0) {
         return false;
 }
 
+// Marketplace: public photographer directory
+if ($requestPath === 'fotografcilar') {
+    require_once __DIR__ . '/templates/marketplace/directory.php';
+    exit;
+}
+
+// Marketplace: individual photographer profile
+if (strpos($requestPath, 'fotografcilar/') === 0) {
+    $freelancerSlug = sanitizeSlug(substr($requestPath, strlen('fotografcilar/')));
+    require_once __DIR__ . '/templates/marketplace/photographer-profile.php';
+    exit;
+}
+
+// Marketplace: unified freelancer/client login
+if ($requestPath === 'giris') {
+    require_once __DIR__ . '/templates/marketplace/login.php';
+    exit;
+}
+
+// Marketplace: registration
+if ($requestPath === 'kayit/fotografci') {
+    require_once __DIR__ . '/templates/marketplace/register-freelancer.php';
+    exit;
+}
+if ($requestPath === 'kayit/musteri') {
+    require_once __DIR__ . '/templates/marketplace/register-client.php';
+    exit;
+}
+
+// Marketplace: freelancer dashboard
+if ($requestPath === 'panel' || strpos($requestPath, 'panel/') === 0) {
+    $panelSubPath = trim(substr($requestPath, strlen('panel')), '/');
+    $panelFile = __DIR__ . '/panel/' . ($panelSubPath !== '' ? $panelSubPath : 'index') . '.php';
+    if (!file_exists($panelFile)) {
+        $panelFile = __DIR__ . '/panel/index.php';
+    }
+    require_once $panelFile;
+    exit;
+}
+
+// Marketplace: client dashboard
+if ($requestPath === 'musteri' || strpos($requestPath, 'musteri/') === 0) {
+    $clientSubPath = trim(substr($requestPath, strlen('musteri')), '/');
+    $clientFile = __DIR__ . '/musteri/' . ($clientSubPath !== '' ? $clientSubPath : 'index') . '.php';
+    if (!file_exists($clientFile)) {
+        $clientFile = __DIR__ . '/musteri/index.php';
+    }
+    require_once $clientFile;
+    exit;
+}
+
 // Specific root-level PHP files (auto_login.php, etc.)
 if (preg_match('/\.php$/', $requestPath)) {
     $file = __DIR__ . '/' . ltrim($requestPath, '/');

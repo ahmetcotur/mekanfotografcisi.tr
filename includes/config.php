@@ -65,5 +65,55 @@ function env($key, $default = null) {
     return $value;
 }
 
+/**
+ * Get the JWT signing secret.
+ *
+ * There is no insecure default in production: if JWT_SECRET is unset, every
+ * authenticated request fails loudly (500) instead of silently accepting
+ * tokens signed with a secret that has been sitting in the repo's history.
+ * Local/dev environments (APP_ENV unset or 'local') get a clearly-marked
+ * fallback so `php -S` development keeps working without a .env file.
+ */
+function mf_jwt_secret() {
+    $secret = env('JWT_SECRET');
+
+    if (!empty($secret)) {
+        return $secret;
+    }
+
+    $appEnv = env('APP_ENV', 'local');
+    if ($appEnv !== 'local') {
+        http_response_code(500);
+        header('Content-Type: application/json');
+        echo json_encode(['success' => false, 'error' => 'Server misconfigured: JWT_SECRET is not set']);
+        exit;
+    }
+
+    return 'dev-only-insecure-secret-set-JWT_SECRET-in-.env';
+}
+
+/**
+ * Issue a JWT for any of the three roles (admin/freelancer/client). Shared by
+ * api/auth.php and the self-service registration endpoints so token shape
+ * (claims, expiry) stays in exactly one place.
+ */
+function mf_generate_jwt($userId, $email, $name, $role = 'admin', $expirySeconds = 86400) {
+    $jwtSecret = mf_jwt_secret();
+    $issuedAt = time();
+    $payload = [
+        'iat' => $issuedAt,
+        'exp' => $issuedAt + $expirySeconds,
+        'user_id' => $userId,
+        'email' => $email,
+        'name' => $name,
+        'role' => $role,
+    ];
+
+    if (class_exists('Firebase\JWT\JWT')) {
+        return \Firebase\JWT\JWT::encode($payload, $jwtSecret, 'HS256');
+    }
+    return base64_encode(json_encode($payload));
+}
+
 
 

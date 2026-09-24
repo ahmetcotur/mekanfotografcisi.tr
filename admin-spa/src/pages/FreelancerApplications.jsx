@@ -47,6 +47,23 @@ export default function FreelancerApplications() {
         }
     };
 
+    const handleTogglePublic = async (app) => {
+        try {
+            await api.post('/admin-update.php', {
+                action: 'update',
+                table: 'freelancer_applications',
+                id: app.id,
+                data: { is_public: !app.is_public }
+            });
+            loadApplications();
+            if (selectedApp?.id === app.id) {
+                setSelectedApp({ ...app, is_public: !app.is_public });
+            }
+        } catch (error) {
+            Swal.fire('Hata', 'Dizin görünürlüğü güncellenemedi', 'error');
+        }
+    };
+
     const handleDelete = async (id) => {
         const result = await Swal.fire({
             title: 'Emin misiniz?',
@@ -142,7 +159,12 @@ export default function FreelancerApplications() {
                                     {new Date(app.created_at).toLocaleDateString('tr-TR')}
                                 </span>
                             </div>
-                            <div className={`font-bold ${selectedApp?.id === app.id ? 'text-white' : 'text-gray-800'}`}>{app.name}</div>
+                            <div className="flex items-center justify-between">
+                                <div className={`font-bold ${selectedApp?.id === app.id ? 'text-white' : 'text-gray-800'}`}>{app.name}</div>
+                                {app.is_public && (
+                                    <span className={`text-[9px] font-black uppercase px-1.5 py-0.5 rounded ${selectedApp?.id === app.id ? 'bg-white/20 text-white' : 'bg-blue-50 text-blue-500'}`}>Dizinde</span>
+                                )}
+                            </div>
                             <div className={`text-xs truncate opacity-70`}>{app.city}</div>
                         </motion.div>
                     ))}
@@ -171,12 +193,20 @@ export default function FreelancerApplications() {
                                     >
                                         ← Geri
                                     </button>
-                                    <div className="flex gap-2">
+                                    <div className="flex gap-2 flex-wrap justify-end">
                                         <div className="flex bg-gray-100 p-1 rounded-xl mr-2">
                                             <button onClick={() => handleUpdateStatus(selectedApp, 'approved')} className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase transition-all ${selectedApp.status === 'approved' ? 'bg-green-500 text-white shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}>Onayla</button>
                                             <button onClick={() => handleUpdateStatus(selectedApp, 'rejected')} className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase transition-all ${selectedApp.status === 'rejected' ? 'bg-red-500 text-white shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}>Reddet</button>
                                             <button onClick={() => handleUpdateStatus(selectedApp, 'pending')} className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase transition-all ${selectedApp.status === 'pending' ? 'bg-amber-500 text-white shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}>Beklet</button>
                                         </div>
+                                        <button
+                                            onClick={() => handleTogglePublic(selectedApp)}
+                                            title={selectedApp.status !== 'approved' ? 'Önce başvuruyu onaylayın' : ''}
+                                            disabled={selectedApp.status !== 'approved' && !selectedApp.is_public}
+                                            className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase transition-all disabled:opacity-40 disabled:cursor-not-allowed ${selectedApp.is_public ? 'bg-blue-500 text-white shadow-sm' : 'bg-gray-100 text-gray-500 hover:text-gray-700'}`}
+                                        >
+                                            {selectedApp.is_public ? '✓ Dizinde Görünüyor' : 'Dizinde Yayınla'}
+                                        </button>
                                         <button
                                             onClick={() => handleDelete(selectedApp.id)}
                                             className="p-2 text-red-400 hover:bg-red-50 rounded-xl transition-colors"
@@ -227,6 +257,17 @@ export default function FreelancerApplications() {
                                                             {JSON.parse(selectedApp.specialization || '[]').map(spec => (
                                                                 <span key={spec} className="px-2 py-0.5 bg-slate-100 rounded text-[9px] font-black uppercase text-slate-600">{spec}</span>
                                                             ))}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center gap-3">
+                                                    <span className="w-8 h-8 rounded-full bg-amber-50 text-amber-500 flex items-center justify-center text-xs">⭐</span>
+                                                    <div>
+                                                        <div className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Değerlendirme</div>
+                                                        <div className="text-sm font-bold text-gray-800">
+                                                            {selectedApp.rating_count > 0
+                                                                ? `${parseFloat(selectedApp.rating_avg).toFixed(1)} (${selectedApp.rating_count} değerlendirme)`
+                                                                : 'Henüz değerlendirme yok'}
                                                         </div>
                                                     </div>
                                                 </div>

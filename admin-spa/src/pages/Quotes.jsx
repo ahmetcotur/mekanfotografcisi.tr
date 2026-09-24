@@ -159,6 +159,9 @@ export default function Quotes() {
                             </div>
                             <div className="flex justify-between items-center mb-1">
                                 <span className="text-xs font-black uppercase opacity-60 tracking-widest">{quote.service || 'Genel'}</span>
+                                {quote.visibility === 'direct' && (
+                                    <span className={`text-[9px] font-black uppercase px-1.5 py-0.5 rounded ${selectedQuote?.id === quote.id ? 'bg-white/20 text-white' : 'bg-purple-50 text-purple-500'}`}>Doğrudan Talep</span>
+                                )}
                             </div>
                             <div className={`font-bold ${selectedQuote?.id === quote.id ? 'text-white' : 'text-gray-800'}`}>{quote.name}</div>
                             <div className={`text-xs truncate opacity-70`}>{quote.email}</div>
@@ -285,16 +288,23 @@ export default function Quotes() {
                                                     <div key={assignment.id} className="p-4 bg-slate-50 rounded-xl border border-slate-200">
                                                         <div className="flex items-center justify-between mb-2">
                                                             <div className="font-bold text-gray-900">{assignment.freelancer?.name}</div>
-                                                            <span className={`px-3 py-1 rounded-full text-xs font-black uppercase ${assignment.status === 'accepted' ? 'bg-green-100 text-green-700' :
-                                                                assignment.status === 'rejected' ? 'bg-red-100 text-red-700' :
-                                                                    assignment.status === 'completed' ? 'bg-blue-100 text-blue-700' :
-                                                                        'bg-amber-100 text-amber-700'
-                                                                }`}>
-                                                                {assignment.status === 'pending' ? 'Beklemede' :
-                                                                    assignment.status === 'accepted' ? 'Kabul Edildi' :
-                                                                        assignment.status === 'rejected' ? 'Reddedildi' :
-                                                                            'Tamamlandı'}
-                                                            </span>
+                                                            <div className="flex items-center gap-2">
+                                                                {assignment.source && assignment.source !== 'admin' && (
+                                                                    <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-slate-100 text-slate-500">
+                                                                        {assignment.source === 'self_claim' ? 'Kendi Üstlendi' : 'Doğrudan Talep'}
+                                                                    </span>
+                                                                )}
+                                                                <span className={`px-3 py-1 rounded-full text-xs font-black uppercase ${assignment.status === 'accepted' ? 'bg-green-100 text-green-700' :
+                                                                    assignment.status === 'rejected' ? 'bg-red-100 text-red-700' :
+                                                                        assignment.status === 'completed' ? 'bg-blue-100 text-blue-700' :
+                                                                            'bg-amber-100 text-amber-700'
+                                                                    }`}>
+                                                                    {assignment.status === 'pending' ? 'Beklemede' :
+                                                                        assignment.status === 'accepted' ? 'Kabul Edildi' :
+                                                                            assignment.status === 'rejected' ? 'Reddedildi' :
+                                                                                'Tamamlandı'}
+                                                                </span>
+                                                            </div>
                                                         </div>
                                                         <div className="text-xs text-gray-500 space-y-1">
                                                             <div>📧 {assignment.freelancer?.email}</div>

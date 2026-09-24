@@ -68,7 +68,21 @@ class DatabaseClient
         foreach ($params as $key => $value) {
             if (strpos($key, '.') !== false) {
                 // Handle operators like 'eq.', 'like.', etc.
-                list($operator, $column) = explode('.', $key, 2);
+                // Callers use both "operator.column" (e.g. 'eq.slug') and
+                // "column.operator" (e.g. 'email.eq' - the more common form,
+                // used throughout the live auth code paths). Detect which
+                // side is the actual operator so both notations filter
+                // correctly instead of the operator-less side being silently
+                // dropped from the WHERE clause.
+                $knownOperators = ['eq', 'ne', 'like', 'ilike', 'gt', 'lt', 'in'];
+                list($first, $second) = explode('.', $key, 2);
+                if (!in_array($first, $knownOperators, true) && in_array($second, $knownOperators, true)) {
+                    $operator = $second;
+                    $column = $first;
+                } else {
+                    $operator = $first;
+                    $column = $second;
+                }
 
                 switch ($operator) {
                     case 'eq':

@@ -6,6 +6,7 @@
 // Session is now started globally in router.php
 require_once __DIR__ . '/../includes/database.php';
 require_once __DIR__ . '/../includes/helpers.php';
+require_once __DIR__ . '/../includes/config.php';
 
 // Load composer autoloader
 if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
@@ -30,34 +31,17 @@ $db = new DatabaseClient();
 $method = $_SERVER['REQUEST_METHOD'];
 $path = $_GET['action'] ?? 'login';
 
-// JWT Secret (in production, use env variable)
-$jwtSecret = env('JWT_SECRET', 'mekanfotografcisi_secret_key_2026');
+// JWT Secret
+$jwtSecret = mf_jwt_secret();
 $jwtExpiry = 86400; // 24 hours
 
 /**
- * Generate JWT token
+ * Generate JWT token. $role is 'admin', 'freelancer', or 'client'.
  */
-function generateToken($userId, $email, $name)
+function generateToken($userId, $email, $name, $role = 'admin')
 {
-    global $jwtSecret, $jwtExpiry;
-
-    $issuedAt = time();
-    $expire = $issuedAt + $jwtExpiry;
-
-    $payload = [
-        'iat' => $issuedAt,
-        'exp' => $expire,
-        'user_id' => $userId,
-        'email' => $email,
-        'name' => $name
-    ];
-
-    if (USE_SIMPLE_TOKEN) {
-        // Simple base64 token if JWT library not available
-        return base64_encode(json_encode($payload));
-    } else {
-        return \Firebase\JWT\JWT::encode($payload, $jwtSecret, 'HS256');
-    }
+    global $jwtExpiry;
+    return mf_generate_jwt($userId, $email, $name, $role, $jwtExpiry);
 }
 
 /**
@@ -98,18 +82,56 @@ if ($method === 'POST') {
         }
 
         try {
-            $users = $db->select('admin_users', [
+            // Admin accounts first (unchanged behavior/table), then the shared
+            // freelancer/client users table. One login endpoint, two backing
+            // tables — not three parallel auth systems.
+            $admins = $db->select('admin_users', [
                 'email.eq' => $email,
                 'is_active' => true
             ]);
 
-            if (empty($users)) {
+            if (!empty($admins)) {
+                $user = $admins[0];
+
+                if (!password_verify($password, $user['password_hash'])) {
+                    http_response_code(401);
+                    echo json_encode(['success' => false, 'error' => 'Invalid credentials']);
+                    exit;
+                }
+
+                $token = generateToken($user['id'], $user['email'], $user['name'], 'admin');
+
+                // Also set session for backward compatibility
+                $_SESSION['admin_user_id'] = $user['id'];
+                $_SESSION['admin_user_email'] = $user['email'];
+                $_SESSION['admin_user_name'] = $user['name'];
+                $_SESSION['user_id'] = $user['id'];
+
+                echo json_encode([
+                    'success' => true,
+                    'token' => $token,
+                    'user' => [
+                        'id' => $user['id'],
+                        'email' => $user['email'],
+                        'name' => $user['name'],
+                        'role' => 'admin'
+                    ]
+                ]);
+                exit;
+            }
+
+            $marketplaceUsers = $db->select('users', [
+                'email.eq' => $email,
+                'is_active' => true
+            ]);
+
+            if (empty($marketplaceUsers)) {
                 http_response_code(401);
                 echo json_encode(['success' => false, 'error' => 'Invalid credentials']);
                 exit;
             }
 
-            $user = $users[0];
+            $user = $marketplaceUsers[0];
 
             if (!password_verify($password, $user['password_hash'])) {
                 http_response_code(401);
@@ -117,14 +139,9 @@ if ($method === 'POST') {
                 exit;
             }
 
-            // Generate token
-            $token = generateToken($user['id'], $user['email'], $user['name']);
+            $token = generateToken($user['id'], $user['email'], $user['name'], $user['role']);
 
-            // Also set session for backward compatibility
-            $_SESSION['admin_user_id'] = $user['id'];
-            $_SESSION['admin_user_email'] = $user['email'];
-            $_SESSION['admin_user_name'] = $user['name'];
-            $_SESSION['user_id'] = $user['id'];
+            $db->update('users', ['last_login_at' => date('Y-m-d H:i:s')], ['id' => $user['id']]);
 
             echo json_encode([
                 'success' => true,
@@ -132,7 +149,8 @@ if ($method === 'POST') {
                 'user' => [
                     'id' => $user['id'],
                     'email' => $user['email'],
-                    'name' => $user['name']
+                    'name' => $user['name'],
+                    'role' => $user['role']
                 ]
             ]);
         } catch (Exception $e) {
@@ -159,7 +177,7 @@ if ($method === 'POST') {
         }
 
         // Generate new token
-        $newToken = generateToken($payload['user_id'], $payload['email'], $payload['name']);
+        $newToken = generateToken($payload['user_id'], $payload['email'], $payload['name'], $payload['role'] ?? 'admin');
 
         echo json_encode([
             'success' => true,
@@ -197,7 +215,8 @@ if ($method === 'POST') {
         'user' => [
             'id' => $payload['user_id'],
             'email' => $payload['email'],
-            'name' => $payload['name']
+            'name' => $payload['name'],
+            'role' => $payload['role'] ?? 'admin'
         ]
     ]);
 } else {
