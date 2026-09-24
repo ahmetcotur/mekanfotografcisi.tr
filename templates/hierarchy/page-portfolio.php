@@ -1,165 +1,71 @@
 <?php
 /**
- * Portfolio Template
- * Redesigned with Tailwind CSS
+ * Portfolio (/portfolio) - curated photo set managed in the admin (Pexels images).
  */
 $pexelsService = new \Core\PexelsService();
 $allPhotos = $pexelsService->getActivePhotos();
 
-// Only fallback to raw Pexels cache if the database lookup returned absolutely nothing 
-// (which usually means the table is empty or doesn't exist yet)
+// Only fall back to the raw Pexels cache when the curated table is empty or
+// missing (getActivePhotos() returns [] on a query error too).
 if (empty($allPhotos)) {
-    // Check if table is truly empty or doesn't exist
-    $db = new \DatabaseClient();
-    $dbCount = $db->query("SELECT count(*) as total FROM pexels_images");
-    $totalInDb = $dbCount[0]['total'] ?? 0;
-
+    $totalInDb = 0;
+    try {
+        $dbCount = (new \DatabaseClient())->query("SELECT count(*) as total FROM pexels_images");
+        $totalInDb = $dbCount[0]['total'] ?? 0;
+    } catch (Exception $e) {
+        error_log('Portfolio: pexels_images count failed: ' . $e->getMessage());
+    }
     if ($totalInDb == 0) {
         $allPhotos = $pexelsService->getPhotos();
     }
 }
 
-// Get a random photo for hero background
-$heroPhoto = get_random_pexels_photo();
-$heroImage = $heroPhoto ? $heroPhoto['src'] : 'https://images.pexels.com/photos/313782/pexels-photo-313782.jpeg';
-
-// Shuffle the array so that photos from the same properties/shoots don't clump together
+// Shuffle so photos from the same shoot don't clump together; cap for speed.
 if (!empty($allPhotos)) {
     shuffle($allPhotos);
-    // Optional: Limit to a reasonable number to keep performance snappy, or keep all if preferred.
-    // For now, let's show top 45 to ensure highly varied and fast-loading grid
     $allPhotos = array_slice($allPhotos, 0, 45);
 }
 
+$pageTitle = 'Portfolyo';
+$pageDescription = 'Mimari, iç mekan, otel ve restoran çekimlerinden seçkiler.';
 include __DIR__ . '/../page-header.php';
+
+$heroEyebrow = 'Portfolyo';
+$heroTitle = 'Mekanlar, en iyi ışığında';
+$heroLead = 'Mimari, iç mekan, otel ve restoran çekimlerinden bir seçki.';
+$heroCrumbs = [['href' => '/portfolio', 'label' => 'Portfolyo']];
+$heroActions = '<button type="button" onclick="openQuoteWizard()" class="btn btn-primary btn-lg">Mekanın için teklif al ' . icon('arrow-right', 'h-4 w-4') . '</button>';
 ?>
 
-<!-- Hero Section -->
-<section class="relative h-[60vh] min-h-[500px] flex items-center justify-center overflow-hidden bg-slate-950">
-    <div class="absolute inset-0 z-0">
-        <img src="<?= htmlspecialchars($heroImage) ?>" alt="Portfolio Hero"
-            class="w-full h-full object-cover opacity-30 animate-pulse-subtle">
-        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
-        <div
-            class="absolute inset-0 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:40px_40px] opacity-10">
-        </div>
-    </div>
+<main id="main">
+    <?php include __DIR__ . '/../partials/page-hero.php'; ?>
 
-    <div class="relative z-10 container mx-auto px-4 text-center">
-        <div class="animate-slide-up">
-            <span
-                class="inline-block px-4 py-1.5 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-400 text-[10px] font-black tracking-[0.2em] uppercase mb-8 backdrop-blur-xl">
-                Seçkin Portfolyo
-            </span>
-            <h1 class="font-heading font-black text-5xl md:text-8xl text-white mb-8 tracking-tighter drop-shadow-2xl">
-                Yaratıcı Çalışmalarımız
-            </h1>
-            <p class="text-xl md:text-2xl text-slate-400 max-w-2xl mx-auto font-light leading-relaxed">
-                Mimari, iç mekan ve otel fotoğrafçılığında <span class="text-white font-medium">estetik ve
-                    tekniği</span> buluşturduğumuz seçkin projeler.
-            </p>
-        </div>
-    </div>
-</section>
-
-<!-- Portfolio Grid -->
-<section class="py-24 bg-white">
-    <div class="container mx-auto px-4">
-
-        <?php if (empty($allPhotos)): ?>
-            <div class="text-center py-20 bg-slate-50 rounded-2xl border border-slate-100">
-                <p class="text-slate-500 text-lg">Şu an için gösterilecek fotoğraf bulunamadı.</p>
-            </div>
-        <?php else: ?>
-            <div class="columns-1 md:columns-2 lg:columns-3 gap-8 space-y-8">
-                <?php foreach ($allPhotos as $photo): ?>
-                    <div
-                        class="break-inside-avoid group relative rounded-4xl overflow-hidden cursor-pointer shadow-2xl hover-lift border border-slate-100">
-                        <a href="<?= htmlspecialchars($photo['src']) ?>" class="block portfolio-lightbox"
-                            data-gallery="portfolio-gallery" data-title="<?= htmlspecialchars($photo['alt']) ?>">
-                            <img src="<?= htmlspecialchars($photo['src']) ?>" alt="<?= htmlspecialchars($photo['alt']) ?>"
-                                loading="lazy"
-                                class="w-full h-auto object-cover transform transition-transform duration-1000 group-hover:scale-110">
-
-                            <div
-                                class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end justify-center p-8">
-                                <span
-                                    class="px-8 py-3 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-2xl font-black text-sm uppercase tracking-widest transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                                    Büyüt
-                                </span>
-                            </div>
+    <section class="section pt-10 md:pt-14">
+        <div class="container-page">
+            <?php if (empty($allPhotos)): ?>
+                <div class="card p-10 text-center text-ink-muted">Şu an gösterilecek fotoğraf yok.</div>
+            <?php else: ?>
+                <div class="columns-2 gap-3 md:columns-3 md:gap-4 [&>*]:mb-3 md:[&>*]:mb-4">
+                    <?php foreach ($allPhotos as $photo):
+                        $src = photo_src($photo);
+                        if (!$src) {
+                            continue;
+                        }
+                        ?>
+                        <a href="<?= e($src) ?>" data-lightbox="portfolio" data-title="<?= e($photo['alt'] ?? '') ?>"
+                            class="photo-placeholder group block break-inside-avoid overflow-hidden rounded-2xl">
+                            <img src="<?= e($src) ?>" alt="<?= e($photo['alt'] ?? 'Mekan fotoğrafı') ?>" loading="lazy"
+                                class="h-auto w-full transition duration-500 group-hover:scale-[1.03]">
                         </a>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-        <?php endif; ?>
-
-        <!-- CTA -->
-        <div
-            class="mt-32 bg-slate-900 rounded-5xl p-12 md:p-20 text-center text-white relative overflow-hidden shadow-2xl group animate-slide-up">
-            <div class="absolute inset-0 z-0 opacity-40">
-                <img src="https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg" alt="CTA BG"
-                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[2s]">
-                <div class="absolute inset-0 bg-gradient-to-br from-brand-900/80 to-slate-900/90 backdrop-blur-sm">
+                    <?php endforeach; ?>
                 </div>
-            </div>
-            <div class="relative z-10">
-                <h2 class="font-heading font-black text-4xl md:text-6xl mb-8 tracking-tight">Sizin Mekanınızı Da
-                    Güzelleştirelim</h2>
-                <p class="text-brand-100 mb-12 text-xl md:text-2xl font-light max-w-3xl mx-auto leading-relaxed">
-                    Eşsiz çekimler ve profesyonel sunum için <span class="text-white font-bold">doğru
-                        adrestesiniz.</span> Projenizi birlikte hayata geçirelim.
-                </p>
-                <div class="flex flex-col sm:flex-row gap-6 justify-center">
-                    <button onclick="openQuoteWizard()"
-                        class="px-12 py-6 bg-white text-slate-900 rounded-3xl font-black text-xl hover:bg-brand-50 transition-all hover:scale-105 active:scale-95 shadow-2xl">
-                        Hemen Teklif Al
-                    </button>
-                    <a href="tel:<?= get_setting('phone_url') ?>"
-                        class="px-12 py-6 bg-brand-600/20 backdrop-blur-md border border-brand-500/30 text-white rounded-3xl font-black text-xl hover:bg-brand-600/40 transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                            <path
-                                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-                        </svg>
-                        Bizi Arayın
-                    </a>
-                </div>
-            </div>
+            <?php endif; ?>
         </div>
+    </section>
 
-    </div>
-</section>
+    <?php include __DIR__ . '/../partials/cta-band.php'; ?>
+</main>
 
-<!-- GLightbox for Portfolio -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
-<script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
-<style>
-    .glightbox-clean .gslide-description {
-        background: transparent;
-        text-align: center;
-    }
-
-    .glightbox-clean .gslide-title {
-        color: white;
-        font-family: 'Inter', sans-serif;
-        font-weight: 900;
-        font-size: 1.5rem;
-        text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-    }
-</style>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        if (typeof GLightbox !== 'undefined') {
-            const lightbox = GLightbox({
-                selector: '.portfolio-lightbox',
-                touchNavigation: true,
-                loop: true,
-                zoomable: true,
-                descPosition: 'bottom'
-            });
-        }
-    });
-</script>
+<script src="<?= asset_url('assets/js/lightbox.js') ?>" defer></script>
 
 <?php include __DIR__ . '/../page-footer.php'; ?>

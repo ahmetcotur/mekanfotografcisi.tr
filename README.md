@@ -107,6 +107,23 @@ Navigate to `/admin/` and login with your credentials.
 - **Media Library**: Upload and manage project photos directly to the server.
 - **SEO Pages**: Edit, publish, or delete generated SEO content.
 
+## 🎨 Front-end styles
+
+The public site (`templates/`, `panel/`, `musteri/`) uses a prebuilt Tailwind
+stylesheet, `assets/css/app.css`, which is committed so deploys need no Node
+step. After changing classes in a template, rebuild it:
+
+```bash
+npm install
+npm run build:css   # or: npm run watch:css
+```
+
+Design tokens and shared components (`.btn`, `.input`, `.card`, ...) live in
+`assets/css/src/app.css`; the accent colour comes from the admin
+`secondary_color` setting at runtime (`brand_palette_css()` in `includes/ui.php`).
+Shared PHP view helpers (icons, photographer cards, content cleanup) are in
+`includes/ui.php`.
+
 ## 🌐 URL Structure
 
 ### New Routes (Additive Only)

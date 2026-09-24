@@ -11,40 +11,34 @@ include __DIR__ . '/../page-header.php';
 $workflowSteps = [
     [
         'number' => '01',
-        'title' => 'Talep Gönderimi',
-        'description' => 'İşiniz için online form veya iletişim kanallarımız üzerinden teklif talebi gönderin. Size en kısa sürede dönüş yapıyoruz.',
+        'title' => 'Talebini oluştur',
+        'description' => 'Teklif formunda mekanının türünü, konumunu ve ne zaman çekim istediğini anlat. İki dakika sürer, ücretsizdir.',
         'icon' => '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>'
     ],
     [
         'number' => '02',
-        'title' => 'Keşif & Planlama',
-        'description' => 'Projenizin boyutunu ve özel gereksinimlerini anlamak için detaylı bir toplantı yapıyoruz. Mekanınızı ve beklentilerinizi dinliyoruz.',
+        'title' => 'Uygun fotoğrafçılarla eşleş',
+        'description' => 'Talebin, bölgende çalışan ve uzmanlığı mekanına uyan onaylı fotoğrafçılara iletilir.',
         'icon' => '<circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>'
     ],
     [
         'number' => '03',
-        'title' => 'Tarih & Hazırlık',
-        'description' => 'Çekim tarihini birlikte belirliyor ve mekanın hazırlıkları için size öneriler sunuyoruz. Işık koşulları ve detaylar planlanır.',
-        'icon' => '<rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/>'
+        'title' => 'Teklifleri karşılaştır ve seç',
+        'description' => 'Fotoğrafçıların portfolyolarına, müşteri yorumlarına ve tekliflerine bak; sana en uygun olanla anlaş.',
+        'icon' => '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>'
     ],
     [
         'number' => '04',
-        'title' => 'Çekim Programı',
-        'description' => 'Detaylı bir çekim programı oluşturuyoruz. Hangi açıların, alanların ve detayların çekileceğini planlıyoruz.',
-        'icon' => '<path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="9" x2="15" y1="15" y2="15"/>'
+        'title' => 'Çekimi planla',
+        'description' => 'Fotoğrafçınla tarihi, ışık koşullarını ve çekilecek alanları netleştir. Mekanın hazırlığı için öneriler alırsın.',
+        'icon' => '<rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/>'
     ],
     [
         'number' => '05',
-        'title' => 'Çekim Günü',
-        'description' => 'Profesyonel ekipmanlarımız ve deneyimimizle mekanınızı en iyi şekilde fotoğraflıyoruz. Çekim sırasında size rehberlik ediyoruz.',
+        'title' => 'Fotoğraflarını teslim al',
+        'description' => 'Düzenlenmiş, yayına hazır fotoğraflar genellikle birkaç iş günü içinde teslim edilir. Çekim sonrası fotoğrafçını değerlendirebilirsin.',
         'icon' => '<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/>'
     ],
-    [
-        'number' => '06',
-        'title' => 'Hızlı Teslimat',
-        'description' => 'Çekimden sonra 48-96 saat içinde profesyonel olarak düzenlenmiş fotoğraflarınızı teslim ediyoruz. Revizyon desteği sunuyoruz.',
-        'icon' => '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>'
-    ]
 ];
 
 // Workflow steps (photographer / freelancer track)
@@ -104,280 +98,93 @@ $faqItems = [
         'answer' => 'İlk teslimat sonrası, fotoğrafları incelemeniz için size zaman tanıyoruz. Renk düzeltmesi, kırpma veya küçük düzenlemeler gibi makul revizyonlar paket fiyatımıza dahildir (genellikle 2 revizyon hakkı). Büyük değişiklikler veya ek çekim gerektiren talepler için ayrı fiyat teklifi sunuyoruz. Amacımız, %100 memnuniyetinizi sağlamaktır.'
     ],
     [
-        'question' => 'Çekim için hangi ekipmanları kullanıyorsunuz?',
-        'answer' => 'Profesyonel full-frame DSLR/mirrorless kameralar, geniş açı ve tilt-shift lensler, tripod, harici flaşlar ve gerektiğinde drone kullanıyoruz. Tüm ekipmanlarımız düzenli olarak bakımdan geçirilir ve yedek ekipman her zaman hazırdır. Bu sayede teknik sorunlardan kaynaklı aksaklıklar yaşanmaz.'
+        'question' => 'Fotoğrafçılar nasıl onaylanıyor?',
+        'answer' => 'Kolektife katılan her fotoğrafçının başvurusu, deneyimi ve portfolyosu incelenir. Yalnızca onaylanan fotoğrafçılar herkese açık dizinde görünür ve talepleri üstlenebilir. Tamamlanan işlerden sonra müşteri değerlendirmeleri profillerde yayınlanır.'
     ],
     [
         'question' => 'Fotoğrafçı olarak nasıl kolektife katılabilirim?',
-        'answer' => '/kayit/fotografci üzerinden ücretsiz kayıt olabilir, profilinizi oluşturduktan sonra panelinizden açık çekim taleplerine erişebilirsiniz. Detaylı süreç için yukarıdaki "Fotoğrafçılar İçin" sekmesine göz atın.'
+        'answer' => 'Fotoğrafçı kayıt formundan ücretsiz kayıt olabilir, profilinizi oluşturduktan sonra panelinizden açık çekim taleplerine erişebilirsiniz. Detaylı süreç için yukarıdaki "Fotoğrafçılar için" bölümüne göz atın.'
     ]
 ];
+
+$heroEyebrow = 'Nasıl çalışır?';
+$heroTitle = 'İki taraf, tek bir kolay süreç';
+$heroLead = 'Mekan sahipleri talebini iletir, bölgedeki fotoğrafçılar teklif verir. İşte adım adım nasıl ilerlediği.';
+$heroCrumbs = [['href' => '/nasil-calisir', 'label' => 'Nasıl çalışır?']];
+$heroActions = '<a href="#mekan-sahipleri" class="btn btn-dark btn-lg">Mekan sahibiyim</a><a href="#fotografcilar" class="btn btn-outline btn-lg">Fotoğrafçıyım</a>';
+
+$renderSteps = function ($steps) {
+    ob_start(); ?>
+    <ol class="relative mt-10 space-y-4 before:absolute before:bottom-6 before:left-6 before:top-6 before:w-px before:bg-line md:before:left-7">
+        <?php foreach ($steps as $step): ?>
+            <li class="relative flex gap-5 md:gap-6">
+                <span class="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-line bg-white text-brand-700 md:h-14 md:w-14">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><?= $step['icon'] ?></svg>
+                </span>
+                <div class="card flex-1 p-5 md:p-6">
+                    <p class="text-sm font-semibold text-brand-700">Adım <?= e($step['number']) ?></p>
+                    <h3 class="mt-1 font-semibold"><?= e($step['title']) ?></h3>
+                    <p class="mt-1.5 text-sm leading-relaxed text-ink-soft"><?= e($step['description']) ?></p>
+                </div>
+            </li>
+        <?php endforeach; ?>
+    </ol>
+    <?php return ob_get_clean();
+};
 ?>
 
-<!-- Hero Section -->
-<section
-    class="relative h-[40vh] md:h-[45vh] min-h-[320px] flex items-center justify-center overflow-hidden bg-slate-950">
-    <img src="https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=1920"
-        alt="Nasıl Çalışır" class="absolute inset-0 w-full h-full object-cover opacity-40">
-    <div class="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/50 to-slate-950"></div>
+<main id="main">
+    <?php include __DIR__ . '/../partials/page-hero.php'; ?>
 
-    <div class="relative z-10 container mx-auto px-4 text-center pt-20 md:pt-0">
-        <span class="text-brand-400 font-black tracking-[0.3em] uppercase text-xs mb-4 block">Süreç</span>
-        <h1 class="font-heading font-black text-3xl md:text-5xl text-white mb-4 tracking-tight">
-            Nasıl Çalışır?
-        </h1>
-        <p class="text-slate-300 text-base md:text-xl font-light max-w-2xl mx-auto leading-relaxed">
-            Mekanını çektirmek isteyenler için de, kolektife katılacak fotoğrafçılar için de: adım adım nasıl çalıştığımızı keşfedin.
-        </p>
-    </div>
-</section>
-
-<!-- Workflow Timeline -->
-<section class="py-12 md:py-20 bg-white relative overflow-hidden">
-    <!-- Decorative elements -->
-    <div
-        class="absolute top-0 right-0 w-80 h-80 bg-brand-50 rounded-full blur-[100px] translate-x-1/2 -translate-y-1/2 opacity-50">
-    </div>
-    <div
-        class="absolute bottom-0 left-0 w-64 h-64 bg-accent-50 rounded-full blur-[90px] -translate-x-1/2 translate-y-1/2 opacity-40">
-    </div>
-
-    <div class="container mx-auto px-4 relative z-10">
-        <div class="text-center max-w-3xl mx-auto mb-10 md:mb-12">
-            <span class="text-brand-600 font-black tracking-[0.2em] uppercase text-xs mb-4 block">İş Akışı</span>
-            <h2 class="font-heading font-black text-2xl md:text-4xl text-slate-900 mb-4">Adım Adım Süreç
-            </h2>
-            <p class="text-slate-500 text-base md:text-lg leading-relaxed">
-                Hangi taraftasın? Sana uygun süreci aşağıdan seç.
-            </p>
-        </div>
-
-        <div class="flex justify-center gap-3 mb-10">
-            <button id="tab-musteri" onclick="setWorkflowTrack('musteri')"
-                class="px-6 py-3 rounded-full font-black text-sm uppercase tracking-widest bg-brand-600 text-white transition-all">
-                Müşteriler İçin
-            </button>
-            <button id="tab-fotografci" onclick="setWorkflowTrack('fotografci')"
-                class="px-6 py-3 rounded-full font-black text-sm uppercase tracking-widest bg-slate-100 text-slate-600 transition-all">
-                Fotoğrafçılar İçin
-            </button>
-        </div>
-
-        <div id="workflow-musteri" class="max-w-6xl mx-auto">
-            <?php foreach ($workflowSteps as $index => $step): ?>
-                <div class="relative mb-8 last:mb-0">
-                    <!-- Timeline connector -->
-                    <?php if ($index < count($workflowSteps) - 1): ?>
-                        <div
-                            class="hidden md:block absolute left-[48px] top-24 w-0.5 h-12 bg-gradient-to-b from-brand-200 to-transparent">
-                        </div>
-                    <?php endif; ?>
-
-                    <div class="group flex flex-col md:flex-row gap-6 md:gap-8 items-center md:items-start">
-                        <!-- Step number circle -->
-                        <div class="flex-shrink-0 relative">
-                            <div
-                                class="w-16 h-16 md:w-24 md:h-24 rounded-full bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center shadow-xl shadow-brand-500/30 group-hover:scale-110 transition-transform duration-500"
-                                <span class="font-heading font-black text-xl md:text-3xl text-white">
-                                    <?= $step['number'] ?>
-                                </span>
-                            </div>
-                            <div
-                                class="absolute inset-0 rounded-full bg-brand-400 blur-xl opacity-0 group-hover:opacity-50 transition-opacity duration-500">
-                            </div>
-                        </div>
-
-                        <!-- Content card -->
-                        <div
-                            class="flex-1 glass-panel p-5 md:p-6 rounded-2xl md:rounded-3xl border-white/60 group-hover:border-brand-200 transition-all duration-500 hover-lift text-center md:text-left">
-                            <div class="flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-6">
-                                <div
-                                    class="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center group-hover:bg-brand-600 group-hover:text-white transition-all duration-500">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" md:width="28"
-                                        md:height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <?= $step['icon'] ?>
-                                    </svg>
-                                </div>
-                                <div class="flex-1">
-                                    <h3
-                                        class="text-lg md:text-xl font-black text-slate-900 mb-2 group-hover:text-brand-600 transition-colors">
-                                        <?= $step['title'] ?>
-                                    </h3>
-                                    <p class="text-slate-600 text-sm leading-relaxed">
-                                        <?= $step['description'] ?>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+    <section class="section" id="mekan-sahipleri">
+        <div class="container-page grid gap-10 lg:grid-cols-12">
+            <div class="lg:col-span-4">
+                <div class="lg:sticky lg:top-[calc(var(--header-h)+2rem)]">
+                    <p class="eyebrow">Mekan sahipleri için</p>
+                    <h2 class="h-section mt-3">Talepten teslimata</h2>
+                    <p class="mt-4 text-ink-soft">Tek bir form doldurursun; gerisini bölgendeki fotoğrafçılarla birlikte planlarsın.</p>
+                    <button type="button" onclick="openQuoteWizard()" class="btn btn-primary btn-lg mt-8">Ücretsiz teklif al <?= icon('arrow-right', 'h-4 w-4') ?></button>
                 </div>
-            <?php endforeach; ?>
+            </div>
+            <div class="lg:col-span-8"><?= $renderSteps($workflowSteps) ?></div>
         </div>
+    </section>
 
-        <div id="workflow-fotografci" class="max-w-6xl mx-auto hidden">
-            <?php foreach ($photographerWorkflowSteps as $index => $step): ?>
-                <div class="relative mb-8 last:mb-0">
-                    <!-- Timeline connector -->
-                    <?php if ($index < count($photographerWorkflowSteps) - 1): ?>
-                        <div
-                            class="hidden md:block absolute left-[48px] top-24 w-0.5 h-12 bg-gradient-to-b from-brand-200 to-transparent">
-                        </div>
-                    <?php endif; ?>
-
-                    <div class="group flex flex-col md:flex-row gap-6 md:gap-8 items-center md:items-start">
-                        <!-- Step number circle -->
-                        <div class="flex-shrink-0 relative">
-                            <div
-                                class="w-16 h-16 md:w-24 md:h-24 rounded-full bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center shadow-xl shadow-brand-500/30 group-hover:scale-110 transition-transform duration-500"
-                                <span class="font-heading font-black text-xl md:text-3xl text-white">
-                                    <?= $step['number'] ?>
-                                </span>
-                            </div>
-                            <div
-                                class="absolute inset-0 rounded-full bg-brand-400 blur-xl opacity-0 group-hover:opacity-50 transition-opacity duration-500">
-                            </div>
-                        </div>
-
-                        <!-- Content card -->
-                        <div
-                            class="flex-1 glass-panel p-5 md:p-6 rounded-2xl md:rounded-3xl border-white/60 group-hover:border-brand-200 transition-all duration-500 hover-lift text-center md:text-left">
-                            <div class="flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-6">
-                                <div
-                                    class="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center group-hover:bg-brand-600 group-hover:text-white transition-all duration-500">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" md:width="28"
-                                        md:height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <?= $step['icon'] ?>
-                                    </svg>
-                                </div>
-                                <div class="flex-1">
-                                    <h3
-                                        class="text-lg md:text-xl font-black text-slate-900 mb-2 group-hover:text-brand-600 transition-colors">
-                                        <?= $step['title'] ?>
-                                    </h3>
-                                    <p class="text-slate-600 text-sm leading-relaxed">
-                                        <?= $step['description'] ?>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+    <section class="section border-y border-line bg-white" id="fotografcilar">
+        <div class="container-page grid gap-10 lg:grid-cols-12">
+            <div class="lg:col-span-4">
+                <div class="lg:sticky lg:top-[calc(var(--header-h)+2rem)]">
+                    <p class="eyebrow">Fotoğrafçılar için</p>
+                    <h2 class="h-section mt-3">Kolektife katıl, işini seç</h2>
+                    <p class="mt-4 text-ink-soft">Kayıt ücretsiz. Profilin onaylandıktan sonra bölgene ve uzmanlığına uyan talepleri panelinde görürsün.</p>
+                    <a href="/kayit/fotografci" class="btn btn-dark btn-lg mt-8">Fotoğrafçı olarak katıl</a>
                 </div>
-            <?php endforeach; ?>
+            </div>
+            <div class="lg:col-span-8"><?= $renderSteps($photographerWorkflowSteps) ?></div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- FAQ Section -->
-<section class="py-16 md:py-20 bg-slate-50">
-    <div class="container mx-auto px-4">
-        <div class="text-center max-w-3xl mx-auto mb-10 md:mb-12">
-            <span class="text-brand-600 font-black tracking-[0.2em] uppercase text-xs mb-4 block">Sık Sorulan
-                Sorular</span>
-            <h2 class="font-heading font-black text-2xl md:text-4xl text-slate-900 mb-4">Merak Edilenler</h2>
-            <p class="text-slate-500 text-base md:text-lg leading-relaxed">
-                Hizmetlerimiz hakkında en çok sorulan soruların yanıtları
-            </p>
+    <section class="section">
+        <div class="container-page grid gap-10 lg:grid-cols-3">
+            <div>
+                <p class="eyebrow">SSS</p>
+                <h2 class="h-section mt-3">Merak edilenler</h2>
+            </div>
+            <div class="divide-y divide-line border-y border-line lg:col-span-2">
+                <?php foreach ($faqItems as $faq): ?>
+                    <details class="group py-5">
+                        <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold [&::-webkit-details-marker]:hidden">
+                            <?= e($faq['question']) ?>
+                            <span class="text-ink-muted transition group-open:rotate-180"><?= icon('chevron-down') ?></span>
+                        </summary>
+                        <p class="mt-3 max-w-2xl text-ink-soft"><?= e($faq['answer']) ?></p>
+                    </details>
+                <?php endforeach; ?>
+            </div>
         </div>
+    </section>
 
-        <div class="max-w-3xl mx-auto space-y-3">
-            <?php foreach ($faqItems as $index => $faq): ?>
-                <div class="glass-panel rounded-2xl border-white/60 overflow-hidden hover-lift">
-                    <button onclick="toggleFaq(<?= $index ?>)"
-                        class="w-full px-6 py-4 flex items-center justify-between text-left group">
-                        <span class="text-base font-bold text-slate-900 pr-6 group-hover:text-brand-600 transition-colors">
-                            <?= $faq['question'] ?>
-                        </span>
-                        <svg id="faq-icon-<?= $index ?>" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
-                            stroke-linejoin="round" class="flex-shrink-0 text-brand-600 transition-transform duration-300">
-                            <path d="m6 9 6 6 6-6" />
-                        </svg>
-                    </button>
-                    <div id="faq-content-<?= $index ?>" class="grid grid-rows-[0fr] transition-all duration-300">
-                        <div class="min-h-0 overflow-hidden">
-                            <div class="px-6 pb-4 pt-1">
-                                <p class="text-slate-600 text-sm leading-relaxed">
-                                    <?= $faq['answer'] ?>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            <?php endforeach; ?>
-        </div>
-    </div>
-</section>
-
-<!-- CTA Section -->
-<section class="py-14 md:py-20 bg-gradient-to-br from-brand-600 to-brand-800 relative overflow-hidden">
-    <div class="absolute inset-0 opacity-10">
-        <div class="absolute top-0 left-0 w-64 h-64 bg-white rounded-full blur-3xl"></div>
-        <div class="absolute bottom-0 right-0 w-64 h-64 bg-white rounded-full blur-3xl"></div>
-    </div>
-
-    <div class="container mx-auto px-4 text-center relative z-10">
-        <h2 class="font-heading font-black text-2xl md:text-4xl text-white mb-4">
-            Hazır mısın?
-        </h2>
-        <p class="text-brand-100 text-base md:text-lg mb-8 max-w-xl mx-auto leading-relaxed">
-            İster mekanını çektir, ister kolektife katıl — ilk adımı şimdi at.
-        </p>
-        <div class="flex flex-col sm:flex-row gap-3 justify-center">
-            <button onclick="openQuoteWizard()"
-                class="inline-flex items-center justify-center gap-3 px-7 py-3.5 bg-white text-brand-600 rounded-full text-sm font-black uppercase tracking-widest shadow-xl hover:scale-105 transition-all active:scale-95">
-                Ücretsiz Teklif Al
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M5 12h14" />
-                    <path d="m12 5 7 7-7 7" />
-                </svg>
-            </button>
-            <a href="/kayit/fotografci"
-                class="inline-flex items-center justify-center gap-3 px-7 py-3.5 bg-white/10 hover:bg-white/20 text-white rounded-full text-sm font-black uppercase tracking-widest border border-white/30 transition-all hover:scale-105 active:scale-95">
-                Fotoğrafçı Olarak Katıl
-            </a>
-        </div>
-    </div>
-</section>
-
-<script>
-    function setWorkflowTrack(track) {
-        document.getElementById('workflow-musteri').classList.toggle('hidden', track !== 'musteri');
-        document.getElementById('workflow-fotografci').classList.toggle('hidden', track !== 'fotografci');
-
-        const musteriTab = document.getElementById('tab-musteri');
-        const fotografciTab = document.getElementById('tab-fotografci');
-
-        musteriTab.classList.toggle('bg-brand-600', track === 'musteri');
-        musteriTab.classList.toggle('text-white', track === 'musteri');
-        musteriTab.classList.toggle('bg-slate-100', track !== 'musteri');
-        musteriTab.classList.toggle('text-slate-600', track !== 'musteri');
-
-        fotografciTab.classList.toggle('bg-brand-600', track === 'fotografci');
-        fotografciTab.classList.toggle('text-white', track === 'fotografci');
-        fotografciTab.classList.toggle('bg-slate-100', track !== 'fotografci');
-        fotografciTab.classList.toggle('text-slate-600', track !== 'fotografci');
-    }
-
-    function toggleFaq(index) {
-        const content = document.getElementById(`faq-content-${index}`);
-        const icon = document.getElementById(`faq-icon-${index}`);
-        const isOpen = content.style.gridTemplateRows === '1fr';
-
-        // Close all other FAQs
-        document.querySelectorAll('[id^="faq-content-"]').forEach((el, i) => {
-            if (i !== index) {
-                el.style.gridTemplateRows = '0fr';
-                document.getElementById(`faq-icon-${i}`).style.transform = 'rotate(0deg)';
-            }
-        });
-
-        // Toggle current FAQ
-        content.style.gridTemplateRows = isOpen ? '0fr' : '1fr';
-        icon.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
-    }
-</script>
+    <?php include __DIR__ . '/../partials/cta-band.php'; ?>
+</main>
 
 <?php include __DIR__ . '/../page-footer.php'; ?>

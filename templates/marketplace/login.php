@@ -11,49 +11,63 @@ $pageRobots = 'noindex, follow';
 include __DIR__ . '/../page-header.php';
 ?>
 
-<main class="pt-40 pb-24 min-h-screen flex items-start justify-center">
-    <div class="max-w-md w-full mx-4 bg-white rounded-3xl border border-slate-100 shadow-xl p-8 md:p-10">
-        <h1 class="text-2xl font-heading font-black text-slate-900 mb-2">Giriş Yap</h1>
-        <p class="text-slate-400 text-sm mb-8">Fotoğrafçı veya müşteri hesabınızla devam edin.</p>
+<main id="main" class="grid flex-1 lg:grid-cols-2">
+    <div class="flex items-start justify-center px-4 py-12 sm:px-6 md:py-20 lg:items-center">
+        <div class="w-full max-w-sm">
+            <h1 class="h-section">Giriş yap</h1>
+            <p class="mt-2 text-ink-muted">Fotoğrafçı ya da müşteri hesabınla giriş yap.</p>
 
-        <form id="login-form" class="space-y-4">
-            <div>
-                <label class="block text-sm font-bold text-slate-600 mb-1">E-posta</label>
-                <input name="email" type="email" required class="w-full px-4 py-3 rounded-xl border border-slate-200">
-            </div>
-            <div>
-                <label class="block text-sm font-bold text-slate-600 mb-1">Şifre</label>
-                <input name="password" type="password" required class="w-full px-4 py-3 rounded-xl border border-slate-200">
-            </div>
-            <button type="submit" class="w-full py-4 bg-brand-600 text-white rounded-2xl font-black uppercase tracking-widest hover:bg-brand-700 transition-all">
-                Giriş Yap
-            </button>
-            <p id="login-message" class="text-sm font-medium"></p>
-        </form>
+            <form id="login-form" class="mt-8 space-y-4" novalidate>
+                <div>
+                    <label for="login-email" class="label">E-posta</label>
+                    <input id="login-email" name="email" type="email" required class="input" autocomplete="email" autofocus>
+                </div>
+                <div>
+                    <label for="login-password" class="label">Şifre</label>
+                    <input id="login-password" name="password" type="password" required class="input" autocomplete="current-password">
+                </div>
+                <p id="login-message" class="notice notice-error" role="alert" hidden></p>
+                <button type="submit" class="btn btn-primary w-full py-3">Giriş yap</button>
+            </form>
 
-        <div class="mt-8 pt-6 border-t border-slate-100 text-sm text-slate-400 space-y-2">
-            <p>Fotoğrafçı mısınız? <a href="/kayit/fotografci" class="text-brand-600 font-bold">Kolektife katılın</a></p>
-            <p>Hesabınız yok mu? <a href="/kayit/musteri" class="text-brand-600 font-bold">Müşteri hesabı oluşturun</a></p>
+            <div class="mt-8 space-y-2 border-t border-line pt-6 text-sm text-ink-muted">
+                <p>Fotoğrafçı mısın? <a href="/kayit/fotografci" class="font-semibold text-brand-700 hover:underline">Kolektife katıl</a></p>
+                <p>Hesabın yok mu? <a href="/kayit/musteri" class="font-semibold text-brand-700 hover:underline">Müşteri hesabı oluştur</a></p>
+            </div>
         </div>
     </div>
+    <?php
+    $asideTitle = 'Mekan sahiplerini ve fotoğrafçıları buluşturuyoruz.';
+    $asidePoints = ['Taleplerini ve tekliflerini tek yerden takip et', 'Açık çekim taleplerine panelinden eriş', 'Profilini ve portfolyonu yönet'];
+    include __DIR__ . '/../partials/auth-aside.php';
+    ?>
 </main>
 
 <script>
     document.getElementById('login-form').addEventListener('submit', function (e) {
         e.preventDefault();
-        const data = Object.fromEntries(new FormData(e.target).entries());
+        const form = e.target;
         const msgEl = document.getElementById('login-message');
+        const btn = form.querySelector('button[type="submit"]');
+        const fail = text => { msgEl.textContent = text; msgEl.hidden = false; };
+        msgEl.hidden = true;
 
+        if (!form.email.value.trim() || !form.email.checkValidity() || !form.password.value) {
+            fail('E-posta ve şifreni kontrol et.');
+            return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = 'Giriş yapılıyor…';
         fetch('/api/auth.php?action=login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
+            body: JSON.stringify(Object.fromEntries(new FormData(form).entries()))
         })
             .then(r => r.json())
             .then(res => {
                 if (!res.success) {
-                    msgEl.textContent = res.error || 'Giriş başarısız';
-                    msgEl.className = 'text-sm font-medium text-red-600';
+                    fail(res.error || 'Giriş başarısız.');
                     return;
                 }
                 localStorage.setItem('mf_token', res.token);
@@ -66,9 +80,10 @@ include __DIR__ . '/../page-header.php';
                     window.location.href = '/admin/';
                 }
             })
-            .catch(() => {
-                msgEl.textContent = 'Bir hata oluştu, lütfen tekrar deneyin.';
-                msgEl.className = 'text-sm font-medium text-red-600';
+            .catch(() => fail('Bağlantı hatası, lütfen tekrar dene.'))
+            .finally(() => {
+                btn.disabled = false;
+                btn.textContent = 'Giriş yap';
             });
     });
 </script>

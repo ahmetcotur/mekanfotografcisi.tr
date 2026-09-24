@@ -1,391 +1,144 @@
 <?php
-// Fetch custom color for the quote wizard
-$customColor = get_setting('primary_color', '#fa7000'); // Use primary color (orange)
-$customColorRgb = sscanf($customColor, "#%02x%02x%02x");
-$customColorRgbString = implode(', ', $customColorRgb);
+/**
+ * Quote wizard modal. Behaviour lives in assets/js/quote-wizard-v2.js
+ * (openQuoteWizard(service?, location?) / closeQuoteWizard()).
+ * Field names are part of the payload sent to save-form.php and the CRM.
+ */
+$wizardServices = [
+    ['value' => 'mimari', 'icon' => 'building', 'title' => 'Mimari & İç Mekan', 'desc' => 'Villa, konut, ofis, ticari alan'],
+    ['value' => 'otel', 'icon' => 'hotel', 'title' => 'Otel & Turizm', 'desc' => 'Otel, butik otel, pansiyon, tesis'],
+    ['value' => 'yemek', 'icon' => 'utensils', 'title' => 'Yemek & Restoran', 'desc' => 'Menü, restoran, kafe'],
+    ['value' => 'diger', 'icon' => 'sparkles', 'title' => 'Diğer', 'desc' => 'Drone, etkinlik, özel proje'],
+];
+$wizardSteps = ['Hizmet', 'Detaylar', 'Planlama', 'İletişim'];
 ?>
+<div id="quote-wizard-modal" class="fixed inset-0 z-[200]" role="dialog" aria-modal="true" aria-labelledby="wizard-title" hidden>
+    <div id="wizard-backdrop" class="absolute inset-0 bg-ink/50 opacity-0 transition-opacity duration-200" onclick="closeQuoteWizard()"></div>
 
-<style>
-    /* Custom color overrides for quote wizard */
-    #quote-wizard-modal .wizard-brand-bg {
-        background-color:
-            <?= $customColor ?>
-            !important;
-    }
+    <div class="pointer-events-none absolute inset-0 flex items-end justify-center sm:items-center sm:p-6">
+        <div id="wizard-panel"
+            class="pointer-events-auto flex max-h-[92dvh] w-full translate-y-4 flex-col overflow-hidden rounded-t-3xl bg-white opacity-0 shadow-lift transition duration-200 sm:max-w-xl sm:rounded-3xl">
 
-    #quote-wizard-modal .wizard-brand-text {
-        color:
-            <?= $customColor ?>
-            !important;
-    }
-
-    #quote-wizard-modal .wizard-brand-border {
-        border-color:
-            <?= $customColor ?>
-            !important;
-    }
-
-    #quote-wizard-modal .wizard-brand-ring {
-        --tw-ring-color:
-            <?= $customColor ?>
-            !important;
-    }
-
-    #quote-wizard-modal .wizard-brand-shadow {
-        --tw-shadow-color: rgb(<?= $customColorRgbString ?> / 0.3) !important;
-        --tw-shadow: var(--tw-shadow-colored);
-    }
-
-    .glass-modal {
-        background: rgba(255, 255, 255, 0.4) !important;
-        backdrop-filter: blur(40px) saturate(200%) !important;
-        -webkit-backdrop-filter: blur(40px) saturate(200%) !important;
-        border: 1px solid rgba(255, 255, 255, 0.3) !important;
-    }
-
-    .glass-card {
-        background: rgba(255, 255, 255, 0.3) !important;
-        backdrop-filter: blur(10px) !important;
-        border: 1px solid rgba(255, 255, 255, 0.2) !important;
-        transition: all 0.3s ease;
-    }
-
-    .glass-card:hover {
-        background: rgba(255, 255, 255, 0.5) !important;
-        border-color: rgba(255, 255, 255, 0.5) !important;
-        transform: translateY(-2px);
-    }
-
-    .glass-input {
-        background: rgba(255, 255, 255, 0.2) !important;
-        backdrop-filter: blur(5px) !important;
-        border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    }
-</style>
-
-<div id="quote-wizard-modal" class="fixed inset-0 z-[100] hidden" aria-labelledby="modal-title" role="dialog"
-    aria-modal="true">
-    <!-- Backdrop with more blur -->
-    <div class="fixed inset-0 bg-slate-950/40 backdrop-blur-md transition-opacity opacity-0" id="wizard-backdrop"></div>
-
-    <div class="fixed inset-0 z-10 overflow-y-auto">
-        <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
-            <!-- Modal Panel -->
-            <div class="relative transform overflow-hidden rounded-3xl glass-modal text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-xl opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95 shadow-black/5"
-                id="wizard-panel">
-
-                <!-- Header: Glassy and airy -->
-                <div
-                    class="px-6 py-6 sm:px-8 flex justify-between items-center relative overflow-hidden border-b border-white/20">
-                    <div class="absolute inset-0 opacity-10 bg-brand-gradient"></div>
-                    <div class="relative z-10">
-                        <h3 class="text-2xl font-black leading-none text-slate-900 tracking-tight" id="modal-title">
-                            Teklif Sihirbazı</h3>
-                        <p class="mt-1 text-slate-600 text-xs font-medium">Projeniz için en doğru fiyatı 3 adımda alın.
-                        </p>
-                    </div>
-                    <button type="button"
-                        class="relative z-10 w-10 h-10 flex items-center justify-center rounded-xl bg-white/20 text-slate-900 hover:bg-white/40 transition-all hover:scale-110 active:scale-90 border border-white/20"
-                        onclick="closeQuoteWizard()">
-                        <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
+            <div class="flex items-start justify-between gap-4 border-b border-line px-6 pb-4 pt-5">
+                <div>
+                    <h2 id="wizard-title" class="h-card">Ücretsiz teklif al</h2>
+                    <p class="mt-0.5 text-sm text-ink-muted">Talebini ilet, bölgendeki uygun fotoğrafçılar sana dönsün.</p>
                 </div>
-
-                <!-- Steps Progress -->
-                <div class="bg-white/10 px-4 py-4 border-b border-white/10">
-                    <div class="flex items-center justify-between max-w-sm mx-auto relative px-2">
-                        <!-- Progress Line Background -->
-                        <div class="absolute left-6 right-6 top-3 h-0.5 bg-black/5 -z-10"></div>
-                        <div class="flex flex-col items-center step-indicator active" data-step="1">
-                            <div class="w-6 h-6 rounded-full wizard-brand-bg text-white flex items-center justify-center font-bold text-xs mb-1 shadow-lg shadow-brand-500/20"
-                                style="background-color: <?= $customColor ?>;">
-                                1</div>
-                            <span
-                                class="text-[9px] uppercase tracking-wider font-extrabold text-slate-900">Hizmet</span>
-                        </div>
-                        <div class="h-0.5 w-6 bg-black/5 rounded-full" id="line-1"></div>
-                        <div class="flex flex-col items-center step-indicator" data-step="2">
-                            <div
-                                class="w-6 h-6 rounded-full bg-white/40 backdrop-blur-sm text-slate-400 flex items-center justify-center font-bold text-xs mb-1 border border-white/40 shadow-sm">
-                                2</div>
-                            <span class="text-[9px] uppercase tracking-wider font-bold text-slate-400">Detaylar</span>
-                        </div>
-                        <div class="h-0.5 w-6 bg-black/5 rounded-full" id="line-2"></div>
-                        <div class="flex flex-col items-center step-indicator" data-step="3">
-                            <div
-                                class="w-6 h-6 rounded-full bg-white/40 backdrop-blur-sm text-slate-400 flex items-center justify-center font-bold text-xs mb-1 border border-white/40 shadow-sm">
-                                3</div>
-                            <span class="text-[9px] uppercase tracking-wider font-bold text-slate-400">Planlama</span>
-                        </div>
-                        <div class="h-0.5 w-6 bg-black/5 rounded-full" id="line-3"></div>
-                        <div class="flex flex-col items-center step-indicator" data-step="4">
-                            <div
-                                class="w-6 h-6 rounded-full bg-white/40 backdrop-blur-sm text-slate-400 flex items-center justify-center font-bold text-xs mb-1 border border-white/40 shadow-sm">
-                                4</div>
-                            <span class="text-[9px] uppercase tracking-wider font-bold text-slate-400">İletişim</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Form Content -->
-                <div class="px-5 py-6 sm:px-8 max-h-[60vh] overflow-y-auto custom-scrollbar">
-                    <form id="quote-form">
-
-                        <!-- Step 1: Service Type -->
-                        <div class="step-content block" id="step-1">
-                            <label class="block text-lg font-black text-slate-900 mb-4 text-center">İhtiyacınız olan
-                                hizmeti seçin</label>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                <!-- Mimari -->
-                                <label
-                                    class="relative flex cursor-pointer rounded-2xl glass-card p-4 focus:outline-none transition-all group overflow-hidden">
-                                    <input type="radio" name="service_type" value="mimari" class="peer sr-only"
-                                        required>
-                                    <div
-                                        class="absolute inset-0 bg-brand-500/5 opacity-0 peer-checked:opacity-100 transition-opacity">
-                                    </div>
-                                    <span class="flex flex-1 relative z-10">
-                                        <span class="flex flex-col">
-                                            <span
-                                                class="block text-base font-bold text-slate-900 group-hover:text-brand-600 transition-colors">Mimari
-                                                & İç Mekan</span>
-                                            <span class="mt-0.5 text-xs text-slate-500 leading-snug">Villa, Ofis,
-                                                Konut</span>
-                                        </span>
-                                    </span>
-                                    <div
-                                        class="absolute top-3 right-3 w-5 h-5 rounded-full border-2 border-slate-200 peer-checked:border-brand-500 peer-checked:bg-brand-500 flex items-center justify-center transition-all">
-                                        <svg class="h-3 w-3 text-white scale-0 peer-checked:scale-100 transition-transform"
-                                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                                        </svg>
-                                    </div>
-                                </label>
-
-                                <!-- Otel -->
-                                <label
-                                    class="relative flex cursor-pointer rounded-2xl glass-card p-4 focus:outline-none transition-all group overflow-hidden">
-                                    <input type="radio" name="service_type" value="otel" class="peer sr-only">
-                                    <div
-                                        class="absolute inset-0 bg-brand-500/5 opacity-0 peer-checked:opacity-100 transition-opacity">
-                                    </div>
-                                    <span class="flex flex-1 relative z-10">
-                                        <span class="flex flex-col">
-                                            <span
-                                                class="block text-base font-bold text-slate-900 group-hover:text-brand-600 transition-colors">Otel
-                                                & Turizm</span>
-                                            <span class="mt-0.5 text-xs text-slate-500 leading-snug">Otel ve Tatil
-                                                Köyü</span>
-                                        </span>
-                                    </span>
-                                    <div
-                                        class="absolute top-3 right-3 w-5 h-5 rounded-full border-2 border-slate-200 peer-checked:border-brand-500 peer-checked:bg-brand-500 flex items-center justify-center transition-all">
-                                        <svg class="h-3 w-3 text-white scale-0 peer-checked:scale-100 transition-transform"
-                                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                                        </svg>
-                                    </div>
-                                </label>
-
-                                <!-- Yemek -->
-                                <label
-                                    class="relative flex cursor-pointer rounded-2xl glass-card p-4 focus:outline-none transition-all group overflow-hidden">
-                                    <input type="radio" name="service_type" value="yemek" class="peer sr-only">
-                                    <div
-                                        class="absolute inset-0 bg-brand-500/5 opacity-0 peer-checked:opacity-100 transition-opacity">
-                                    </div>
-                                    <span class="flex flex-1 relative z-10">
-                                        <span class="flex flex-col">
-                                            <span
-                                                class="block text-base font-bold text-slate-900 group-hover:text-brand-600 transition-colors">Yemek
-                                                & Restoran</span>
-                                            <span class="mt-0.5 text-xs text-slate-500 leading-snug">Menü
-                                                Çekimleri</span>
-                                        </span>
-                                    </span>
-                                    <div
-                                        class="absolute top-3 right-3 w-5 h-5 rounded-full border-2 border-slate-200 peer-checked:border-brand-500 peer-checked:bg-brand-500 flex items-center justify-center transition-all">
-                                        <svg class="h-3 w-3 text-white scale-0 peer-checked:scale-100 transition-transform"
-                                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                                        </svg>
-                                    </div>
-                                </label>
-
-                                <!-- Diğer -->
-                                <label
-                                    class="relative flex cursor-pointer rounded-2xl glass-card p-4 focus:outline-none transition-all group overflow-hidden">
-                                    <input type="radio" name="service_type" value="diger" class="peer sr-only">
-                                    <div
-                                        class="absolute inset-0 bg-brand-500/5 opacity-0 peer-checked:opacity-100 transition-opacity">
-                                    </div>
-                                    <span class="flex flex-1 relative z-10">
-                                        <span class="flex flex-col">
-                                            <span
-                                                class="block text-base font-bold text-slate-900 group-hover:text-brand-600 transition-colors">Özel
-                                                Proje</span>
-                                            <span class="mt-0.5 text-xs text-slate-500 leading-snug">Drone,
-                                                Etkinlik</span>
-                                        </span>
-                                    </span>
-                                    <div
-                                        class="absolute top-3 right-3 w-5 h-5 rounded-full border-2 border-slate-200 peer-checked:border-brand-500 peer-checked:bg-brand-500 flex items-center justify-center transition-all">
-                                        <svg class="h-3 w-3 text-white scale-0 peer-checked:scale-100 transition-transform"
-                                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                                        </svg>
-                                    </div>
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- Step 2: Details -->
-                        <div class="step-content hidden animate-slide-up" id="step-2">
-                            <h4 class="text-lg font-black text-slate-900 mb-4" id="step-2-title">Proje Detayları</h4>
-                            <div id="dynamic-fields" class="space-y-4">
-                                <!-- Injected via JS -->
-                            </div>
-                            <div class="mt-6">
-                                <label for="project_desc"
-                                    class="block text-xs font-extrabold text-slate-700 mb-2 uppercase tracking-wider">Ek
-                                    Notlar & Beklentiler</label>
-                                <textarea id="project_desc" name="project_desc" rows="2"
-                                    class="w-full rounded-2xl glass-input shadow-inner focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all p-3 text-slate-900 text-sm"
-                                    placeholder="Örn: Gece çekimi de istiyoruz..."></textarea>
-                            </div>
-                        </div>
-
-                        <!-- Step 3: Planning -->
-                        <div class="step-content hidden animate-slide-up" id="step-3">
-                            <h4 class="text-lg font-black text-slate-900 mb-1">Çekim Planlaması</h4>
-                            <p class="text-slate-500 text-xs mb-6">Takvimimizi sizin için hazırlayalım.</p>
-
-                            <div class="space-y-6">
-                                <div>
-                                    <label for="preferred_date"
-                                        class="block text-xs font-extrabold text-slate-700 mb-2 uppercase tracking-wider">Tercih
-                                        Edilen Tarih</label>
-                                    <input type="date" id="preferred_date" name="preferred_date"
-                                        class="w-full rounded-2xl glass-input shadow-inner focus:ring-2 focus:ring-brand-500/20 p-3 text-slate-900 text-sm">
-                                </div>
-
-                                <div>
-                                    <label
-                                        class="block text-xs font-extrabold text-slate-700 mb-2 uppercase tracking-wider">Işık
-                                        Tercihi</label>
-                                    <div class="grid grid-cols-1 gap-2">
-                                        <label
-                                            class="relative flex cursor-pointer rounded-2xl glass-card py-3 px-4 hover:bg-white/50 transition-all has-[:checked]:bg-brand-500 has-[:checked]:text-white">
-                                            <input type="radio" name="preferred_time" value="sabah" class="sr-only">
-                                            <span class="text-xs font-bold mx-auto">Gündüz / Soft Işık</span>
-                                        </label>
-                                        <label
-                                            class="relative flex cursor-pointer rounded-2xl glass-card py-3 px-4 hover:bg-white/50 transition-all has-[:checked]:bg-brand-500 has-[:checked]:text-white">
-                                            <input type="radio" name="preferred_time" value="aksam" class="sr-only">
-                                            <span class="text-xs font-bold mx-auto">Gün Batımı / Gece</span>
-                                        </label>
-                                        <label
-                                            class="relative flex cursor-pointer rounded-2xl glass-card py-3 px-4 hover:bg-white/50 transition-all has-[:checked]:bg-brand-500 has-[:checked]:text-white">
-                                            <input type="radio" name="preferred_time" value="flash" class="sr-only">
-                                            <span class="text-xs font-bold mx-auto">Flash / Sürekli Işık</span>
-                                        </label>
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <label
-                                        class="block text-xs font-extrabold text-slate-700 mb-2 uppercase tracking-wider">Çekim
-                                        Aciliyeti</label>
-                                    <div class="flex flex-wrap gap-2">
-                                        <label class="cursor-pointer group">
-                                            <input type="radio" name="urgency" value="hemen" class="peer sr-only">
-                                            <span
-                                                class="px-4 py-2 rounded-full glass-card text-[10px] font-black text-slate-600 peer-checked:bg-orange-500 peer-checked:text-white peer-checked:border-orange-400 transition-all block uppercase tracking-widest">Hemen
-                                                (1-3 Gün)</span>
-                                        </label>
-                                        <label class="cursor-pointer group">
-                                            <input type="radio" name="urgency" value="normal" class="peer sr-only"
-                                                checked>
-                                            <span
-                                                class="px-4 py-2 rounded-full glass-card text-[10px] font-black text-slate-600 peer-checked:bg-brand-500 peer-checked:text-white peer-checked:border-brand-400 transition-all block uppercase tracking-widest">Normal
-                                                (1-2 Hafta)</span>
-                                        </label>
-                                        <label class="cursor-pointer group">
-                                            <input type="radio" name="urgency" value="ileride" class="peer sr-only">
-                                            <span
-                                                class="px-4 py-2 rounded-full glass-card text-[10px] font-black text-slate-600 peer-checked:bg-slate-700 peer-checked:text-white transition-all block uppercase tracking-widest">Planlama
-                                                Aşamasında</span>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Step 4: Contact -->
-                        <div class="step-content hidden animate-slide-up" id="step-4">
-                            <div class="text-center mb-6">
-                                <h4 class="text-lg font-black text-slate-900 mb-1">Harika! Son bir adım...</h4>
-                                <p class="text-slate-500 text-xs font-medium">İletişim detaylarınızı rica ediyoruz.</p>
-                            </div>
-
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div class="sm:col-span-2">
-                                    <label for="wizard_name"
-                                        class="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-1.5 px-1">Ad
-                                        Soyad / Firma</label>
-                                    <input type="text" name="name" id="wizard_name" required placeholder="John Doe"
-                                        class="w-full rounded-2xl glass-input shadow-inner focus:ring-2 focus:ring-brand-500/20 p-3 text-slate-900 text-sm font-bold">
-                                </div>
-                                <div>
-                                    <label for="wizard_email"
-                                        class="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-1.5 px-1">E-Posta</label>
-                                    <input type="email" name="email" id="wizard_email" required
-                                        placeholder="ornek@mail.com"
-                                        class="w-full rounded-2xl glass-input shadow-inner focus:ring-2 focus:ring-brand-500/20 p-3 text-slate-900 text-sm font-bold">
-                                </div>
-                                <div>
-                                    <label for="wizard_phone"
-                                        class="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-1.5 px-1">Telefon</label>
-                                    <input type="tel" name="phone" id="wizard_phone" required
-                                        placeholder="05XX XXX XX XX"
-                                        class="w-full rounded-2xl glass-input shadow-inner focus:ring-2 focus:ring-brand-500/20 p-3 text-slate-900 text-sm font-bold">
-                                </div>
-                                <div class="sm:col-span-2">
-                                    <label for="wizard_location"
-                                        class="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-1.5 px-1">Proje
-                                        Yeri</label>
-                                    <input type="text" name="location" id="wizard_location"
-                                        placeholder="Örn: Kaş, Antalya"
-                                        class="w-full rounded-2xl glass-input shadow-inner focus:ring-2 focus:ring-brand-500/20 p-3 text-slate-900 text-sm font-bold">
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Actions -->
-                        <div class="mt-8 flex justify-between items-center pt-6 border-t border-white/10">
-                            <button type="button" id="btn-prev"
-                                class="hidden px-5 py-3 rounded-2xl text-slate-600 hover:bg-white/50 font-black uppercase text-xs tracking-widest transition-all">
-                                ← Geri Dön
-                            </button>
-                            <button type="button" id="btn-next"
-                                class="ml-auto flex items-center gap-2 px-7 py-3 bg-brand-600 text-white rounded-2xl font-black uppercase text-xs tracking-[0.15em] shadow-xl shadow-brand-500/25 hover:bg-brand-500 hover:scale-105 active:scale-95 transition-all">
-                                Devam Et
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
-                                    stroke-linejoin="round">
-                                    <path d="m9 18 6-6-6-6" />
-                                </svg>
-                            </button>
-                            <button type="submit" id="btn-submit"
-                                class="hidden ml-auto flex items-center gap-2 px-7 py-3 bg-green-600 text-white rounded-2xl font-black uppercase text-xs tracking-[0.15em] shadow-xl shadow-green-500/25 hover:bg-green-500 hover:scale-105 active:scale-95 transition-all">
-                                Teklifi Gönder ✨
-                            </button>
-                        </div>
-                    </form>
-                </div>
+                <button type="button" onclick="closeQuoteWizard()" class="-mr-2 rounded-full p-2 text-ink-muted hover:bg-stone-100 hover:text-ink" aria-label="Kapat">
+                    <?= icon('x') ?>
+                </button>
             </div>
+
+            <div id="wizard-progress" class="px-6 pt-4">
+                <div class="flex items-center justify-between text-xs font-medium text-ink-muted">
+                    <span>Adım <span id="wizard-step-number">1</span> / <?= count($wizardSteps) ?></span>
+                    <span id="wizard-step-name"><?= $wizardSteps[0] ?></span>
+                </div>
+                <div class="mt-2 h-1 overflow-hidden rounded-full bg-stone-100">
+                    <div id="wizard-progress-bar" class="h-full rounded-full bg-brand-600 transition-all duration-300" style="width: 25%"></div>
+                </div>
+                <ol class="sr-only">
+                    <?php foreach ($wizardSteps as $i => $name): ?>
+                        <li class="step-indicator" data-step="<?= $i + 1 ?>" data-name="<?= e($name) ?>"><?= e($name) ?></li>
+                    <?php endforeach; ?>
+                </ol>
+            </div>
+
+            <form id="quote-form" class="flex min-h-0 flex-1 flex-col" novalidate>
+                <div class="min-h-0 flex-1 overflow-y-auto px-6 py-5">
+
+                    <!-- Step 1: Service + location -->
+                    <fieldset class="step-content" id="step-1">
+                        <legend class="text-base font-semibold">Ne çektirmek istiyorsun?</legend>
+                        <div class="mt-3 grid gap-2.5 sm:grid-cols-2">
+                            <?php foreach ($wizardServices as $i => $service): ?>
+                                <label class="choice items-start">
+                                    <input type="radio" name="service_type" value="<?= e($service['value']) ?>" class="sr-only" <?= $i === 0 ? 'required' : '' ?>>
+                                    <span class="mt-0.5 text-brand-700"><?= icon($service['icon']) ?></span>
+                                    <span>
+                                        <span class="block font-semibold"><?= e($service['title']) ?></span>
+                                        <span class="block text-xs font-normal text-ink-muted"><?= e($service['desc']) ?></span>
+                                    </span>
+                                </label>
+                            <?php endforeach; ?>
+                        </div>
+
+                        <div class="mt-5">
+                            <label for="wizard_location" class="label">Çekim nerede olacak?</label>
+                            <input type="text" name="location" id="wizard_location" required class="input" placeholder="Örn: Kaş, Antalya" autocomplete="address-level2">
+                            <p class="hint">Talebini bu bölgede çalışan fotoğrafçılarla eşleştiriyoruz.</p>
+                        </div>
+                    </fieldset>
+
+                    <!-- Step 2: Details -->
+                    <fieldset class="step-content" id="step-2" hidden>
+                        <legend class="text-base font-semibold" id="step-2-title">Proje detayları</legend>
+                        <div id="dynamic-fields" class="mt-3 space-y-4"></div>
+                        <div class="mt-4">
+                            <label for="project_desc" class="label">Ek notlar <span class="font-normal text-ink-muted">(opsiyonel)</span></label>
+                            <textarea id="project_desc" name="project_desc" rows="3" class="input" placeholder="Örn: Gece çekimi de istiyoruz, havuz alanı önemli…"></textarea>
+                        </div>
+                    </fieldset>
+
+                    <!-- Step 3: Planning -->
+                    <fieldset class="step-content space-y-5" id="step-3" hidden>
+                        <legend class="text-base font-semibold">Ne zaman?</legend>
+                        <div>
+                            <label for="preferred_date" class="label">Tercih ettiğin tarih <span class="font-normal text-ink-muted">(opsiyonel)</span></label>
+                            <input type="date" id="preferred_date" name="preferred_date" class="input">
+                        </div>
+                        <div>
+                            <span class="label">Ne kadar acil?</span>
+                            <div class="grid gap-2 sm:grid-cols-3">
+                                <label class="choice justify-center"><input type="radio" name="urgency" value="hemen" class="sr-only"> 1-3 gün içinde</label>
+                                <label class="choice justify-center"><input type="radio" name="urgency" value="normal" class="sr-only" checked> 1-2 hafta</label>
+                                <label class="choice justify-center"><input type="radio" name="urgency" value="ileride" class="sr-only"> Henüz planlıyorum</label>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="label">Işık tercihi <span class="font-normal text-ink-muted">(opsiyonel)</span></span>
+                            <div class="grid gap-2 sm:grid-cols-3">
+                                <label class="choice justify-center"><input type="radio" name="preferred_time" value="sabah" class="sr-only"> Gündüz</label>
+                                <label class="choice justify-center"><input type="radio" name="preferred_time" value="aksam" class="sr-only"> Gün batımı / gece</label>
+                                <label class="choice justify-center"><input type="radio" name="preferred_time" value="farketmez" class="sr-only"> Fark etmez</label>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <!-- Step 4: Contact -->
+                    <fieldset class="step-content space-y-4" id="step-4" hidden>
+                        <legend class="text-base font-semibold">Sana nasıl ulaşalım?</legend>
+                        <div>
+                            <label for="wizard_name" class="label">Ad soyad / firma</label>
+                            <input type="text" name="name" id="wizard_name" required class="input" autocomplete="name">
+                        </div>
+                        <div class="grid gap-4 sm:grid-cols-2">
+                            <div>
+                                <label for="wizard_email" class="label">E-posta</label>
+                                <input type="email" name="email" id="wizard_email" required class="input" placeholder="ornek@mail.com" autocomplete="email">
+                            </div>
+                            <div>
+                                <label for="wizard_phone" class="label">Telefon</label>
+                                <input type="tel" name="phone" id="wizard_phone" required class="input" placeholder="05XX XXX XX XX" autocomplete="tel">
+                            </div>
+                        </div>
+                        <p class="flex items-start gap-2 text-xs text-ink-muted">
+                            <?= icon('shield', 'mt-0.5 h-4 w-4 shrink-0') ?>
+                            Bilgilerin yalnızca talebinle eşleşen fotoğrafçılarla paylaşılır. Teklif almak ücretsizdir ve seni bağlamaz.
+                        </p>
+                    </fieldset>
+
+                    <p id="wizard-error" class="notice notice-error mt-4" role="alert" hidden></p>
+                </div>
+
+                <div class="flex items-center gap-3 border-t border-line px-6 py-4" style="padding-bottom: max(1rem, env(safe-area-inset-bottom));">
+                    <button type="button" id="btn-prev" class="btn btn-ghost" hidden><?= icon('arrow-left', 'h-4 w-4') ?> Geri</button>
+                    <button type="button" id="btn-next" class="btn btn-primary ml-auto px-6">Devam <?= icon('arrow-right', 'h-4 w-4') ?></button>
+                    <button type="submit" id="btn-submit" class="btn btn-primary ml-auto px-6" hidden>Talebi gönder</button>
+                </div>
+            </form>
+
+            <div id="wizard-success" class="px-6 py-10 text-center" hidden></div>
         </div>
     </div>
 </div>
