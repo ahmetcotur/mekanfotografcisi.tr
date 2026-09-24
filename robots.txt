@@ -8,6 +8,12 @@ Disallow: /supabase/
 Disallow: /scripts/
 Disallow: /data/
 
+# Disallow account dashboards, login and registration (no unique indexable content)
+Disallow: /panel/
+Disallow: /musteri/
+Disallow: /giris
+Disallow: /kayit/
+
 # Disallow form data files
 Disallow: /form_data_*.csv
 Disallow: /*.zip

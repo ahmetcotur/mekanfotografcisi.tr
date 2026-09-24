@@ -6,6 +6,7 @@
  */
 $pageTitle = 'Taleplerim';
 $pageDescription = 'Çekim taleplerinizi ve durumlarını görüntüleyin.';
+$pageRobots = 'noindex, follow';
 include __DIR__ . '/../templates/page-header.php';
 ?>
 

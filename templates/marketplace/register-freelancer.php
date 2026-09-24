@@ -5,6 +5,7 @@
  */
 $pageTitle = 'Kolektife Katılın';
 $pageDescription = 'Bağımsız fotoğrafçı olarak kayıt olun, açık çekim taleplerini görün ve kendi işinizi büyütün.';
+$pageRobots = 'noindex, follow';
 include __DIR__ . '/../page-header.php';
 ?>
 

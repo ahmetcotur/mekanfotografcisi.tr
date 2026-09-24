@@ -182,6 +182,18 @@ try {
         add_url($urls, $loc, date('Y-m-d', strtotime($page['updated_at'])), $changefreq, $priority);
     }
 
+    // 4.5. Photographer Directory & Public Profiles
+    add_url($urls, 'https://mekanfotografcisi.tr/fotografcilar', date('Y-m-d'), 'weekly', '0.8');
+    $publicPhotographers = $db->query(
+        "SELECT slug, updated_at FROM freelancer_applications WHERE status = 'approved' AND is_public = true"
+    );
+    foreach ($publicPhotographers as $ph) {
+        if (empty($ph['slug']))
+            continue;
+        $loc = 'https://mekanfotografcisi.tr/fotografcilar/' . ltrim($ph['slug'], '/');
+        add_url($urls, $loc, date('Y-m-d', strtotime($ph['updated_at'])), 'monthly', '0.6');
+    }
+
     // Final Output
     foreach ($urls as $u) {
         echo "  <url>\n";
