@@ -5,6 +5,7 @@
  */
 $pageTitle = 'Müşteri Hesabı Oluştur';
 $pageDescription = 'Hesap oluşturun ve çekim taleplerinizi kolayca takip edin.';
+$pageRobots = 'noindex, follow';
 include __DIR__ . '/../page-header.php';
 ?>
 

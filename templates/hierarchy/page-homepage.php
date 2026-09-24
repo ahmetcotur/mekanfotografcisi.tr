@@ -2,6 +2,8 @@
 /**
  * Homepage template with dynamic hero slider and services
  */
+$pageTitle = 'Mekan Fotoğrafçısı Bul veya Fotoğrafçı Olarak Katıl';
+$pageDescription = 'Mekanını çektirmek isteyenler için bölgesine ve kategorisine uygun fotoğrafçı bulma, fotoğrafçılar için ise açık çekim taleplerine erişme platformu.';
 include __DIR__ . '/../page-header.php';
 
 // Prepare Pexels Slider Images
@@ -239,18 +241,53 @@ echo do_shortcode($content);
     })();
 </script>
 
-<!-- Kolektif Quick Links -->
-<section class="py-10 bg-white border-b border-slate-100">
+<!-- Pick Your Path -->
+<section class="py-20 md:py-28 bg-slate-50 border-b border-slate-100" id="yol-ayrimi">
     <div class="container mx-auto px-4">
-        <div class="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-4">
-            <button onclick="openQuoteWizard()"
-                class="w-full sm:w-auto px-8 py-4 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg shadow-brand-500/20 transition-all hover:scale-105 active:scale-95">
-                Çekim Talebi Oluştur
-            </button>
-            <a href="/fotografcilar"
-                class="w-full sm:w-auto text-center px-8 py-4 bg-slate-50 hover:bg-slate-100 text-slate-700 rounded-2xl font-black text-sm uppercase tracking-widest border border-slate-200 transition-all hover:scale-105 active:scale-95">
-                Fotoğrafçılarımızı Keşfedin
-            </a>
+        <div class="text-center max-w-3xl mx-auto mb-14">
+            <span class="text-brand-600 font-extrabold tracking-[0.2em] uppercase text-[10px] mb-4 block">Kolektif</span>
+            <h2 class="font-heading font-black text-3xl md:text-5xl text-slate-900 tracking-tight">Sana Uygun Yolu Seç</h2>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6 md:gap-8 max-w-5xl mx-auto">
+            <!-- Client Path -->
+            <div class="bg-white rounded-4xl border border-slate-100 shadow-xl p-8 md:p-10 flex flex-col">
+                <span class="inline-flex items-center gap-2 text-brand-600 font-black tracking-[0.15em] uppercase text-[10px] mb-4">Mekan Sahipleri</span>
+                <h3 class="font-heading font-black text-2xl md:text-3xl text-slate-900 mb-4 leading-tight">Mekanını mı Çektirmek İstiyorsun?</h3>
+                <p class="text-slate-500 leading-relaxed mb-8 flex-1">
+                    İstediğin kategoride, bölgene en yakın fotoğrafçıyı bul. Talebini oluştur, kolektifimizdeki onaylı fotoğrafçılar sana teklif versin.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <button onclick="openQuoteWizard()"
+                        class="flex-1 px-6 py-4 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl font-black text-sm uppercase tracking-widest text-center transition-all hover:scale-105 active:scale-95">
+                        Çekim Talebi Oluştur
+                    </button>
+                    <a href="/fotografcilar"
+                        class="flex-1 px-6 py-4 bg-slate-50 hover:bg-slate-100 text-slate-700 rounded-2xl font-black text-sm uppercase tracking-widest border border-slate-200 text-center transition-all hover:scale-105 active:scale-95">
+                        Fotoğrafçıları Keşfet
+                    </a>
+                </div>
+            </div>
+
+            <!-- Photographer Path -->
+            <div class="bg-slate-900 rounded-4xl shadow-xl p-8 md:p-10 flex flex-col relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-brand-500/20 rounded-full blur-[100px] -mr-32 -mt-32"></div>
+                <span class="relative inline-flex items-center gap-2 text-brand-400 font-black tracking-[0.15em] uppercase text-[10px] mb-4">Fotoğrafçılar</span>
+                <h3 class="relative font-heading font-black text-2xl md:text-3xl text-white mb-4 leading-tight">Fotoğrafçı mısın? Freelance Çekim mi Yapıyorsun?</h3>
+                <p class="relative text-slate-300 leading-relaxed mb-8 flex-1">
+                    Kolektife katıl, açık çekim taleplerini gör, dilediğini üstlen. Kendi profilini oluştur, kendi bölgende iş al.
+                </p>
+                <div class="relative flex flex-col sm:flex-row gap-3">
+                    <a href="/kayit/fotografci"
+                        class="flex-1 px-6 py-4 bg-white hover:bg-slate-100 text-slate-900 rounded-2xl font-black text-sm uppercase tracking-widest text-center transition-all hover:scale-105 active:scale-95">
+                        Fotoğrafçı Olarak Katıl
+                    </a>
+                    <a href="/nasil-calisir"
+                        class="flex-1 px-6 py-4 bg-white/10 hover:bg-white/20 text-white rounded-2xl font-black text-sm uppercase tracking-widest border border-white/20 text-center transition-all hover:scale-105 active:scale-95">
+                        Nasıl Çalışır?
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </section>
@@ -273,12 +310,10 @@ if (strpos($content, 'freelancer-basvuru') === false):
                 <span
                     class="inline-block px-4 py-1.5 rounded-full bg-brand-50 text-brand-600 font-black tracking-[0.2em] uppercase text-[10px] mb-6 border border-brand-100">Kolektife
                     Katıl</span>
-                <h2 class="font-heading font-black text-4xl md:text-6xl text-slate-900 mb-8 tracking-tight">Bağımsız
-                    Fotoğrafçılar <span class="text-gradient">Kolektifimize Katılın</span></h2>
+                <h2 class="font-heading font-black text-4xl md:text-6xl text-slate-900 mb-8 tracking-tight">Hâlâ mı
+                    Kararsızsın? <span class="text-gradient">Hemen Başvur</span></h2>
                 <p class="text-slate-500 text-xl font-light leading-relaxed max-w-2xl mx-auto mb-12">
-                    Profesyonel mekan fotoğrafçısı mısınız? Kolektifimize katılın; açık çekim taleplerini kendiniz
-                    görün, dilediğinizi üstlenin ve kendi profilinizle Türkiye'nin dört bir yanındaki projelerde yer
-                    alın.
+                    Formu doldurmanız iki dakikanızı alır. Başvurunuzu inceleyip en kısa sürede dönüş yapıyoruz.
                 </p>
 
                 <div class="flex flex-col sm:flex-row items-center justify-center gap-4">

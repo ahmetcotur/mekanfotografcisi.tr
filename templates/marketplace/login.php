@@ -7,6 +7,7 @@
  */
 $pageTitle = 'Giriş Yap';
 $pageDescription = 'Fotoğrafçı veya müşteri hesabınızla giriş yapın.';
+$pageRobots = 'noindex, follow';
 include __DIR__ . '/../page-header.php';
 ?>
 

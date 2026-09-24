@@ -1,14 +1,13 @@
 <?php
 /**
  * Template: Nasıl Çalışır (How It Works)
- * Explains the photography service workflow and answers common questions
+ * Explains both the client workflow and the photographer workflow.
  */
+$pageTitle = 'Nasıl Çalışır?';
+$pageDescription = 'Mekanını çektirmek isteyenler için de, kolektife katılacak fotoğrafçılar için de adım adım iş akışını keşfedin.';
 include __DIR__ . '/../page-header.php';
 
-$pageTitle = 'Nasıl Çalışır?';
-$pageDescription = 'Profesyonel mekan fotoğrafçılığı hizmetimizin adım adım iş akışını keşfedin.';
-
-// Workflow steps
+// Workflow steps (client / venue owner track)
 $workflowSteps = [
     [
         'number' => '01',
@@ -48,6 +47,40 @@ $workflowSteps = [
     ]
 ];
 
+// Workflow steps (photographer / freelancer track)
+$photographerWorkflowSteps = [
+    [
+        'number' => '01',
+        'title' => 'Kayıt Ol',
+        'description' => 'Birkaç dakika içinde ücretsiz kayıt ol, kolektife katıl.',
+        'icon' => '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/>'
+    ],
+    [
+        'number' => '02',
+        'title' => 'Profilini Oluştur',
+        'description' => 'Uzmanlık alanlarını, bölgeni ve portfolyonu ekle; müşteriler seni bu bilgilerle bulsun.',
+        'icon' => '<rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>'
+    ],
+    [
+        'number' => '03',
+        'title' => 'Açık Talepleri Gör',
+        'description' => 'Panelindeki "Açık İşler" sekmesinden bölgene ve uzmanlığına uygun çekim taleplerini incele.',
+        'icon' => '<circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>'
+    ],
+    [
+        'number' => '04',
+        'title' => 'Üstlen & Teklif Ver',
+        'description' => 'İlgilendiğin talebi üstlen veya kendi teklifini gönder; müşteriyle doğrudan iletişime geç.',
+        'icon' => '<path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="9" x2="15" y1="15" y2="15"/>'
+    ],
+    [
+        'number' => '05',
+        'title' => 'Çekimi Tamamla & Ödeme Al',
+        'description' => 'Çekimi gerçekleştir, teslim et ve ödemeni al. Profilin büyüdükçe daha fazla talebe erişirsin.',
+        'icon' => '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>'
+    ],
+];
+
 // FAQ items
 $faqItems = [
     [
@@ -73,6 +106,10 @@ $faqItems = [
     [
         'question' => 'Çekim için hangi ekipmanları kullanıyorsunuz?',
         'answer' => 'Profesyonel full-frame DSLR/mirrorless kameralar, geniş açı ve tilt-shift lensler, tripod, harici flaşlar ve gerektiğinde drone kullanıyoruz. Tüm ekipmanlarımız düzenli olarak bakımdan geçirilir ve yedek ekipman her zaman hazırdır. Bu sayede teknik sorunlardan kaynaklı aksaklıklar yaşanmaz.'
+    ],
+    [
+        'question' => 'Fotoğrafçı olarak nasıl kolektife katılabilirim?',
+        'answer' => '/kayit/fotografci üzerinden ücretsiz kayıt olabilir, profilinizi oluşturduktan sonra panelinizden açık çekim taleplerine erişebilirsiniz. Detaylı süreç için yukarıdaki "Fotoğrafçılar İçin" sekmesine göz atın.'
     ]
 ];
 ?>
@@ -90,7 +127,7 @@ $faqItems = [
             Nasıl Çalışır?
         </h1>
         <p class="text-slate-300 text-lg md:text-2xl font-light max-w-3xl mx-auto leading-relaxed">
-            Profesyonel mekan fotoğrafçılığı hizmetimizin adım adım iş akışını keşfedin
+            Mekanını çektirmek isteyenler için de, kolektife katılacak fotoğrafçılar için de: adım adım nasıl çalıştığımızı keşfedin.
         </p>
     </div>
 </section>
@@ -108,18 +145,81 @@ $faqItems = [
     <div class="container mx-auto px-4 relative z-10">
         <div class="text-center max-w-3xl mx-auto mb-16 md:mb-20">
             <span class="text-brand-600 font-black tracking-[0.2em] uppercase text-xs mb-6 block">İş Akışı</span>
-            <h2 class="font-heading font-black text-3xl md:text-6xl text-slate-900 mb-6 md:mb-8">6 Adımda Mükemmel Sonuç
+            <h2 class="font-heading font-black text-3xl md:text-6xl text-slate-900 mb-6 md:mb-8">Adım Adım Süreç
             </h2>
             <p class="text-slate-500 text-lg md:text-xl leading-relaxed">
-                Teklif talebinden teslimat aşamasına kadar her adımda yanınızdayız
+                Hangi taraftasın? Sana uygun süreci aşağıdan seç.
             </p>
         </div>
 
-        <div class="max-w-6xl mx-auto">
+        <div class="flex justify-center gap-3 mb-14">
+            <button id="tab-musteri" onclick="setWorkflowTrack('musteri')"
+                class="px-6 py-3 rounded-full font-black text-sm uppercase tracking-widest bg-brand-600 text-white transition-all">
+                Müşteriler İçin
+            </button>
+            <button id="tab-fotografci" onclick="setWorkflowTrack('fotografci')"
+                class="px-6 py-3 rounded-full font-black text-sm uppercase tracking-widest bg-slate-100 text-slate-600 transition-all">
+                Fotoğrafçılar İçin
+            </button>
+        </div>
+
+        <div id="workflow-musteri" class="max-w-6xl mx-auto">
             <?php foreach ($workflowSteps as $index => $step): ?>
                 <div class="relative mb-16 last:mb-0">
                     <!-- Timeline connector -->
                     <?php if ($index < count($workflowSteps) - 1): ?>
+                        <div
+                            class="hidden md:block absolute left-[72px] top-32 w-0.5 h-24 bg-gradient-to-b from-brand-200 to-transparent">
+                        </div>
+                    <?php endif; ?>
+
+                    <div class="group flex flex-col md:flex-row gap-6 md:gap-8 items-center md:items-start">
+                        <!-- Step number circle -->
+                        <div class="flex-shrink-0 relative">
+                            <div
+                                class="w-24 h-24 md:w-36 md:h-36 rounded-full bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center shadow-2xl shadow-brand-500/30 group-hover:scale-110 transition-transform duration-500">
+                                <span class="font-heading font-black text-3xl md:text-5xl text-white">
+                                    <?= $step['number'] ?>
+                                </span>
+                            </div>
+                            <div
+                                class="absolute inset-0 rounded-full bg-brand-400 blur-xl opacity-0 group-hover:opacity-50 transition-opacity duration-500">
+                            </div>
+                        </div>
+
+                        <!-- Content card -->
+                        <div
+                            class="flex-1 glass-panel p-6 md:p-10 rounded-3xl md:rounded-4xl border-white/60 group-hover:border-brand-200 transition-all duration-500 hover-lift text-center md:text-left">
+                            <div class="flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-6">
+                                <div
+                                    class="flex-shrink-0 w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center group-hover:bg-brand-600 group-hover:text-white transition-all duration-500">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" md:width="28"
+                                        md:height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <?= $step['icon'] ?>
+                                    </svg>
+                                </div>
+                                <div class="flex-1">
+                                    <h3
+                                        class="text-xl md:text-3xl font-black text-slate-900 mb-3 md:mb-4 group-hover:text-brand-600 transition-colors">
+                                        <?= $step['title'] ?>
+                                    </h3>
+                                    <p class="text-slate-600 text-sm md:text-lg leading-relaxed">
+                                        <?= $step['description'] ?>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+
+        <div id="workflow-fotografci" class="max-w-6xl mx-auto hidden">
+            <?php foreach ($photographerWorkflowSteps as $index => $step): ?>
+                <div class="relative mb-16 last:mb-0">
+                    <!-- Timeline connector -->
+                    <?php if ($index < count($photographerWorkflowSteps) - 1): ?>
                         <div
                             class="hidden md:block absolute left-[72px] top-32 w-0.5 h-24 bg-gradient-to-b from-brand-200 to-transparent">
                         </div>
@@ -219,24 +319,48 @@ $faqItems = [
 
     <div class="container mx-auto px-4 text-center relative z-10">
         <h2 class="font-heading font-black text-3xl md:text-6xl text-white mb-6 md:mb-8">
-            Projenize Başlayalım
+            Hazır mısın?
         </h2>
         <p class="text-brand-100 text-lg md:text-2xl mb-10 md:mb-12 max-w-2xl mx-auto leading-relaxed">
-            Mekanınızı en iyi şekilde yansıtan profesyonel fotoğraflar için hemen teklif alın
+            İster mekanını çektir, ister kolektife katıl — ilk adımı şimdi at.
         </p>
-        <button onclick="openQuoteWizard()"
-            class="inline-flex items-center gap-4 px-8 md:px-12 py-5 md:py-6 bg-white text-brand-600 rounded-full text-base md:text-lg font-black uppercase tracking-widest shadow-2xl hover:scale-105 transition-all active:scale-95">
-            Ücretsiz Teklif Al
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M5 12h14" />
-                <path d="m12 5 7 7-7 7" />
-            </svg>
-        </button>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <button onclick="openQuoteWizard()"
+                class="inline-flex items-center justify-center gap-4 px-8 md:px-12 py-5 md:py-6 bg-white text-brand-600 rounded-full text-base md:text-lg font-black uppercase tracking-widest shadow-2xl hover:scale-105 transition-all active:scale-95">
+                Ücretsiz Teklif Al
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 12h14" />
+                    <path d="m12 5 7 7-7 7" />
+                </svg>
+            </button>
+            <a href="/kayit/fotografci"
+                class="inline-flex items-center justify-center gap-4 px-8 md:px-12 py-5 md:py-6 bg-white/10 hover:bg-white/20 text-white rounded-full text-base md:text-lg font-black uppercase tracking-widest border border-white/30 transition-all hover:scale-105 active:scale-95">
+                Fotoğrafçı Olarak Katıl
+            </a>
+        </div>
     </div>
 </section>
 
 <script>
+    function setWorkflowTrack(track) {
+        document.getElementById('workflow-musteri').classList.toggle('hidden', track !== 'musteri');
+        document.getElementById('workflow-fotografci').classList.toggle('hidden', track !== 'fotografci');
+
+        const musteriTab = document.getElementById('tab-musteri');
+        const fotografciTab = document.getElementById('tab-fotografci');
+
+        musteriTab.classList.toggle('bg-brand-600', track === 'musteri');
+        musteriTab.classList.toggle('text-white', track === 'musteri');
+        musteriTab.classList.toggle('bg-slate-100', track !== 'musteri');
+        musteriTab.classList.toggle('text-slate-600', track !== 'musteri');
+
+        fotografciTab.classList.toggle('bg-brand-600', track === 'fotografci');
+        fotografciTab.classList.toggle('text-white', track === 'fotografci');
+        fotografciTab.classList.toggle('bg-slate-100', track !== 'fotografci');
+        fotografciTab.classList.toggle('text-slate-600', track !== 'fotografci');
+    }
+
     function toggleFaq(index) {
         const content = document.getElementById(`faq-content-${index}`);
         const icon = document.getElementById(`faq-icon-${index}`);

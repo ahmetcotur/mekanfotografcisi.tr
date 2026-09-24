@@ -8,6 +8,7 @@
  */
 $pageTitle = 'Fotoğrafçı Paneli';
 $pageDescription = 'Açık çekim taleplerini görüntüleyin, işlerinizi yönetin ve profilinizi güncelleyin.';
+$pageRobots = 'noindex, follow';
 include __DIR__ . '/../templates/page-header.php';
 ?>
 

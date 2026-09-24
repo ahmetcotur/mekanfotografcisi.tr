@@ -14,6 +14,10 @@ if ($seoTitle !== $siteName) {
 
 $seoDescription = $pageDescription ?? ($post->excerpt ?? get_setting('seo_default_desc', 'Antalya ve Muğla bölgesinde profesyonel mimari, iç mekan ve otel fotoğrafçılığı hizmetleri. Profesyonel ekipman ve yaratıcı bakış açısı ile mekanlarınızı en iyi şekilde yansıtıyoruz.'));
 
+// Per-page override for the robots meta tag (e.g. 'noindex, follow' on
+// dashboard/login/registration pages). Defaults to indexable.
+$pageRobots = $pageRobots ?? 'index, follow';
+
 // Try to extract image from content if available
 $seoImage = $baseUrl . '/assets/img/og-default.jpg';
 if (isset($post) && !empty($post->content)) {
@@ -68,7 +72,7 @@ $schema = [
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-    <meta name="robots" content="index, follow">
+    <meta name="robots" content="<?= htmlspecialchars($pageRobots) ?>">
 
     <!-- SEO Meta Tags -->
     <title><?= htmlspecialchars($seoTitle) ?></title>
@@ -376,11 +380,15 @@ $schema = [
                     <a href="/portfolio"
                         class="px-5 py-2 text-sm font-bold text-slate-600 hover:text-brand-600 transition-all rounded-full hover:bg-brand-50">Portfolyo</a>
 
+                    <a href="/fotografcilar"
+                        class="px-5 py-2 text-sm font-bold text-slate-600 hover:text-brand-600 transition-all rounded-full hover:bg-brand-50 <?= ($_SERVER['REQUEST_URI'] == '/fotografcilar' || strpos($_SERVER['REQUEST_URI'], '/fotografcilar/') === 0) ? 'text-brand-600 bg-brand-50' : '' ?>">Fotoğrafçılar</a>
+
                     <a href="/blog"
                         class="px-5 py-2 text-sm font-bold text-slate-600 hover:text-brand-600 transition-all rounded-full hover:bg-brand-50 <?= (strpos($_SERVER['REQUEST_URI'], '/blog') === 0) ? 'text-brand-600 bg-brand-50' : '' ?>">Blog</a>
                 </nav>
 
                 <div class="hidden md:flex items-center gap-4">
+                    <a href="/giris" class="px-4 py-2 text-sm font-bold text-slate-500 hover:text-brand-600 transition-colors">Giriş Yap</a>
                     <button onclick="openQuoteWizard()"
                         class="inline-flex h-12 items-center justify-center rounded-2xl bg-brand-600 px-8 text-sm font-black uppercase tracking-widest text-white shadow-lg shadow-brand-500/25 transition-all hover:bg-brand-700 hover:scale-105 active:scale-95 animate-shake">
                         Teklif Al
@@ -472,6 +480,19 @@ $schema = [
                     Portfolyo
                 </a>
 
+                <a href="/fotografcilar"
+                    class="flex items-center gap-4 px-6 py-4 text-base font-bold text-slate-700 hover:bg-brand-50 hover:text-brand-600 rounded-3xl transition-all group">
+                    <div
+                        class="w-10 h-10 rounded-2xl bg-slate-50 text-slate-400 flex items-center justify-center group-hover:bg-brand-200/50 group-hover:text-brand-600 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 3a2 2 0 0 0-2 2v1H5a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-2V5a2 2 0 0 0-2-2z" />
+                            <circle cx="12" cy="13" r="3" />
+                        </svg>
+                    </div>
+                    Fotoğrafçılar
+                </a>
+
                 <a href="/blog"
                     class="flex items-center gap-4 px-6 py-4 text-base font-bold text-slate-700 hover:bg-brand-50 hover:text-brand-600 rounded-3xl transition-all group">
                     <div
@@ -484,7 +505,11 @@ $schema = [
                     </div>
                     Blog
                 </a>
-                <div class="pt-6 px-2">
+                <a href="/giris"
+                    class="flex items-center justify-center gap-2 px-6 py-4 text-sm font-bold text-slate-500 hover:text-brand-600 hover:bg-brand-50 rounded-3xl transition-all">
+                    Giriş Yap
+                </a>
+                <div class="pt-2 px-2">
                     <button onclick="openQuoteWizard()"
                         class="w-full py-5 text-sm font-black uppercase tracking-widest text-white bg-brand-600 rounded-3xl text-center active:scale-95 transition-all shadow-xl shadow-brand-500/30 hover:bg-brand-700 animate-shake">Teklif
                         Al</button>
