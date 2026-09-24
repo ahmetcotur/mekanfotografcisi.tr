@@ -25,13 +25,22 @@ $services = $db->select('posts', [
     'order' => 'title'
 ]);
 
-// Fetch a few approved + public photographers for the homepage highlight strip
-$featuredPhotographers = $db->select('freelancer_applications', [
-    'status' => 'approved',
-    'is_public' => true,
-    'order' => 'rating_avg DESC, created_at DESC',
-    'limit' => 4,
-]);
+// Fetch a few approved + public photographers for the homepage highlight strip.
+// Guarded: is_public/rating_avg only exist once the marketplace migrations
+// (scripts/migrations/20260201_*) have been applied. A page-breaking query
+// here (and the homepage is too important to risk that) would rather just
+// skip the section than crash the whole page.
+$featuredPhotographers = [];
+try {
+    $featuredPhotographers = $db->select('freelancer_applications', [
+        'status' => 'approved',
+        'is_public' => true,
+        'order' => 'rating_avg DESC, created_at DESC',
+        'limit' => 4,
+    ]);
+} catch (Exception $e) {
+    error_log('Featured photographers fetch failed (migrations pending?): ' . $e->getMessage());
+}
 
 // Service images mapping (Pexels URLs from the current homepage)
 $serviceImages = [

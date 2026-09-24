@@ -6,7 +6,12 @@
 require_once __DIR__ . '/../../includes/database.php';
 
 $db = new DatabaseClient();
-$rows = $db->select('freelancer_applications', ['slug' => $freelancerSlug, 'status' => 'approved', 'is_public' => true]);
+try {
+    $rows = $db->select('freelancer_applications', ['slug' => $freelancerSlug, 'status' => 'approved', 'is_public' => true]);
+} catch (Exception $e) {
+    error_log('Photographer profile fetch failed (migrations pending?): ' . $e->getMessage());
+    $rows = [];
+}
 
 if (empty($rows)) {
     http_response_code(404);
