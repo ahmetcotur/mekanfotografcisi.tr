@@ -32,6 +32,7 @@ include __DIR__ . '/../page-header.php';
 
         <div class="mt-8 pt-6 border-t border-slate-100 text-sm text-slate-400 space-y-2">
             <p>Fotoğrafçı mısınız? <a href="/kayit/fotografci" class="text-brand-600 font-bold">Kolektife katılın</a></p>
+            <p>Hesabınız yok mu? <a href="/kayit/musteri" class="text-brand-600 font-bold">Müşteri hesabı oluşturun</a></p>
         </div>
     </div>
 </main>

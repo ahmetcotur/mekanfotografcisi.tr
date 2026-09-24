@@ -192,6 +192,10 @@ if ($requestPath === 'kayit/fotografci') {
     require_once __DIR__ . '/templates/marketplace/register-freelancer.php';
     exit;
 }
+if ($requestPath === 'kayit/musteri') {
+    require_once __DIR__ . '/templates/marketplace/register-client.php';
+    exit;
+}
 
 // Marketplace: freelancer dashboard
 if ($requestPath === 'panel' || strpos($requestPath, 'panel/') === 0) {
@@ -201,6 +205,17 @@ if ($requestPath === 'panel' || strpos($requestPath, 'panel/') === 0) {
         $panelFile = __DIR__ . '/panel/index.php';
     }
     require_once $panelFile;
+    exit;
+}
+
+// Marketplace: client dashboard
+if ($requestPath === 'musteri' || strpos($requestPath, 'musteri/') === 0) {
+    $clientSubPath = trim(substr($requestPath, strlen('musteri')), '/');
+    $clientFile = __DIR__ . '/musteri/' . ($clientSubPath !== '' ? $clientSubPath : 'index') . '.php';
+    if (!file_exists($clientFile)) {
+        $clientFile = __DIR__ . '/musteri/index.php';
+    }
+    require_once $clientFile;
     exit;
 }
 
