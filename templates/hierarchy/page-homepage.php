@@ -25,6 +25,14 @@ $services = $db->select('posts', [
     'order' => 'title'
 ]);
 
+// Fetch a few approved + public photographers for the homepage highlight strip
+$featuredPhotographers = $db->select('freelancer_applications', [
+    'status' => 'approved',
+    'is_public' => true,
+    'order' => 'rating_avg DESC, created_at DESC',
+    'limit' => 4,
+]);
+
 // Service images mapping (Pexels URLs from the current homepage)
 $serviceImages = [
     'mimari-fotografcilik' => 'https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg',
@@ -83,17 +91,17 @@ foreach ($services as $index => $service) {
     // Replace service card glass styling
     $servicesHtml .= <<<HTML
             <!-- Service: {$serviceName} -->
-            <div class="group relative bg-slate-900 rounded-3xl h-[450px] overflow-hidden shadow-2xl hover-lift min-w-[85vw] md:min-w-[350px] snap-center shrink-0">
-                <img src="{$serviceImage}" alt="{$serviceName}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110 opacity-60">
+            <div class="group relative bg-slate-900 rounded-2xl h-[340px] overflow-hidden shadow-xl hover-lift min-w-[80vw] md:min-w-[300px] snap-center shrink-0">
+                <img src="{$serviceImage}" alt="{$serviceName}" loading="lazy" class="absolute inset-0 w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110 opacity-60">
                 <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/60 to-transparent"></div>
-                
-                <div class="absolute inset-0 p-8 flex flex-col justify-end transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                    <div class="w-10 h-1 bg-brand-500 mb-5 rounded-full overflow-hidden">
+
+                <div class="absolute inset-0 p-6 flex flex-col justify-end transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                    <div class="w-8 h-1 bg-brand-500 mb-3 rounded-full overflow-hidden">
                         <div class="w-full h-full bg-white -translate-x-full group-hover:translate-x-0 transition-transform duration-700"></div>
                     </div>
-                    <h3 class="text-2xl font-black text-white mb-3 tracking-tight drop-shadow-lg">{$serviceName}</h3>
+                    <h3 class="text-xl font-black text-white mb-2 tracking-tight drop-shadow-lg">{$serviceName}</h3>
                     <p class="text-slate-300 text-sm font-medium leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 drop-shadow-md">{$serviceIntro}</p>
-                    <a href="/hizmetlerimiz/{$serviceSlug}" class="mt-5 w-fit inline-flex items-center gap-2 text-white font-bold text-[10px] uppercase tracking-widest group/btn border border-white/30 px-5 py-2.5 rounded-full hover:bg-white hover:text-slate-900 transition-all">
+                    <a href="/hizmetlerimiz/{$serviceSlug}" class="mt-4 w-fit inline-flex items-center gap-2 text-white font-bold text-[10px] uppercase tracking-widest group/btn border border-white/30 px-4 py-2 rounded-full hover:bg-white hover:text-slate-900 transition-all">
                         Detaylar <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="group-hover/btn:translate-x-2 transition-transform"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                     </a>
                 </div>
@@ -109,15 +117,15 @@ $content = $post->content;
 $pattern = '/<!-- Services Preview.*?<\/section>/s';
 $replacement = <<<HTML
 <!-- Services Preview -->
-<section class="py-16 bg-white" id="hizmetler">
+<section class="py-14 bg-white" id="hizmetler">
     <div class="container mx-auto px-4">
-        <div class="text-center max-w-4xl mx-auto mb-20">
+        <div class="text-center max-w-4xl mx-auto mb-12">
              <span class="text-brand-600 font-extrabold tracking-[0.2em] uppercase text-[10px] mb-4 block">Kategoriler</span>
-            <h2 class="font-heading font-black text-3xl md:text-4xl text-slate-900 mb-6">Neler Yapıyoruz?</h2>
-            <p class="text-slate-500 text-lg lg:text-xl font-light leading-relaxed">Her mekanın kendine has bir dili vardır. Biz o dili görselleştiriyoruz.</p>
+            <h2 class="font-heading font-black text-2xl md:text-4xl text-slate-900 mb-4">Neler Yapıyoruz?</h2>
+            <p class="text-slate-500 text-base lg:text-lg font-light leading-relaxed">Her mekanın kendine has bir dili vardır. Biz o dili görselleştiriyoruz.</p>
         </div>
-        
-        <div class="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-8 hide-scrollbar -mx-4 px-4 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-10 md:overflow-visible md:pb-0 md:mx-0 md:px-0">
+
+        <div class="flex overflow-x-auto snap-x snap-mandatory gap-5 pb-8 hide-scrollbar -mx-4 px-4 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-6 md:overflow-visible md:pb-0 md:mx-0 md:px-0">
 {$servicesHtml}        </div>
     </div>
 </section>
@@ -153,10 +161,12 @@ $content = str_replace('text-brand-100 mb-16', 'text-slate-200 mb-16', $content)
 // FEATURE: Reduce the hero subtitle "Mekanlarınızın ruhunu..." font size
 $content = str_replace('text-xl md:text-2xl lg:text-3xl text-slate-200/90 max-w-4xl mx-auto mb-16 leading-relaxed font-light drop-shadow-md', 'text-lg md:text-xl lg:text-2xl text-slate-200/90 max-w-3xl mx-auto mb-16 leading-relaxed font-light drop-shadow-md', $content);
 
-// FIX: Add top padding to Hero SECTION on mobile to prevent overlap and change alignment
+// FIX: Add top padding to Hero SECTION on mobile to prevent overlap and change alignment.
+// Also scales the hero down from a near-full-viewport block to something less
+// oversized (min-h-[95vh] felt bulky, especially the pt-52 mobile top padding).
 $content = str_replace(
     'class="relative min-h-[95vh] flex items-center justify-center overflow-hidden bg-slate-900"',
-    'class="relative min-h-[95vh] flex items-start md:items-center justify-center overflow-hidden bg-slate-900 pt-52 pb-16 md:pt-24 md:pb-20"',
+    'class="relative min-h-[70vh] md:min-h-[80vh] flex items-start md:items-center justify-center overflow-hidden bg-slate-900 pt-36 pb-12 md:pt-24 md:pb-16"',
     $content
 );
 
@@ -242,48 +252,48 @@ echo do_shortcode($content);
 </script>
 
 <!-- Pick Your Path -->
-<section class="py-20 md:py-28 bg-slate-50 border-b border-slate-100" id="yol-ayrimi">
+<section class="py-14 md:py-20 bg-slate-50 border-b border-slate-100" id="yol-ayrimi">
     <div class="container mx-auto px-4">
-        <div class="text-center max-w-3xl mx-auto mb-14">
-            <span class="text-brand-600 font-extrabold tracking-[0.2em] uppercase text-[10px] mb-4 block">Kolektif</span>
-            <h2 class="font-heading font-black text-3xl md:text-5xl text-slate-900 tracking-tight">Sana Uygun Yolu Seç</h2>
+        <div class="text-center max-w-3xl mx-auto mb-8 md:mb-10">
+            <span class="text-brand-600 font-extrabold tracking-[0.2em] uppercase text-[10px] mb-3 block">Kolektif</span>
+            <h2 class="font-heading font-black text-2xl md:text-4xl text-slate-900 tracking-tight">Sana Uygun Yolu Seç</h2>
         </div>
 
-        <div class="grid md:grid-cols-2 gap-6 md:gap-8 max-w-5xl mx-auto">
+        <div class="grid md:grid-cols-2 gap-4 md:gap-6 max-w-4xl mx-auto">
             <!-- Client Path -->
-            <div class="bg-white rounded-4xl border border-slate-100 shadow-xl p-8 md:p-10 flex flex-col">
-                <span class="inline-flex items-center gap-2 text-brand-600 font-black tracking-[0.15em] uppercase text-[10px] mb-4">Mekan Sahipleri</span>
-                <h3 class="font-heading font-black text-2xl md:text-3xl text-slate-900 mb-4 leading-tight">Mekanını mı Çektirmek İstiyorsun?</h3>
-                <p class="text-slate-500 leading-relaxed mb-8 flex-1">
-                    İstediğin kategoride, bölgene en yakın fotoğrafçıyı bul. Talebini oluştur, kolektifimizdeki onaylı fotoğrafçılar sana teklif versin.
+            <div class="bg-white rounded-3xl border border-slate-100 shadow-lg p-6 flex flex-col">
+                <span class="inline-flex items-center gap-2 text-brand-600 font-black tracking-[0.15em] uppercase text-[10px] mb-3">Mekan Sahipleri</span>
+                <h3 class="font-heading font-black text-xl md:text-2xl text-slate-900 mb-3 leading-tight">Mekanını mı Çektirmek İstiyorsun?</h3>
+                <p class="text-slate-500 text-sm leading-relaxed mb-6 flex-1">
+                    İstediğin kategoride, bölgende uygun fotoğrafçıyı bul.
                 </p>
-                <div class="flex flex-col sm:flex-row gap-3">
+                <div class="flex flex-col sm:flex-row gap-2">
                     <button onclick="openQuoteWizard()"
-                        class="flex-1 px-6 py-4 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl font-black text-sm uppercase tracking-widest text-center transition-all hover:scale-105 active:scale-95">
+                        class="flex-1 px-5 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-black text-xs uppercase tracking-widest text-center transition-all hover:scale-105 active:scale-95">
                         Çekim Talebi Oluştur
                     </button>
                     <a href="/fotografcilar"
-                        class="flex-1 px-6 py-4 bg-slate-50 hover:bg-slate-100 text-slate-700 rounded-2xl font-black text-sm uppercase tracking-widest border border-slate-200 text-center transition-all hover:scale-105 active:scale-95">
+                        class="flex-1 px-5 py-3 bg-slate-50 hover:bg-slate-100 text-slate-700 rounded-xl font-black text-xs uppercase tracking-widest border border-slate-200 text-center transition-all hover:scale-105 active:scale-95">
                         Fotoğrafçıları Keşfet
                     </a>
                 </div>
             </div>
 
             <!-- Photographer Path -->
-            <div class="bg-slate-900 rounded-4xl shadow-xl p-8 md:p-10 flex flex-col relative overflow-hidden">
-                <div class="absolute top-0 right-0 w-64 h-64 bg-brand-500/20 rounded-full blur-[100px] -mr-32 -mt-32"></div>
-                <span class="relative inline-flex items-center gap-2 text-brand-400 font-black tracking-[0.15em] uppercase text-[10px] mb-4">Fotoğrafçılar</span>
-                <h3 class="relative font-heading font-black text-2xl md:text-3xl text-white mb-4 leading-tight">Fotoğrafçı mısın? Freelance Çekim mi Yapıyorsun?</h3>
-                <p class="relative text-slate-300 leading-relaxed mb-8 flex-1">
-                    Kolektife katıl, açık çekim taleplerini gör, dilediğini üstlen. Kendi profilini oluştur, kendi bölgende iş al.
+            <div class="bg-slate-900 rounded-3xl shadow-lg p-6 flex flex-col relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-40 h-40 bg-brand-500/20 rounded-full blur-[80px] -mr-20 -mt-20"></div>
+                <span class="relative inline-flex items-center gap-2 text-brand-400 font-black tracking-[0.15em] uppercase text-[10px] mb-3">Fotoğrafçılar</span>
+                <h3 class="relative font-heading font-black text-xl md:text-2xl text-white mb-3 leading-tight">Fotoğrafçı mısın? Freelance Çalışıyor musun?</h3>
+                <p class="relative text-slate-300 text-sm leading-relaxed mb-6 flex-1">
+                    Kolektife katıl, açık talepleri gör, dilediğini üstlen.
                 </p>
-                <div class="relative flex flex-col sm:flex-row gap-3">
+                <div class="relative flex flex-col sm:flex-row gap-2">
                     <a href="/kayit/fotografci"
-                        class="flex-1 px-6 py-4 bg-white hover:bg-slate-100 text-slate-900 rounded-2xl font-black text-sm uppercase tracking-widest text-center transition-all hover:scale-105 active:scale-95">
+                        class="flex-1 px-5 py-3 bg-white hover:bg-slate-100 text-slate-900 rounded-xl font-black text-xs uppercase tracking-widest text-center transition-all hover:scale-105 active:scale-95">
                         Fotoğrafçı Olarak Katıl
                     </a>
                     <a href="/nasil-calisir"
-                        class="flex-1 px-6 py-4 bg-white/10 hover:bg-white/20 text-white rounded-2xl font-black text-sm uppercase tracking-widest border border-white/20 text-center transition-all hover:scale-105 active:scale-95">
+                        class="flex-1 px-5 py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl font-black text-xs uppercase tracking-widest border border-white/20 text-center transition-all hover:scale-105 active:scale-95">
                         Nasıl Çalışır?
                     </a>
                 </div>
@@ -292,36 +302,66 @@ echo do_shortcode($content);
     </div>
 </section>
 
+<?php if (!empty($featuredPhotographers)): ?>
+<!-- Featured Photographers -->
+<section class="py-14 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="flex items-center justify-between max-w-5xl mx-auto mb-6">
+            <h2 class="font-heading font-black text-xl md:text-2xl text-slate-900">Kolektiften Fotoğrafçılar</h2>
+            <a href="/fotografcilar" class="text-brand-600 font-bold text-xs uppercase tracking-widest hover:text-brand-700">Tümünü Gör →</a>
+        </div>
+        <div class="flex overflow-x-auto snap-x gap-4 pb-2 hide-scrollbar -mx-4 px-4 md:grid md:grid-cols-4 md:gap-4 md:overflow-visible md:mx-0 md:px-0 max-w-5xl md:mx-auto">
+            <?php foreach ($featuredPhotographers as $photographer): ?>
+                <?php
+                $specs = json_decode($photographer['specialization'] ?? '[]', true) ?: [];
+                $specLabel = $specs[0] ?? '';
+                ?>
+                <a href="/fotografcilar/<?= e($photographer['slug']) ?>"
+                    class="min-w-[65vw] md:min-w-0 snap-center shrink-0 flex items-center gap-3 p-4 bg-slate-50 hover:bg-slate-100 rounded-2xl border border-slate-100 transition-all">
+                    <div class="w-11 h-11 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center font-heading font-black text-lg shrink-0">
+                        <?= e(mb_substr($photographer['name'] ?? '?', 0, 1)) ?>
+                    </div>
+                    <div class="min-w-0">
+                        <div class="font-bold text-slate-900 text-sm truncate"><?= e($photographer['name']) ?></div>
+                        <div class="text-slate-400 text-xs truncate"><?= e($photographer['city']) ?><?= $specLabel ? ' · ' . e($specLabel) : '' ?></div>
+                    </div>
+                </a>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</section>
+<?php endif; ?>
+
 <?php
 // Only include the freelancer section if it is NOT already in the content
 if (strpos($content, 'freelancer-basvuru') === false):
     ?>
     <!-- Freelancer CTA Section -->
-    <section class="py-24 bg-slate-50 relative overflow-hidden" id="freelancer-basvuru">
+    <section class="py-14 md:py-16 bg-slate-50 relative overflow-hidden" id="freelancer-basvuru">
         <!-- Decorative Elements -->
         <div
-            class="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-200/20 rounded-full blur-[120px] -mr-64 -mt-64 animate-pulse-subtle">
+            class="absolute top-0 right-0 w-64 h-64 bg-brand-200/20 rounded-full blur-[90px] -mr-32 -mt-32 animate-pulse-subtle">
         </div>
-        <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-accent-200/10 rounded-full blur-[120px] -ml-64 -mb-64 animate-pulse-subtle"
+        <div class="absolute bottom-0 left-0 w-64 h-64 bg-accent-200/10 rounded-full blur-[90px] -ml-32 -mb-32 animate-pulse-subtle"
             style="animation-delay: 2s"></div>
 
         <div class="container mx-auto px-4 relative z-10">
-            <div class="max-w-4xl mx-auto text-center">
+            <div class="max-w-2xl mx-auto text-center">
                 <span
-                    class="inline-block px-4 py-1.5 rounded-full bg-brand-50 text-brand-600 font-black tracking-[0.2em] uppercase text-[10px] mb-6 border border-brand-100">Kolektife
+                    class="inline-block px-4 py-1.5 rounded-full bg-brand-50 text-brand-600 font-black tracking-[0.2em] uppercase text-[10px] mb-4 border border-brand-100">Kolektife
                     Katıl</span>
-                <h2 class="font-heading font-black text-4xl md:text-6xl text-slate-900 mb-8 tracking-tight">Hâlâ mı
+                <h2 class="font-heading font-black text-2xl md:text-4xl text-slate-900 mb-4 tracking-tight">Hâlâ mı
                     Kararsızsın? <span class="text-gradient">Hemen Başvur</span></h2>
-                <p class="text-slate-500 text-xl font-light leading-relaxed max-w-2xl mx-auto mb-12">
+                <p class="text-slate-500 text-base md:text-lg font-light leading-relaxed max-w-xl mx-auto mb-8">
                     Formu doldurmanız iki dakikanızı alır. Başvurunuzu inceleyip en kısa sürede dönüş yapıyoruz.
                 </p>
 
-                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
                     <a href="/kayit/fotografci"
-                        class="group relative px-12 py-5 bg-brand-600 hover:bg-brand-500 text-white rounded-full font-black text-lg shadow-xl shadow-brand-500/30 transition-all hover:scale-105 active:scale-95 overflow-hidden">
-                        <span class="relative z-10 flex items-center gap-3">
+                        class="group relative px-8 py-3.5 bg-brand-600 hover:bg-brand-500 text-white rounded-full font-black text-sm shadow-lg shadow-brand-500/30 transition-all hover:scale-105 active:scale-95 overflow-hidden">
+                        <span class="relative z-10 flex items-center gap-2">
                             Hemen Kayıt Ol
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
                                 class="group-hover:translate-x-1 transition-transform">
                                 <path d="M5 12h14" />
@@ -330,7 +370,7 @@ if (strpos($content, 'freelancer-basvuru') === false):
                         </span>
                     </a>
                     <button onclick="openFreelancerModal()"
-                        class="px-12 py-5 bg-white hover:bg-slate-50 text-slate-700 rounded-full font-black text-lg border border-slate-200 transition-all hover:scale-105 active:scale-95">
+                        class="px-8 py-3.5 bg-white hover:bg-slate-50 text-slate-700 rounded-full font-black text-sm border border-slate-200 transition-all hover:scale-105 active:scale-95">
                         Sadece Başvuru Formunu Doldur
                     </button>
                 </div>
